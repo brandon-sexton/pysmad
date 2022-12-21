@@ -1,9 +1,10 @@
 from typing import List
-from math import cos, sin, asin, atan2
+from math import cos, sin, asin, atan2, radians
 
 from pyxis.math.linalg import Vector3D, Vector6D, Matrix3D
 from pyxis.time import Epoch
 from pyxis.astro.bodies.celestial import Sun, Earth, Moon
+from pyxis.math.functions import Conversions
 
 class HillState:
     def __init__(self, position:Vector3D, velocity:Vector3D) -> None:
@@ -110,7 +111,7 @@ class GCRFstate:
     @classmethod
     def from_hill(cls, origin:"GCRFstate", state:HillState) -> "GCRFstate":
         return state.to_gcrf(origin)
-        
+
     def copy(self) -> "GCRFstate":
         return GCRFstate(self.epoch, self.position, self.velocity)
 
@@ -156,3 +157,84 @@ class GCRFstate:
 
     def moon_vector(self) -> Vector3D:
         return Moon.get_position(self.epoch).minus(self.position)
+
+    def itrf_position(self) -> Vector3D:
+
+        mod = Precession.matrix(self.epoch).multiply_vector(self.position)
+        tod = Nutation.matrix(self.epoch).multiply_vector(mod)
+        d = self.epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        arg1 = radians(125.0 - .05295*d)
+        arg2 = radians(200.9 + 1.97129*d)
+        a = radians(-.0048)
+        b = radians(.0004)
+        dpsi = a*sin(arg1) - b*sin(arg2)
+        eps = Earth.obliquity_of_ecliptic_at_epoch(self.epoch)
+        gmst = self.epoch.greenwich_hour_angle()
+        gast = dpsi*cos(eps) + gmst
+        return tod.rotation_about_axis(Vector3D(0, 0, 1), -gast)
+
+class Precession:
+
+    @staticmethod
+    def matrix(epoch:Epoch) -> Matrix3D:
+        t = epoch.julian_centuries_past_j2000()
+        a = Conversions.dms_to_radians(0, 0, 2306.2181)
+        b = Conversions.dms_to_radians(0, 0, .30188)
+        c = Conversions.dms_to_radians(0, 0, .017998)
+        x = a*t + b*t*t + c*t*t*t
+
+        a = Conversions.dms_to_radians(0, 0, 2004.3109)
+        b = Conversions.dms_to_radians(0, 0, .42665)
+        c = Conversions.dms_to_radians(0, 0, .041833)
+        y = a*t - b*t*t - c*t*t*t
+
+        a = Conversions.dms_to_radians(0, 0, .7928)
+        b = Conversions.dms_to_radians(0, 0, .000205)
+        z = x + a*t*t + b*t*t*t
+
+        sz = sin(z)
+        sy = sin(y)
+        sx = sin(x)
+        cz = cos(z)
+        cy = cos(y)
+        cx = cos(x)
+
+        p11 = -sz*sx + cz*cy*cx
+        p21 = cz*sx + sz*cy*cx
+        p31 = sy*cx
+
+        p12 = -sz*cx - cz*cy*sx
+        p22 = cz*cx - sz*cy*sx
+        p32 = -sy*sx
+
+        p13 = -cz*sy
+        p23 = -sz*sy
+        p33 = cy
+
+        return Matrix3D(Vector3D(p11, p12, p13), Vector3D(p21, p22, p23), Vector3D(p31, p32, p33))
+
+class Nutation:
+
+    @staticmethod
+    def matrix(epoch:Epoch) -> Matrix3D:
+        d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        arg1 = radians(125.0 - .05295*d)
+        arg2 = radians(200.9 + 1.97129*d)
+        a = radians(-.0048)
+        b = radians(.0004)
+        dpsi = a*sin(arg1) - b*sin(arg2)
+        a = radians(.0026)
+        b = radians(.0002)
+        deps = a*cos(arg1) + b*cos(arg2)
+        eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
+
+        ce = cos(eps)
+        se = sin(eps)
+
+        return Matrix3D(Vector3D(1.0, -dpsi*ce, -dpsi*se), Vector3D(dpsi*ce, 1.0, -deps), Vector3D(dpsi*se, deps, 1.0))
+
+class ITRFstate:
+    def __init__(self, epoch:Epoch, position:Vector3D, velocity:Vector3D) -> None:
+        self.epoch:Epoch = epoch.copy()
+        self.position:Vector3D = position.copy()
+        self.velocity:Vector3D = velocity.copy() 

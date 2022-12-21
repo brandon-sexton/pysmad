@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-import time
+from math import degrees, radians, tan, log10, sin
 
 sys.path.append(os.getcwd())
 
@@ -24,22 +24,25 @@ target:Spacecraft = Spacecraft(target_state)
 
 rel = Hill(rel_chase_state, 42164)
 
-hill_r = []
-hill_i = []
-rk_r = []
-rk_i = []
+print(degrees(Epoch.from_gregorian(2022, 12, 21, 16, 20, 15).greenwich_hour_angle()))
 
-while chase.current_epoch().value < end_epoch.value:
-    chase.step()
-    target.step_to_epoch(chase.current_epoch())
-    rel.step_by_seconds(chase.propagator.step_size)
 
-    ric = target.hill_position(chase)
-    rk_r.append(ric.x)
-    rk_i.append(ric.y)
-    hill_r.append(rel.state.position.x)
-    hill_i.append(rel.state.position.y)
+# hill_r = []
+# hill_i = []
+# rk_r = []
+# rk_i = []
 
-plt.plot(hill_i, hill_r)
-plt.plot(rk_i, rk_r)
-plt.show()
+# while chase.current_epoch().value < end_epoch.value:
+#     chase.step()
+#     target.step_to_epoch(chase.current_epoch())
+#     rel.step_by_seconds(chase.propagator.step_size)
+
+#     ric = target.hill_position(chase)
+#     rk_r.append(ric.x)
+#     rk_i.append(ric.y)
+#     hill_r.append(rel.state.position.x)
+#     hill_i.append(rel.state.position.y)
+
+# plt.plot(hill_i, hill_r)
+# plt.plot(rk_i, rk_r)
+# plt.show()

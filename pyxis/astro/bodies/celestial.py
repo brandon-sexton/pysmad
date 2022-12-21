@@ -13,6 +13,18 @@ class Earth:
     FLATTENING:float = 1/298.257223563
     OBLIQUITY_OF_ECLIPTIC:float = radians(23.43929111)
 
+    @staticmethod
+    def obliquity_of_ecliptic_at_epoch(epoch:Epoch) -> float:
+        #Equation 5.39
+        t = epoch.julian_centuries_past_j2000()
+
+        a = Conversions.dms_to_radians(0, 0, 46.815)
+        b = Conversions.dms_to_radians(0, 0, .00059)
+        c = Conversions.dms_to_radians(0, 0, .001813)
+
+        #Equation 5.42
+        return Earth.OBLIQUITY_OF_ECLIPTIC - a*t - b*t*t + c*t*t*t
+
 class Sun:
 
     W_PLUS_W = radians(282.94)
