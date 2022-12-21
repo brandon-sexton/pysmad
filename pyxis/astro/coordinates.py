@@ -1,8 +1,105 @@
 from typing import List
+from math import cos, sin, asin, atan2
 
-from pyxis.math.linalg import Vector3D
+from pyxis.math.linalg import Vector3D, Vector6D, Matrix3D
 from pyxis.time import Epoch
 from pyxis.astro.bodies.celestial import Sun, Earth, Moon
+
+class HillState:
+    def __init__(self, position:Vector3D, velocity:Vector3D) -> None:
+        self.position:Vector3D = position.copy()
+        self.velocity:Vector3D = velocity.copy()
+        self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
+
+    @classmethod
+    def from_state_vector(cls, state:Vector6D) -> "HillState":
+        return cls(Vector3D(state.x, state.y, state.z), Vector3D(state.vx, state.vy, state.vz))
+
+    @classmethod
+    def from_gcrf(cls, state: "GCRFstate", origin: "GCRFstate") -> "HillState":
+        magrtgt = origin.position.magnitude()
+        magrint = state.position.magnitude()
+        rot_eci_rsw = HillState.frame_matrix(origin)
+        vtgtrsw = rot_eci_rsw.multiply_vector(origin.velocity)
+        rintrsw = rot_eci_rsw.multiply_vector(state.position)
+        vintrsw = rot_eci_rsw.multiply_vector(state.velocity)
+
+        sinphiint = rintrsw.z / magrint
+        phiint = asin(sinphiint)
+        cosphiint = cos(phiint)
+        lambdaint = atan2(rintrsw.y, rintrsw.x)
+        sinlambdaint = sin(lambdaint)
+        coslambdaint = cos(lambdaint)
+        lambdadottgt = vtgtrsw.y / magrtgt
+
+        rhill = Vector3D(magrint - magrtgt, lambdaint * magrtgt, phiint * magrtgt)
+
+        rot_rsw_sez = Matrix3D(
+            Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
+            Vector3D(-sinlambdaint, coslambdaint, 0),
+            Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
+        )
+
+        vintsez = rot_rsw_sez.multiply_vector(vintrsw)
+        phidotint = -vintsez.x / magrint
+        lambdadotint = vintsez.y / (magrint * cosphiint)
+
+        vhill = Vector3D(
+            vintsez.z - vtgtrsw.x,
+            magrtgt * (lambdadotint - lambdadottgt),
+            magrtgt * phidotint,
+        )
+
+        return cls(rhill, vhill)
+
+    @staticmethod
+    def frame_matrix(origin:"GCRFstate") -> Matrix3D:
+        r = origin.position.normalized()
+        c = origin.position.cross(origin.velocity).normalized()
+        i = c.cross(r)
+        return Matrix3D(r, i, c)
+
+    def copy(self) -> "HillState":
+        return HillState(self.position, self.velocity)
+
+    def to_gcrf(self, origin: "GCRFstate") -> "GCRFstate":
+        magrtgt = origin.position.magnitude()
+        magrint = magrtgt + self.position.x
+        rot_eci_rsw = HillState.frame_matrix(origin)
+        vtgtrsw = rot_eci_rsw.multiply_vector(origin.velocity)
+
+        lambdadottgt = vtgtrsw.y / magrtgt
+        lambdaint = self.position.y / magrtgt
+        phiint = self.position.z / magrtgt
+        sinphiint = sin(phiint)
+        cosphiint = cos(phiint)
+        sinlambdaint = sin(lambdaint)
+        coslambdaint = cos(lambdaint)
+
+        rot_rsw_sez = Matrix3D(
+            Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
+            Vector3D(-sinlambdaint, coslambdaint, 0),
+            Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
+        )
+
+        rdotint = self.velocity.x + vtgtrsw.x
+        lambdadotint = self.velocity.y / magrtgt + lambdadottgt
+        phidotint = self.velocity.z / magrtgt
+        vintsez = Vector3D(
+            -magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint
+        )
+        vintrsw = rot_rsw_sez.transpose().multiply_vector(vintsez)
+        vinteci = rot_eci_rsw.transpose().multiply_vector(vintrsw)
+
+        rintrsw = Vector3D(
+            cosphiint * magrint * coslambdaint,
+            cosphiint * magrint * sinlambdaint,
+            sinphiint * magrint,
+        )
+
+        rinteci = rot_eci_rsw.transpose().multiply_vector(rintrsw)
+
+        return GCRFstate(origin.epoch, rinteci, vinteci)
 
 class GCRFstate:
     def __init__(self, epoch:Epoch, position:Vector3D, velocity:Vector3D) -> None:
@@ -10,6 +107,10 @@ class GCRFstate:
         self.position:Vector3D = position.copy()
         self.velocity:Vector3D = velocity.copy()
 
+    @classmethod
+    def from_hill(cls, origin:"GCRFstate", state:HillState) -> "GCRFstate":
+        return state.to_gcrf(origin)
+        
     def copy(self) -> "GCRFstate":
         return GCRFstate(self.epoch, self.position, self.velocity)
 

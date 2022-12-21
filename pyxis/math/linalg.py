@@ -1,5 +1,25 @@
 from math import sqrt, acos, cos, sin
 
+class Vector6D:
+    def __init__(self, x:float, y:float, z:float, vx:float, vy:float, vz:float) -> None:
+        self.x:float = x
+        self.y:float = y
+        self.z:float = z
+        self.vx:float = vx
+        self.vy:float = vy
+        self.vz:float = vz
+
+    @classmethod
+    def from_position_and_velocity(cls, r:"Vector3D", v:"Vector3D") -> "Vector6D":
+        return cls(r.x, r.y, r.z, v.x, v.y, v.z)
+
+    def dot(self, vec_to_dot:"Vector6D") -> float:
+        return self.x*vec_to_dot.x + self.y*vec_to_dot.y + self.z*vec_to_dot.z \
+            + self.vx*vec_to_dot.vx + self.vy*vec_to_dot.vy + self.vz*vec_to_dot.vz
+
+    def copy(self) -> "Vector6D":
+        return Vector6D(self.x, self.y, self.z, self.vx, self.vy, self.vz)
+
 class Vector3D:
 
     def __init__(self, x:float, y:float, z:float) -> None:
@@ -71,3 +91,29 @@ class Matrix3D:
 
     def multiply_vector(self, vec:Vector3D) -> Vector3D:
         return Vector3D(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
+
+    def transpose(self) -> "Matrix3D":
+        return Matrix3D(
+            Vector3D(self.row1.x, self.row2.x, self.row3.x),
+            Vector3D(self.row1.y, self.row2.y, self.row3.y),
+            Vector3D(self.row1.z, self.row2.z, self.row3.z)
+        )
+
+class Matrix6D:
+    def __init__(self, r1:Vector6D, r2:Vector6D, r3:Vector6D, r4:Vector6D, r5:Vector6D, r6:Vector6D) -> None:
+        self.row1:Vector6D = r1.copy()
+        self.row2:Vector6D = r2.copy()
+        self.row3:Vector6D = r3.copy()
+        self.row4:Vector6D = r4.copy()
+        self.row5:Vector6D = r5.copy()
+        self.row6:Vector6D = r6.copy()
+
+    def multiply_vector(self, vec:Vector6D) -> Vector6D:
+        return Vector6D(
+            self.row1.dot(vec),
+            self.row2.dot(vec),
+            self.row3.dot(vec),
+            self.row4.dot(vec),
+            self.row5.dot(vec),
+            self.row6.dot(vec),
+        )
