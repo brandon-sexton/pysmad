@@ -1,7 +1,7 @@
 import unittest
 
 from pyxis.time import Epoch
-from pyxis.astro.coordinates import GCRFstate, Precession, Nutation
+from pyxis.astro.coordinates import GCRFstate, Precession, Nutation, ITRFstate
 from pyxis.math.linalg import Vector3D
 
 class TestGCRFstate(unittest.TestCase):
@@ -35,3 +35,13 @@ class TestNutation(unittest.TestCase):
         self.assertAlmostEqual(mod.x, 9816.34413386, 1)
         self.assertAlmostEqual(mod.y, 40048.169137333, 1)
         self.assertAlmostEqual(mod.z, -4978.306598902, 1)
+
+class TestITRFstate(unittest.TestCase):
+    EPOCH = Epoch.from_gregorian(2021, 12, 25, 4, 43, 51.608)
+    ITRF:ITRFstate = ITRFstate(EPOCH, Vector3D(1173.544602365, -41216.97127606, -4978.360362079), Vector3D(0, 0, 0))
+
+    def test_gcrf_position(self):
+        gcrf:GCRFstate = self.ITRF.gcrf_position()
+        self.assertAlmostEqual(gcrf.x, 10000, 0)
+        self.assertAlmostEqual(gcrf.y, 40000, 0)
+        self.assertAlmostEqual(gcrf.z, -5000, 0)

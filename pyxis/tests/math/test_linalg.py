@@ -1,4 +1,5 @@
 import unittest
+from math import radians
 
 from pyxis.math.linalg import Vector3D
 
@@ -6,6 +7,15 @@ class TestVector3D(unittest.TestCase):
 
     VEC_1 = Vector3D(4, 2, 42)
     VEC_2 = Vector3D(4, 42, 2)
+    ROT_VEC = Vector3D(4, 2, 4)
+    ROT_AXIS = Vector3D(6, 8, 2)
+    ANGLE:float = radians(25)
+
+    def test_rotation_about_axis(self):
+        vec = self.ROT_VEC.rotation_about_axis(self.ROT_AXIS, self.ANGLE)
+        self.assertAlmostEqual(vec.x, 5.045038149)
+        self.assertAlmostEqual(vec.y, 1.4954979717)
+        self.assertAlmostEqual(vec.z, 2.8828936665)
 
     def test_plus(self):
         vec_sum = self.VEC_1.plus(self.VEC_2)

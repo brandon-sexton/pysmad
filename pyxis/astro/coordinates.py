@@ -162,16 +162,22 @@ class GCRFstate:
 
         mod = Precession.matrix(self.epoch).multiply_vector(self.position)
         tod = Nutation.matrix(self.epoch).multiply_vector(mod)
-        d = self.epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        return Rotation.matrix(self.epoch).multiply_vector(tod)
+
+class Rotation:
+
+    @staticmethod
+    def matrix(epoch:Epoch) -> Matrix3D:
+        d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
         arg1 = radians(125.0 - .05295*d)
         arg2 = radians(200.9 + 1.97129*d)
         a = radians(-.0048)
         b = radians(.0004)
         dpsi = a*sin(arg1) - b*sin(arg2)
-        eps = Earth.obliquity_of_ecliptic_at_epoch(self.epoch)
-        gmst = self.epoch.greenwich_hour_angle()
+        eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
+        gmst = epoch.greenwich_hour_angle()
         gast = dpsi*cos(eps) + gmst
-        return tod.rotation_about_axis(Vector3D(0, 0, 1), -gast)
+        return Vector3D.rotation_matrix(Vector3D(0, 0, 1), -gast)
 
 class Precession:
 
@@ -238,3 +244,8 @@ class ITRFstate:
         self.epoch:Epoch = epoch.copy()
         self.position:Vector3D = position.copy()
         self.velocity:Vector3D = velocity.copy() 
+
+    def gcrf_position(self) -> Vector3D:
+        tod:Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
+        mod:Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
+        return Precession.matrix(self.epoch).transpose().multiply_vector(mod)

@@ -58,30 +58,34 @@ class Vector3D:
     def angle(self, adj_vec) -> float:
         return acos(self.dot(adj_vec)/(self.magnitude()*adj_vec.magnitude()))
 
-    def rotation_about_axis(self, axis:"Vector3D", theta:float) -> "Vector3D":
-
+    @staticmethod
+    def rotation_matrix(axis:"Vector3D", theta:float) -> "Matrix3D":
         unit_ax:Vector3D = axis.normalized()
         ux:float = unit_ax.x
         uy:float = unit_ax.y
         uz:float = unit_ax.z
         c:float = cos(theta)
         s:float = sin(theta)
+        cdiff:float = 1-c
 
-        x1:float = c + ux*ux*(1.0-c)
-        y1:float = ux*uy*(1.0*c)-uz*s
-        z1:float = ux*uz*(1.0-c)+uy*s
-        x2:float = uy*ux*(1.0-c)+uz*s
-        y2:float = c+uy*uy*(1.0-c)
-        z2:float = uy*uz*(1.0-c)-ux*s
-        x3:float = uz*ux*(1.0-c)-uy*s
-        y3:float = uz*uy*(1.0-c)+ux*s
-        z3:float = c+uz*uz*(1.0-c)
+        x1:float = c + ux*ux*cdiff
+        y1:float = ux*uy*cdiff-uz*s
+        z1:float = ux*uz*cdiff+uy*s
+        x2:float = uy*ux*cdiff+uz*s
+        y2:float = c+uy*uy*cdiff
+        z2:float = uy*uz*cdiff-ux*s
+        x3:float = uz*ux*cdiff-uy*s
+        y3:float = uz*uy*cdiff+ux*s
+        z3:float = c+uz*uz*cdiff
 
         r1:Vector3D = Vector3D(x1, y1, z1)
         r2:Vector3D = Vector3D(x2, y2, z2)
         r3:Vector3D = Vector3D(x3, y3, z3)
+        
+        return Matrix3D(r1, r2, r3)
 
-        return Matrix3D(r1, r2, r3).multiply_vector(self.copy())
+    def rotation_about_axis(self, axis:"Vector3D", theta:float) -> "Vector3D":
+        return Vector3D.rotation_matrix(axis, theta).multiply_vector(self.copy())
 
 class Matrix3D:
     def __init__(self, row1:Vector3D, row2:Vector3D, row3:Vector3D) -> None:
