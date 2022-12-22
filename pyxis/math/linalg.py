@@ -27,6 +27,9 @@ class Vector3D:
         self.y:float = y
         self.z:float = z
 
+    def __str__(self) -> str:
+        return f"{self.x:.6f} {self.y:.6f} {self.z:.6f}"
+
     def copy(self) -> "Vector3D":
         return Vector3D(self.x, self.y, self.z)
 
@@ -55,8 +58,13 @@ class Vector3D:
     def normalized(self) -> "Vector3D":
         return self.scaled(1/self.magnitude())
 
-    def angle(self, adj_vec) -> float:
-        return acos(self.dot(adj_vec)/(self.magnitude()*adj_vec.magnitude()))
+    def angle(self, adj_vec:"Vector3D") -> float:
+        arg = self.dot(adj_vec)/(self.magnitude()*adj_vec.magnitude())
+        if arg > 1:
+            arg = 1
+        elif arg < -1:
+            arg = -1
+        return acos(arg)
 
     @staticmethod
     def rotation_matrix(axis:"Vector3D", theta:float) -> "Matrix3D":

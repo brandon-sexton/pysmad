@@ -49,10 +49,11 @@ class RK4:
     def step_to_epoch(self, epoch:Epoch) -> None:
 
         dt = (epoch.value - self.state.epoch.value)*SECONDS_IN_DAY
-        num_steps = ceil(dt/self.MAX_STEP)
+        num_steps = ceil(abs(dt/self.MAX_STEP))
 
         old_step = self.step_size
-        self.step_size = dt/num_steps
+        if num_steps > 0:
+            self.step_size = dt/num_steps
 
         step_n = 0
         while step_n < num_steps:
