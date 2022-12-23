@@ -7,6 +7,7 @@ from pyxis.time import Epoch
 from pyxis.math.linalg import Vector3D
 from pyxis.hardware.payloads import Camera
 from pyxis.math.constants import SECONDS_IN_DAY
+from pyxis.astro.bodies.celestial import Earth
 
 class Spacecraft:
 
@@ -29,6 +30,11 @@ class Spacecraft:
         self.slew_rate:float = Spacecraft.DEFAULT_SLEW_RATE
         self.update_attitude()
     
+    def sma(self):
+        r = self.position().magnitude()
+        v = self.velocity().magnitude()
+        return 1/(2/r - v*v/Earth.MU)
+
     def update_attitude(self) -> None:
         if self.steering == Spacecraft.STEERING_MODES[0]:
             self.body_z = self.earth_vector()
