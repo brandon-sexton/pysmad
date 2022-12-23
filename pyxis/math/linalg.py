@@ -13,6 +13,9 @@ class Vector6D:
     def from_position_and_velocity(cls, r:"Vector3D", v:"Vector3D") -> "Vector6D":
         return cls(r.x, r.y, r.z, v.x, v.y, v.z)
 
+    def __str__(self) -> str:
+        return f"{self.x:.6f} {self.y:.6f} {self.z:.6f} {self.vx:.6f} {self.vy:.6f} {self.vz:.6f}"
+
     def dot(self, vec_to_dot:"Vector6D") -> float:
         return self.x*vec_to_dot.x + self.y*vec_to_dot.y + self.z*vec_to_dot.z \
             + self.vx*vec_to_dot.vx + self.vy*vec_to_dot.vy + self.vz*vec_to_dot.vz
@@ -22,6 +25,9 @@ class Vector6D:
 
     def plus(self, vec:"Vector6D") -> "Vector6D":
         return Vector6D(self.x+vec.x, self.y+vec.y, self.z+vec.z, self.vx+vec.vx, self.vy+vec.vy, self.vz+vec.vz)
+
+    def minus(self, vec:"Vector6D") -> "Vector6D":
+        return Vector6D(self.x-vec.x, self.y-vec.y, self.z-vec.z, self.vx-vec.vx, self.vy-vec.vy, self.vz-vec.vz)
 
 class Vector3D:
 
@@ -104,6 +110,9 @@ class Matrix3D:
         self.row2:Vector3D = row2.copy()
         self.row3:Vector3D = row3.copy()
 
+    def diagonal(self) -> Vector3D:
+        return Vector3D(self.row1.x, self.row2.y, self.row3.z)
+
     def column_1(self) -> Vector3D:
         return Vector3D(self.row1.x, self.row2.x, self.row3.x)
 
@@ -127,7 +136,7 @@ class Matrix3D:
         )
 
     def plus(self, mat:"Matrix3D") -> "Matrix3D":
-        return Matrix6D(
+        return Matrix3D(
             self.row1.plus(mat.row1),
             self.row2.plus(mat.row2),
             self.row3.plus(mat.row3)
@@ -247,14 +256,14 @@ class Matrix6by3:
         self.row5:Vector3D = r5.copy()
         self.row6:Vector3D = r6.copy()
 
-    def column_1(self) -> Vector3D:
-        return Vector3D(self.row1.x, self.row2.x, self.row3.x)
+    def column_1(self) -> Vector6D:
+        return Vector6D(self.row1.x, self.row2.x, self.row3.x, self.row4.x, self.row5.x, self.row6.x)
 
-    def column_2(self) -> Vector3D:
-        return Vector3D(self.row1.y, self.row2.y, self.row3.y)
+    def column_2(self) -> Vector6D:
+        return Vector6D(self.row1.y, self.row2.y, self.row3.y, self.row4.y, self.row5.y, self.row6.y)
 
-    def column_3(self) -> Vector3D:
-        return Vector3D(self.row1.z, self.row2.z, self.row3.z)
+    def column_3(self) -> Vector6D:
+        return Vector6D(self.row1.z, self.row2.z, self.row3.z, self.row4.z, self.row5.z, self.row6.z)
 
     def transpose(self) -> Matrix3by6:
         return Matrix3by6(self.column_1(), self.column_2(), self.column_3())
@@ -355,6 +364,10 @@ class Matrix6D:
             Vector6D(0, 0, 0, 0, 1, 0),
             Vector6D(0, 0, 0, 0, 0, 1)
         )
+
+    def diagonal(self) -> Vector6D:
+        return Vector6D(self.row1.x, self.row2.y, self.row3.z, self.row4.vx, self.row5.vy, self.row6.vz)
+
     def multiply_vector(self, vec:Vector6D) -> Vector6D:
         return Vector6D(
             self.row1.dot(vec),
@@ -375,13 +388,13 @@ class Matrix6D:
         return Vector6D(self.row1.z, self.row2.z, self.row3.z, self.row4.z, self.row5.z, self.row6.z)
 
     def column_4(self) -> Vector6D:
-        Vector6D(self.row1.vx, self.row2.vx, self.row3.vx, self.row4.vx, self.row5.vx, self.row6.vx)
+        return Vector6D(self.row1.vx, self.row2.vx, self.row3.vx, self.row4.vx, self.row5.vx, self.row6.vx)
 
     def column_5(self) -> Vector6D:
-        Vector6D(self.row1.vy, self.row2.vy, self.row3.vy, self.row4.vy, self.row5.vy, self.row6.vy)
+        return Vector6D(self.row1.vy, self.row2.vy, self.row3.vy, self.row4.vy, self.row5.vy, self.row6.vy)
 
     def column_6(self) -> Vector6D:
-        Vector6D(self.row1.vz, self.row2.vz, self.row3.vz, self.row4.vz, self.row5.vz, self.row6.vz)
+        return Vector6D(self.row1.vz, self.row2.vz, self.row3.vz, self.row4.vz, self.row5.vz, self.row6.vz)
 
     def transpose(self) -> "Matrix6D":
         return Matrix6D(

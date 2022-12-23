@@ -1,7 +1,9 @@
-from pyxis.astro.coordinates import HillState
-from pyxis.astro.bodies.artificial import Spacecraft
-from pyxis.astro.propagators.relative import Hill
 from pyxis.math.linalg import Matrix6D, Vector6D, Vector3D, Matrix3D, Matrix3by6, Matrix6by3
+from pyxis.time import Epoch
+from pyxis.estimation.obs import PositionOb
+from pyxis.astro.propagators.relative import Hill
+from pyxis.astro.coordinates import HillState
+from pyxis.math.constants import SECONDS_IN_DAY
 
 class RelativeKalman:
 
@@ -9,31 +11,27 @@ class RelativeKalman:
         Vector6D(.5, 0, 0, 0, 0, 0),
         Vector6D(0, .5, 0, 0, 0, 0),
         Vector6D(0, 0, .5, 0, 0, 0),
-        Vector6D(0, 0, 0, 5e-4, 0, 0),
-        Vector6D(0, 0, 0, 0, 5e-4, 0),
-        Vector6D(0, 0, 0, 0, 0, 5e-4)
+        Vector6D(0, 0, 0, 5e-5, 0, 0),
+        Vector6D(0, 0, 0, 0, 5e-5, 0),
+        Vector6D(0, 0, 0, 0, 0, 5e-5)
     )
 
     DEFAULT_NOISE = Matrix6D(
-        Vector6D(1e-9, 0, 0, 0, 0, 0),
-        Vector6D(0, 1e-9, 0, 0, 0, 0),
-        Vector6D(0, 0, 1e-9, 0, 0, 0),
-        Vector6D(0, 0, 0, 1e-9, 0, 0),
-        Vector6D(0, 0, 0, 0, 1e-9, 0),
-        Vector6D(0, 0, 0, 0, 0, 1e-9)
+        Vector6D(1e-16, 0, 0, 0, 0, 0),
+        Vector6D(0, 1e-16, 0, 0, 0, 0),
+        Vector6D(0, 0, 1e-16, 0, 0, 0),
+        Vector6D(0, 0, 0, 1e-16, 0, 0),
+        Vector6D(0, 0, 0, 0, 1e-16, 0),
+        Vector6D(0, 0, 0, 0, 0, 1e-16)
     )
 
     H:Matrix3by6 = Matrix3by6(Vector6D(1, 0, 0, 0, 0, 0), Vector6D(0, 1, 0, 0, 0, 0), Vector6D(0, 0, 1, 0, 0, 0))
     HT:Matrix6by3 = H.transpose()
     I:Matrix6D = Matrix6D.identity()
 
-    def __init__(self, observer:Spacecraft, target:Spacecraft) -> None:
-        self.observer:Spacecraft = observer
-        self.target:Spacecraft = target
-        self.propagator:Hill = Hill(
-            HillState.from_gcrf(target.current_state(), observer.current_state()), 
-            observer.sma()
-        )
+    def __init__(self, epoch:Epoch, propagator:Hill) -> None:
+        self.epoch:Epoch = epoch.copy()
+        self.propagator:Hill = propagator
         self.x00:Vector6D = self.propagator.state.vector.copy()
         self.x10:Vector6D = None
         self.p00: Matrix6D = RelativeKalman.DEFAULT_COVARIANCE
@@ -44,9 +42,7 @@ class RelativeKalman:
         self.z:Vector3D = None
         self.range_error:float = 0
         self.r:Matrix3D = None
-
-    def state_transition_matrix(self, dt:float) -> Matrix6D:
-        return self.propagator.system_matrix(dt)
+        self.angles_only:bool = True
 
     def predict_covariance(self) -> None:
         self.p10 = self.f.multiply_matrix(self.p00.multiply_matrix(self.f.transpose())).plus(self.q)
@@ -54,19 +50,20 @@ class RelativeKalman:
     def gain(self) -> None:
         normal_measurment = self.z.normalized()
         self.r = Matrix3D(
-            Vector3D(normal_measurment.x*self.range_error, 0, 0),
-            Vector3D(0, normal_measurment.y*self.range_error, 0),
-            Vector3D(0, 0, normal_measurment.z*self.range_error)
+            Vector3D(abs(normal_measurment.x*self.range_error), 0, 0),
+            Vector3D(0, abs(normal_measurment.y*self.range_error), 0),
+            Vector3D(0, 0, abs(normal_measurment.z*self.range_error))
         )
         hph:Matrix3D = self.H.multiply_matrix_6by3(self.p10.multiply_matrix_6by3(self.HT))
         self.k = self.p10.multiply_matrix_6by3(self.HT.multiply(hph.plus(self.r).inverse()))
 
     def predict_state(self, dt:float) -> None:
-        self.f = self.state_transition_matrix(dt)
+        self.f = self.propagator.system_matrix(dt)
         self.x10 = self.f.multiply_vector(self.x00)
         
     def update_state(self) -> None:
         self.x00 = self.x10.plus(self.k.multiply_vector(self.z.minus(self.H.multiply_vector(self.x10))))
+        self.propagator.state = HillState.from_state_vector(self.x00)
 
     def update_covariance(self) -> None:
         m1:Matrix6D = self.I.minus(self.k.multiply_matrix3by6(self.H))
@@ -82,8 +79,10 @@ class RelativeKalman:
         self.update_state()
         self.update_covariance()
 
-    def process_measurement(self, measurement:Vector3D, range_error:float, dt:float) -> None:
-        self.z = measurement.copy()
-        self.range_error = range_error
+    def process(self, ob:PositionOb) -> None:
+        dt = (ob.epoch.value-self.epoch.value)*SECONDS_IN_DAY
+        self.epoch = ob.epoch.copy()
+        self.z = ob.position.copy()
+        self.range_error = ob.error
         self.predict(dt)
         self.update()

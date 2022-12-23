@@ -2,7 +2,7 @@ from math import sin, cos, sqrt
 
 from pyxis.astro.coordinates import HillState
 from pyxis.astro.bodies.celestial import Earth
-from pyxis.math.linalg import Matrix6D, Vector6D
+from pyxis.math.linalg import Matrix6D, Vector6D, Vector3D
 
 class Hill:
     

@@ -1,13 +1,16 @@
-from typing import List
 from math import pi, sin, cos, log10, radians
+from random import gauss
 
 from pyxis.astro.coordinates import GCRFstate, HillState
 from pyxis.astro.propagators.inertial import RK4
+from pyxis.astro.propagators.relative import Hill
 from pyxis.time import Epoch
 from pyxis.math.linalg import Vector3D
 from pyxis.hardware.payloads import Camera
 from pyxis.math.constants import SECONDS_IN_DAY
 from pyxis.astro.bodies.celestial import Earth
+from pyxis.estimation.filtering import RelativeKalman
+from pyxis.estimation.obs import PositionOb
 
 class Spacecraft:
 
@@ -23,6 +26,7 @@ class Spacecraft:
         self.body_radius:float = Spacecraft.DEFAULT_RADIUS
         self.wfov:Camera = Camera.wfov()
         self.nfov:Camera = Camera.nfov()
+        self.filter:RelativeKalman = None
         self.steering:str = Spacecraft.STEERING_MODES[0]
         self.tracked_target:Spacecraft = None
         self.slewing:bool = False
@@ -34,6 +38,24 @@ class Spacecraft:
         r = self.position().magnitude()
         v = self.velocity().magnitude()
         return 1/(2/r - v*v/Earth.MU)
+
+    def acquire(self, seed:"Spacecraft") -> None:
+        self.filter = RelativeKalman(
+            self.current_epoch(), 
+            Hill(HillState.from_gcrf(seed.current_state(), self.current_state()), self.sma())
+        )
+        self.track_state(seed)
+
+    def observe_wfov(self, target:"Spacecraft") -> PositionOb:
+        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+        r = tgt.position.magnitude()
+        err = self.wfov.range_error(r, target.body_radius*2)
+        ob_r = gauss(r, err)
+        return PositionOb(self.current_epoch(), tgt.position.normalized().scaled(ob_r), err)
+
+    def process_wfov(self, target:"Spacecraft") -> None:
+        ob = self.observe_wfov(target)
+        self.filter.process(ob)
 
     def update_attitude(self) -> None:
         if self.steering == Spacecraft.STEERING_MODES[0]:
