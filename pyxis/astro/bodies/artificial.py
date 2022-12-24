@@ -1,5 +1,5 @@
 from math import pi, sin, cos, log10, radians
-from random import gauss
+from random import gauss, uniform
 
 from pyxis.astro.coordinates import GCRFstate, HillState
 from pyxis.astro.propagators.inertial import RK4
@@ -18,6 +18,7 @@ class Spacecraft:
     DEFAULT_ALBEDO = .3
     STEERING_MODES = ["lvlh", "solar", "target"]
     DEFAULT_SLEW_RATE = radians(.5)*SECONDS_IN_DAY
+    DEFAULT_POINTING_ACCURACY = 1e-5
 
     def __init__(self, state:GCRFstate):
         self.initial_state:GCRFstate = state.copy()
@@ -32,6 +33,7 @@ class Spacecraft:
         self.slewing:bool = False
         self.slew_stop:Epoch = None
         self.slew_rate:float = Spacecraft.DEFAULT_SLEW_RATE
+        self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
         self.update_attitude()
     
     def sma(self):
@@ -51,10 +53,27 @@ class Spacecraft:
         r = tgt.position.magnitude()
         err = self.wfov.range_error(r, target.body_radius*2)
         ob_r = gauss(r, err)
-        return PositionOb(self.current_epoch(), tgt.position.normalized().scaled(ob_r), err)
+        ang_err = gauss(0, self.pointing_accuracy)
+        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
+        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2*pi))
+        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
+
+    def observe_nfov(self, target:"Spacecraft") -> PositionOb:
+        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+        r = tgt.position.magnitude()
+        err = self.nfov.range_error(r, target.body_radius*2)
+        ob_r = gauss(r, err)
+        ang_err = gauss(0, self.pointing_accuracy)
+        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
+        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2*pi))
+        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
 
     def process_wfov(self, target:"Spacecraft") -> None:
         ob = self.observe_wfov(target)
+        self.filter.process(ob)
+
+    def process_nfov(self, target:"Spacecraft") -> None:
+        ob = self.observe_nfov(target)
         self.filter.process(ob)
 
     def update_attitude(self) -> None:

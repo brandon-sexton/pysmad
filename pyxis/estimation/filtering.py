@@ -50,9 +50,9 @@ class RelativeKalman:
     def gain(self) -> None:
         normal_measurment = self.z.normalized()
         self.r = Matrix3D(
-            Vector3D(abs(normal_measurment.x*self.range_error), 0, 0),
-            Vector3D(0, abs(normal_measurment.y*self.range_error), 0),
-            Vector3D(0, 0, abs(normal_measurment.z*self.range_error))
+            Vector3D(normal_measurment.x*self.range_error*normal_measurment.x*self.range_error, 0, 0),
+            Vector3D(0, normal_measurment.y*self.range_error*normal_measurment.y*self.range_error, 0),
+            Vector3D(0, 0, normal_measurment.z*self.range_error*normal_measurment.z*self.range_error)
         )
         hph:Matrix3D = self.H.multiply_matrix_6by3(self.p10.multiply_matrix_6by3(self.HT))
         self.k = self.p10.multiply_matrix_6by3(self.HT.multiply(hph.plus(self.r).inverse()))

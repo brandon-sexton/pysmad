@@ -11,15 +11,19 @@ from pyxis.astro.bodies.artificial import Spacecraft
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
-start_epoch:Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
-rel_chase_state = HillState(Vector3D(-11, 0, 0), Vector3D(0, .0016, 0))
-target_state:GCRFstate = GCRFstate(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
-seed:Spacecraft = Spacecraft(GCRFstate(start_epoch, Vector3D(42164.5, .5, .5), Vector3D(0, 3.074, 0)))
-chase_state:GCRFstate = GCRFstate.from_hill(target_state, rel_chase_state)
-end_epoch = start_epoch.plus_days(2)
+start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
+rel_chase_state = HillState(Vector3D(-11, 0, 0), Vector3D(0, 0, 0))
+target_state: GCRFstate = GCRFstate(
+    start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0)
+)
+seed: Spacecraft = Spacecraft(
+    GCRFstate(start_epoch, Vector3D(42164.5, 0.5, 0.5), Vector3D(0, 3.075, 0))
+)
+chase_state: GCRFstate = GCRFstate.from_hill(target_state, rel_chase_state)
+end_epoch = start_epoch.plus_days(1)
 
-chase:Spacecraft = Spacecraft(chase_state)
-target:Spacecraft = Spacecraft(target_state)
+chase: Spacecraft = Spacecraft(chase_state)
+target: Spacecraft = Spacecraft(target_state)
 
 rel = Hill(rel_chase_state, 42164)
 
@@ -32,7 +36,7 @@ err = []
 
 chase.acquire(seed)
 while chase.current_epoch().value < end_epoch.value:
-    
+
     chase.step()
     target.step_to_epoch(chase.current_epoch())
     chase.track_state(target)
