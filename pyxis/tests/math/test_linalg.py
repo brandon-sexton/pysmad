@@ -3,13 +3,14 @@ from math import radians
 
 from pyxis.math.linalg import Vector3D
 
+
 class TestVector3D(unittest.TestCase):
 
     VEC_1 = Vector3D(4, 2, 42)
     VEC_2 = Vector3D(4, 42, 2)
     ROT_VEC = Vector3D(4, 2, 4)
     ROT_AXIS = Vector3D(6, 8, 2)
-    ANGLE:float = radians(25)
+    ANGLE: float = radians(25)
 
     def test_rotation_about_axis(self):
         vec = self.ROT_VEC.rotation_about_axis(self.ROT_AXIS, self.ANGLE)
@@ -51,6 +52,6 @@ class TestVector3D(unittest.TestCase):
 
     def test_normalized(self):
         vec_normed = self.VEC_1.normalized()
-        self.assertAlmostEqual(vec_normed.x, .0947027447620757)
-        self.assertAlmostEqual(vec_normed.y, .0473513723810378)
-        self.assertAlmostEqual(vec_normed.z, .9943788200017946)
+        self.assertAlmostEqual(vec_normed.x, 0.0947027447620757)
+        self.assertAlmostEqual(vec_normed.y, 0.0473513723810378)
+        self.assertAlmostEqual(vec_normed.z, 0.9943788200017946)

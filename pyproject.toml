@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 120
+force-exclude = '''
+^/(
+  (
+      \.eggs
+    | \.git
+    | \.pytest_cache
+    | \.tox
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+filter_files = true
+line_length = 120
