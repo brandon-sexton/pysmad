@@ -1,5 +1,6 @@
 from math import cos, log10, pi, radians, sin
 from random import gauss, uniform
+from typing import List
 
 from pyxis.astro.bodies.celestial import Earth
 from pyxis.astro.coordinates import GCRFstate, HillState
@@ -15,11 +16,18 @@ from pyxis.time import Epoch
 
 class Spacecraft:
 
-    DEFAULT_RADIUS = 0.005
-    DEFAULT_ALBEDO = 0.3
-    STEERING_MODES = ["lvlh", "solar", "target"]
-    DEFAULT_SLEW_RATE = radians(0.5) * SECONDS_IN_DAY
-    DEFAULT_POINTING_ACCURACY = 1e-5
+    #: The default body radius of the satellite (km)
+    DEFAULT_RADIUS: float = 0.005
+
+    #: The default albedo of the satellite used for optical modeling (unitless)
+    DEFAULT_ALBEDO: float = 0.3
+
+    #: Available control methods of the vehicle's attitude (lvlh == z to earth, solar == -z to sun, target == z to rso)
+    STEERING_MODES: List[str] = ["lvlh", "solar", "target"]
+
+    #: Default
+    DEFAULT_SLEW_SCALE: float = 1 / (radians(0.5) * SECONDS_IN_DAY)
+    DEFAULT_POINTING_ACCURACY: float = 1e-5
 
     def __init__(self, state: GCRFstate):
         self.initial_state: GCRFstate = state.copy()
@@ -33,7 +41,7 @@ class Spacecraft:
         self.tracked_target: Spacecraft
         self.slewing: bool = False
         self.slew_stop: Epoch
-        self.slew_rate: float = Spacecraft.DEFAULT_SLEW_RATE
+        self.slew_scalar: float = Spacecraft.DEFAULT_SLEW_SCALE
         self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
         self.update_attitude()
 
@@ -104,7 +112,7 @@ class Spacecraft:
         if self.steering != Spacecraft.STEERING_MODES[0]:
             self.steering = Spacecraft.STEERING_MODES[0]
             self.slewing = True
-            t: float = self.body_z.angle(self.position().scaled(-1)) / (self.slew_rate * SECONDS_IN_DAY)
+            t: float = self.body_z.angle(self.position().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
@@ -113,7 +121,7 @@ class Spacecraft:
             self.steering = Spacecraft.STEERING_MODES[1]
             self.slewing = True
             self.slewing = True
-            t: float = self.body_z.angle(self.sun_vector().scaled(-1)) / (self.slew_rate * SECONDS_IN_DAY)
+            t: float = self.body_z.angle(self.sun_vector().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
@@ -123,7 +131,7 @@ class Spacecraft:
             self.tracked_target = target
             self.slewing = True
             self.slewing = True
-            t: float = self.body_z.angle(self.target_vector(target)) / (self.slew_rate * SECONDS_IN_DAY)
+            t: float = self.body_z.angle(self.target_vector(target)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
