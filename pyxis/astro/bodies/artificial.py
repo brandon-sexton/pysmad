@@ -25,24 +25,59 @@ class Spacecraft:
     #: Available control methods of the vehicle's attitude (lvlh == z to earth, solar == -z to sun, target == z to rso)
     STEERING_MODES: List[str] = ["lvlh", "solar", "target"]
 
-    #: Default
+    #: Default scalar to use with calculating slew times (1/(radians per day))
     DEFAULT_SLEW_SCALE: float = 1 / (radians(0.5) * SECONDS_IN_DAY)
+
+    #: Default tolerance to use for statistical attitude modeling (radians)
     DEFAULT_POINTING_ACCURACY: float = 1e-5
 
-    def __init__(self, state: GCRFstate):
+    def __init__(self, state: GCRFstate) -> None:
+        """Class used to model the behaviors of man-made satellites
+
+        Args:
+            state: The starting inertial state of the satellite
+
+        """
+
+        #: Used to retain knowledge of the state when the satellite was first created
         self.initial_state: GCRFstate = state.copy()
+
+        #: Used to solve the state of the spacecraft at various times in the orbit
         self.propagator: RK4 = RK4(self.initial_state)
+
+        #: Used for optical modeling of the satellite
         self.albedo: float = Spacecraft.DEFAULT_ALBEDO
+
+        #: Used for various physical modeling methods of the satellite
         self.body_radius: float = Spacecraft.DEFAULT_RADIUS
+
+        #: Payload used for metric observation and close-proximity tracking
         self.wfov: Camera = Camera.wfov()
+
+        #: Payload used for distant tracking and characterization
         self.nfov: Camera = Camera.nfov()
+
+        #: Used for state estimation when target-tracking
         self.filter: RelativeKalman
+
+        #: Used to store the current steering mode of the satellite
         self.steering: str = Spacecraft.STEERING_MODES[0]
+
+        #: The target satellite when the calling spacecraft is in target-tracking mode
         self.tracked_target: Spacecraft
+
+        #: Indicates whether the spacecraft is in a stable attitude mode or in a transitioning slew
         self.slewing: bool = False
+
+        #: Epoch used to indicate when self.slewing can be switched to 'False'
         self.slew_stop: Epoch
+
+        #: Used to calculate slew times
         self.slew_scalar: float = Spacecraft.DEFAULT_SLEW_SCALE
+
+        #: Used to apply noise to attitude vectors
         self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
+
         self.update_attitude()
 
     def sma(self):
