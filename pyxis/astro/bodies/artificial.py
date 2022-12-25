@@ -35,7 +35,7 @@ class Spacecraft:
         self.slew_rate:float = Spacecraft.DEFAULT_SLEW_RATE
         self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
         self.update_attitude()
-    
+
     def sma(self):
         r = self.position().magnitude()
         v = self.velocity().magnitude()
@@ -43,7 +43,7 @@ class Spacecraft:
 
     def acquire(self, seed:"Spacecraft") -> None:
         self.filter = RelativeKalman(
-            self.current_epoch(), 
+            self.current_epoch(),
             Hill(HillState.from_gcrf(seed.current_state(), self.current_state()), self.sma())
         )
         self.track_state(seed)
@@ -100,7 +100,7 @@ class Spacecraft:
         if self.steering != Spacecraft.STEERING_MODES[0]:
             self.steering = Spacecraft.STEERING_MODES[0]
             self.tracked_target = None
-            self.slewing = True 
+            self.slewing = True
             t:float = self.body_z.angle(self.position().scaled(-1))/(self.slew_rate*SECONDS_IN_DAY)
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
@@ -109,8 +109,8 @@ class Spacecraft:
         if self.steering != Spacecraft.STEERING_MODES[1]:
             self.steering = Spacecraft.STEERING_MODES[1]
             self.tracked_target = None
-            self.slewing = True 
-            self.slewing = True 
+            self.slewing = True
+            self.slewing = True
             t:float = self.body_z.angle(self.sun_vector().scaled(-1))/(self.slew_rate*SECONDS_IN_DAY)
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
@@ -119,8 +119,8 @@ class Spacecraft:
         if self.steering != Spacecraft.STEERING_MODES[2]:
             self.steering = Spacecraft.STEERING_MODES[2]
             self.tracked_target = target
-            self.slewing = True 
-            self.slewing = True 
+            self.slewing = True
+            self.slewing = True
             t:float = self.body_z.angle(self.target_vector(target))/(self.slew_rate*SECONDS_IN_DAY)
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()

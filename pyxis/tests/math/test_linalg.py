@@ -54,4 +54,3 @@ class TestVector3D(unittest.TestCase):
         self.assertAlmostEqual(vec_normed.x, .0947027447620757)
         self.assertAlmostEqual(vec_normed.y, .0473513723810378)
         self.assertAlmostEqual(vec_normed.z, .9943788200017946)
-

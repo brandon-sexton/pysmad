@@ -10,5 +10,5 @@ When making contributions to the pyxis code repository, please follow these stan
 - Open issues to allow discussion of the appropriate structure when meaningful destinations do not exist
 
 ## License
-This packages is not intended for commercial use.  By using this package, you agree to make any source code 
+This packages is not intended for commercial use.  By using this package, you agree to make any source code
 publicly available.

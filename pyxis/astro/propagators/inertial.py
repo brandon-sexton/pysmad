@@ -41,7 +41,7 @@ class RK4:
         da:Vector3D = k1[1].plus(k2[1].scaled(2).plus(k3[1].scaled(2).plus(k4[1]))).scaled(coeff)
 
         self.state = GCRFstate(
-            epoch_2, 
+            epoch_2,
             self.state.position.plus(dv.scaled(h)),
             self.state.velocity.plus(da.scaled(h))
         )

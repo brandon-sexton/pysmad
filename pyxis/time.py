@@ -4,7 +4,7 @@ from pyxis.math.functions import Conversions
 from pyxis.math.constants import SECONDS_IN_DAY
 
 class Epoch:
-    
+
     """Class used to represent time.  Default inputs are referenced in Terrestrial Dynamic Time (TDT)"""
 
     MJD_ZERO = 2400000.5
@@ -53,7 +53,7 @@ class Epoch:
 
         #solve for theta0 using equation 2.6
         theta0 = 100.4606184 + 36000.77004*j + .000387933*j*j
-        
+
         #solve for gmst using equation 2.8
         total_deg = theta0 + 360.98564724*dec_day
         return radians(total_deg % 360)

@@ -53,8 +53,8 @@ class Vector3D:
 
     def cross(self, vec_to_cross:"Vector3D") -> "Vector3D":
         return Vector3D(
-            self.y*vec_to_cross.z - self.z*vec_to_cross.y, 
-            self.z*vec_to_cross.x - self.x*vec_to_cross.z, 
+            self.y*vec_to_cross.z - self.z*vec_to_cross.y,
+            self.z*vec_to_cross.x - self.x*vec_to_cross.z,
             self.x*vec_to_cross.y - self.y*vec_to_cross.x
         )
 
@@ -98,7 +98,7 @@ class Vector3D:
         r1:Vector3D = Vector3D(x1, y1, z1)
         r2:Vector3D = Vector3D(x2, y2, z2)
         r3:Vector3D = Vector3D(x3, y3, z3)
-        
+
         return Matrix3D(r1, r2, r3)
 
     def rotation_about_axis(self, axis:"Vector3D", theta:float) -> "Vector3D":
@@ -146,23 +146,23 @@ class Matrix3D:
 
         return self.row1.x*self.row2.y*self.row3.z + self.row1.y*self.row2.z*self.row3.x + \
             self.row1.z*self.row2.x*self.row3.y - self.row1.z*self.row2.y*self.row3.x - \
-            self.row1.y*self.row2.x*self.row3.z - self.row1.x*self.row2.z*self.row3.y 
+            self.row1.y*self.row2.x*self.row3.z - self.row1.x*self.row2.z*self.row3.y
 
     def cofactor(self) -> "Matrix3D":
         return Matrix3D(
             Vector3D(
-                self.row2.y*self.row3.z - self.row2.z*self.row3.y, 
-                -(self.row2.x*self.row3.z - self.row3.x*self.row2.z), 
+                self.row2.y*self.row3.z - self.row2.z*self.row3.y,
+                -(self.row2.x*self.row3.z - self.row3.x*self.row2.z),
                 self.row2.x*self.row3.y - self.row3.x*self.row2.y
-            ), 
+            ),
             Vector3D(
-                -(self.row1.y*self.row3.z - self.row3.y*self.row1.z), 
-                self.row1.x*self.row3.z - self.row1.z*self.row3.x, 
+                -(self.row1.y*self.row3.z - self.row3.y*self.row1.z),
+                self.row1.x*self.row3.z - self.row1.z*self.row3.x,
                 -(self.row1.x*self.row3.y - self.row1.y*self.row3.x)
-            ), 
+            ),
             Vector3D(
-                self.row1.y*self.row2.z - self.row1.z*self.row2.y, 
-                -(self.row1.x*self.row2.z - self.row2.x*self.row1.z), 
+                self.row1.y*self.row2.z - self.row1.z*self.row2.y,
+                -(self.row1.x*self.row2.z - self.row2.x*self.row1.z),
                 self.row1.x*self.row2.y - self.row1.y*self.row2.x
             )
         )
@@ -176,7 +176,7 @@ class Matrix3D:
     def multiply_matrix3by6(self, mat:"Matrix3by6") -> "Matrix3by6":
         return Matrix3by6(
             Vector6D(
-                self.row1.dot(mat.column_1()), 
+                self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
                 self.row1.dot(mat.column_4()),
@@ -185,7 +185,7 @@ class Matrix3D:
             ),
 
             Vector6D(
-                self.row2.dot(mat.column_1()), 
+                self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
                 self.row2.dot(mat.column_4()),
@@ -194,7 +194,7 @@ class Matrix3D:
             ),
 
             Vector6D(
-                self.row3.dot(mat.column_1()), 
+                self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
                 self.row3.dot(mat.column_4()),
@@ -291,7 +291,7 @@ class Matrix6by3:
     def multiply_matrix3by6(self, mat:"Matrix3by6") -> "Matrix6D":
         return Matrix6D(
             Vector6D(
-                self.row1.dot(mat.column_1()), 
+                self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
                 self.row1.dot(mat.column_4()),
@@ -300,7 +300,7 @@ class Matrix6by3:
             ),
 
             Vector6D(
-                self.row2.dot(mat.column_1()), 
+                self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
                 self.row2.dot(mat.column_4()),
@@ -309,7 +309,7 @@ class Matrix6by3:
             ),
 
             Vector6D(
-                self.row3.dot(mat.column_1()), 
+                self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
                 self.row3.dot(mat.column_4()),
@@ -318,7 +318,7 @@ class Matrix6by3:
             ),
 
             Vector6D(
-                self.row4.dot(mat.column_1()), 
+                self.row4.dot(mat.column_1()),
                 self.row4.dot(mat.column_2()),
                 self.row4.dot(mat.column_3()),
                 self.row4.dot(mat.column_4()),
@@ -327,7 +327,7 @@ class Matrix6by3:
             ),
 
             Vector6D(
-                self.row5.dot(mat.column_1()), 
+                self.row5.dot(mat.column_1()),
                 self.row5.dot(mat.column_2()),
                 self.row5.dot(mat.column_3()),
                 self.row5.dot(mat.column_4()),
@@ -336,7 +336,7 @@ class Matrix6by3:
             ),
 
             Vector6D(
-                self.row6.dot(mat.column_1()), 
+                self.row6.dot(mat.column_1()),
                 self.row6.dot(mat.column_2()),
                 self.row6.dot(mat.column_3()),
                 self.row6.dot(mat.column_4()),
@@ -409,46 +409,46 @@ class Matrix6D:
     def multiply_matrix_6by3(self, mat:Matrix6by3) -> Matrix6by3:
         return Matrix6by3(
             Vector3D(
-                self.row1.dot(mat.column_1()), 
+                self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
             ),
 
             Vector3D(
-                self.row2.dot(mat.column_1()), 
+                self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
             ),
 
             Vector3D(
-                self.row3.dot(mat.column_1()), 
+                self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
             ),
 
             Vector3D(
-                self.row4.dot(mat.column_1()), 
+                self.row4.dot(mat.column_1()),
                 self.row4.dot(mat.column_2()),
                 self.row4.dot(mat.column_3()),
             ),
 
             Vector3D(
-                self.row5.dot(mat.column_1()), 
+                self.row5.dot(mat.column_1()),
                 self.row5.dot(mat.column_2()),
                 self.row5.dot(mat.column_3()),
             ),
 
             Vector3D(
-                self.row6.dot(mat.column_1()), 
+                self.row6.dot(mat.column_1()),
                 self.row6.dot(mat.column_2()),
                 self.row6.dot(mat.column_3()),
             )
         )
-    
+
     def multiply_matrix(self, mat:"Matrix6D") -> "Matrix6D":
         return Matrix6D(
             Vector6D(
-                self.row1.dot(mat.column_1()), 
+                self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
                 self.row1.dot(mat.column_4()),
@@ -457,7 +457,7 @@ class Matrix6D:
             ),
 
             Vector6D(
-                self.row2.dot(mat.column_1()), 
+                self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
                 self.row2.dot(mat.column_4()),
@@ -466,7 +466,7 @@ class Matrix6D:
             ),
 
             Vector6D(
-                self.row3.dot(mat.column_1()), 
+                self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
                 self.row3.dot(mat.column_4()),
@@ -475,7 +475,7 @@ class Matrix6D:
             ),
 
             Vector6D(
-                self.row4.dot(mat.column_1()), 
+                self.row4.dot(mat.column_1()),
                 self.row4.dot(mat.column_2()),
                 self.row4.dot(mat.column_3()),
                 self.row4.dot(mat.column_4()),
@@ -484,7 +484,7 @@ class Matrix6D:
             ),
 
             Vector6D(
-                self.row5.dot(mat.column_1()), 
+                self.row5.dot(mat.column_1()),
                 self.row5.dot(mat.column_2()),
                 self.row5.dot(mat.column_3()),
                 self.row5.dot(mat.column_4()),
@@ -493,7 +493,7 @@ class Matrix6D:
             ),
 
             Vector6D(
-                self.row6.dot(mat.column_1()), 
+                self.row6.dot(mat.column_1()),
                 self.row6.dot(mat.column_2()),
                 self.row6.dot(mat.column_3()),
                 self.row6.dot(mat.column_4()),

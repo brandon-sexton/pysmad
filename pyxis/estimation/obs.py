@@ -6,4 +6,3 @@ class PositionOb:
         self.epoch:Epoch = epoch.copy()
         self.position:Vector3D = position.copy()
         self.error:float = error
-        

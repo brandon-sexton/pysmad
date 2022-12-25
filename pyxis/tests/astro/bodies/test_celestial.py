@@ -24,7 +24,7 @@ class TestSun(unittest.TestCase):
         -2.390803633125914e7
     )
 
-    def test_get_position(self): 
+    def test_get_position(self):
         sun_pos = Sun.get_position(self.EPOCH)
         self.assertAlmostEqual(sun_pos.magnitude()/self.TRUTH.magnitude(), 1, 4)
         self.assertAlmostEqual(sun_pos.angle(self.TRUTH), 0, 2)
@@ -33,12 +33,12 @@ class TestMoon(unittest.TestCase):
 
     EPOCH:Epoch = Epoch.from_gregorian(2022, 2, 25, 0, 1, 9.184)
     TRUTH:Vector3D = Vector3D(
-        -6.454159844478600e4, 
-        -3.280761448809440e5, 
+        -6.454159844478600e4,
+        -3.280761448809440e5,
         -1.566863311585961e5
     )
 
-    def test_get_position(self): 
+    def test_get_position(self):
         moon_pos = Moon.get_position(self.EPOCH)
         self.assertAlmostEqual(moon_pos.magnitude()/self.TRUTH.magnitude(), 1, 4)
         self.assertAlmostEqual(moon_pos.angle(self.TRUTH), 0, 3)

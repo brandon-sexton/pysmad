@@ -60,7 +60,7 @@ class RelativeKalman:
     def predict_state(self, dt:float) -> None:
         self.f = self.propagator.system_matrix(dt)
         self.x10 = self.f.multiply_vector(self.x00)
-        
+
     def update_state(self) -> None:
         self.x00 = self.x10.plus(self.k.multiply_vector(self.z.minus(self.H.multiply_vector(self.x10))))
         self.propagator.state = HillState.from_state_vector(self.x00)

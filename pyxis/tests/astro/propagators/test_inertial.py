@@ -13,7 +13,7 @@ class TestRK4(unittest.TestCase):
     STATE:GCRFstate = GCRFstate(EPOCH, POSITION, VELOCITY)
     PROPAGATOR:RK4 = RK4(STATE)
 
-    def test_step_to_epoch(self): 
+    def test_step_to_epoch(self):
         end_epoch:Epoch = Epoch.from_gregorian(2022, 12, 20, 19, 1, 9.184)
         self.PROPAGATOR.step_to_epoch(end_epoch)
         self.assertAlmostEqual(self.PROPAGATOR.state.position.x, 11683.122403, -1)

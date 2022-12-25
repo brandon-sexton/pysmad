@@ -243,7 +243,7 @@ class ITRFstate:
     def __init__(self, epoch:Epoch, position:Vector3D, velocity:Vector3D) -> None:
         self.epoch:Epoch = epoch.copy()
         self.position:Vector3D = position.copy()
-        self.velocity:Vector3D = velocity.copy() 
+        self.velocity:Vector3D = velocity.copy()
 
     def gcrf_position(self) -> Vector3D:
         tod:Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)

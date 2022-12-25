@@ -5,7 +5,7 @@ from pyxis.astro.bodies.celestial import Earth
 from pyxis.math.linalg import Matrix6D, Vector6D, Vector3D
 
 class Hill:
-    
+
     DEFAULT_STEP_SIZE:float = 600
 
     def __init__(self, state:HillState, sma:float) -> None:
@@ -19,7 +19,7 @@ class Hill:
         n_inv = 1/n
         sn = sin(n*t)
         cs = cos(n*t)
-		
+
 		#define system matrix of x, y, z, x_dot, y_dot, z_dot equations
         sys_mat = Matrix6D(
 			Vector6D(4-3*cs, 0, 0, sn*n_inv, 2*(1-cs)*n_inv, 0),
@@ -29,7 +29,7 @@ class Hill:
 			Vector6D(-6*n*(1-cs), 0, 0, -2*sn, 4*cs-3, 0),
 			Vector6D(0, 0, -n*sn, 0, 0, cs)
 		)
-					
+
         return sys_mat
 
     def step_by_seconds(self, t:float) -> None:
