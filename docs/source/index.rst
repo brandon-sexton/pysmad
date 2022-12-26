@@ -9,4 +9,4 @@ pyxis space operations toolkit
 .. toctree::
    :maxdepth: 4
 
-modules
+    pyxis
