@@ -19,13 +19,6 @@ jobs:
         name: html-docs
         path: docs/build/html/
     - name: deploy
-      with:
-        github_token: ${{ secrets.PYXIS_CI_TOKEN }}
-        publish_dir: docs/build/html
-        publish_branch: gh-pages
-        allow_empty_commit: true
-        enable_jekyll: false
-
       run: |
         cd ./docs
         make html
@@ -33,3 +26,9 @@ jobs:
         git add *
         git commit -m "documentation update"
         git push origin HEAD
+      with:
+        github_token: ${{ secrets.PYXIS_CI_TOKEN }}
+        publish_dir: docs/build/html
+        publish_branch: gh-pages
+        allow_empty_commit: true
+        enable_jekyll: false
