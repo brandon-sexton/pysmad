@@ -10,6 +10,8 @@ jobs:
     - name: upgrade pip
       run: |
         python -m pip install --upgrade pip
+    - name: install dependencies
+        pip install sphinx
     - uses: actions/checkout@v3
     - name: build html
       run: |
