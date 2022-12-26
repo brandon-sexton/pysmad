@@ -1,5 +1,5 @@
 # PYXIS
-This package is public astrodynamics analysis and simulation sandbox not intended for commercial use.
+This package is a public astrodynamics analysis and simulation sandbox not intended for commercial use.
 
 ## Contributing
 When making contributions to the pyxis code repository, please follow these standards as closely as possible:
