@@ -17,6 +17,7 @@ jobs:
     - name: build html
       run: |
         git checkout -b gh-pages origin/dev
+        rm .gitignore
         pip install .
         cd ./docs
         make html
