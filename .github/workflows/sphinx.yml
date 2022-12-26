@@ -12,7 +12,7 @@ jobs:
         python -m pip install --upgrade pip
     - name: install dependencies
       run: |
-        pip install sphinx sphinx_rtd_theme
+        pip install sphinx sphinx_rtd_theme .
     - uses: actions/checkout@v3
     - name: build html
       run: |
@@ -20,13 +20,13 @@ jobs:
         cd ./docs
         make html
         cd ../
-    - name: GIT commit and push docs
+    - name: deploy
       env:
         CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
         CI_COMMIT_AUTHOR: Continuous Integration
       run: |
         git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
         git config --global user.email "username@users.noreply.github.com"
-        git add docs
+        git add
         git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
         git push
