@@ -2,7 +2,7 @@ name: documentation
 
 on:
   push:
-  orkflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
