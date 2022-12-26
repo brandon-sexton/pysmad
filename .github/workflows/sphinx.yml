@@ -19,9 +19,17 @@ jobs:
         name: html-docs
         path: docs/build/html/
     - name: deploy
-      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.PYXIS_CI_TOKEN }}
         publish_dir: docs/build/html
+        publish_branch: gh-pages
         allow_empty_commit: true
         enable_jekyll: false
+
+      run: |
+        cd ./docs
+        make html
+        cd ../
+        git add *
+        git commit -m "documentation update"
+        git push origin HEAD
