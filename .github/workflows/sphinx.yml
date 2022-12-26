@@ -12,7 +12,8 @@ jobs:
         python -m pip install --upgrade pip
     - name: install dependencies
       run: |
-        pip install sphinx sphinx_rtd_theme .
+        pip install sphinx sphinx_rtd_theme
+        pip install -e .
     - uses: actions/checkout@v3
     - name: build html
       run: |
