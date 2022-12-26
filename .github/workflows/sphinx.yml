@@ -22,8 +22,8 @@ jobs:
         make html
         cd ../
         mv ./docs/build/html/ ../docs/
-        rm -rf *
-        mv ../docs/* ./
+        git rm -rf '*'
+        mv ../docs/ ./
     - name: deploy
       env:
         CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
@@ -31,7 +31,7 @@ jobs:
       run: |
         git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
         git config --global user.email "username@users.noreply.github.com"
-        git add -f docs/
+        git add -f *
         git commit --allow-empty -m "${{ env.CI_COMMIT_MESSAGE }}"
 
         git push -f origin HEAD
