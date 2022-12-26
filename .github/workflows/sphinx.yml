@@ -21,7 +21,6 @@ jobs:
         cd ./docs
         make html
         cd ../
-        mv ./docs .
     - name: deploy
       env:
         CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
