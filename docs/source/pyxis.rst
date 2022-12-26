@@ -1,4 +1,4 @@
-pyxis package
+pyxis
 =============
 
 Subpackages

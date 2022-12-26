@@ -9,4 +9,3 @@ pyxis space operations toolkit
 .. toctree::
 
     pyxis
-    modules
