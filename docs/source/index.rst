@@ -7,6 +7,5 @@ pyxis space operations toolkit
 =================================
 
 .. toctree::
-   :maxdepth: 4
 
     pyxis
