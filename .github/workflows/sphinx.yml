@@ -12,23 +12,13 @@ jobs:
         python -m pip install --upgrade pip
     - uses: actions/checkout@v3
     - name: build html
-      uses: ammaraskar/sphinx-action@master
-    - name: upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: html-docs
-        path: docs/build/html/
-    - name: deploy
       run: |
+        git checkout -b gh-pages
         cd ./docs
         make html
         cd ../
+    - name: deploy
+      run: |
         git add *
         git commit -m "documentation update"
         git push origin HEAD
-      with:
-        github_token: ${{ secrets.PYXIS_CI_TOKEN }}
-        publish_dir: docs/build/html
-        publish_branch: gh-pages
-        allow_empty_commit: true
-        enable_jekyll: false
