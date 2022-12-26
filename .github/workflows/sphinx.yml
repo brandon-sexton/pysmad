@@ -23,7 +23,7 @@ jobs:
         cd ../
         mv ./docs/build/html/ ../docs/
         git rm -rf '*'
-        mv ../docs/ ./
+        cp ../docs/ ./
     - name: deploy
       env:
         CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
