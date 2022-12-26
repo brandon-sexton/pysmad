@@ -1,6 +1,8 @@
 name: documentation
 
-on: push
+on:
+  push:
+  orkflow_dispatch:
 
 jobs:
   build:
