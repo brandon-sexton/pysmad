@@ -1,1 +1,1 @@
-.. literalinclude:: pyxis.examples.example_propagation.py
+.. literalinclude:: ../../examples/example_propagation.py

@@ -1,1 +1,1 @@
-.. literalinclude:: /pyxis/examples/example_sensing.py
+.. literalinclude:: /examples/example_sensing.py
