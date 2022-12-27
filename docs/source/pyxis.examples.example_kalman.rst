@@ -1,1 +1,4 @@
-.. literalinclude:: pyxis.examples.example_kalman.py
+pyxis.examples.example_kalman
+=============================
+
+.. literalinclude:: /pyxis/examples/example_kalman.py
