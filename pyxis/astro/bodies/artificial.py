@@ -32,11 +32,10 @@ class Spacecraft:
     DEFAULT_POINTING_ACCURACY: float = 1e-5
 
     def __init__(self, state: GCRFstate) -> None:
-        """Class used to model the behaviors of man-made satellites
+        """class used to model the behaviors of man-made satellites
 
-        Args:
-            state: The starting inertial state of the satellite
-
+        :param state: starting inertial state of the satellite
+        :type state: GCRFstate
         """
 
         #: Used to retain knowledge of the state when the satellite was first created
