@@ -1,7 +1,9 @@
 name: documentation
 
 on:
-  push: dev
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
