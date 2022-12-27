@@ -1,6 +1,3 @@
-import os
-import sys
-
 import matplotlib.pyplot as plt
 
 from pyxis.astro.bodies.artificial import Spacecraft
@@ -9,7 +6,6 @@ from pyxis.astro.propagators.relative import Hill
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
-sys.path.append(os.getcwd())
 start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
 rel_chase_state = HillState(Vector3D(-11, 0, 0), Vector3D(0, 0, 0))
 target_state: GCRFstate = GCRFstate(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
