@@ -7,6 +7,7 @@ pyxis space operations toolkit
 ==============================
 
 .. toctree::
+    :maxdepth: 2
 
     modules
     examples
