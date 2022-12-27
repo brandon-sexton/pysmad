@@ -8,14 +8,21 @@ from pyxis.time import Epoch
 
 
 class RK4:
+
+    #: Largest step to be taken by the integrator
     MAX_STEP = 300
 
     def __init__(self, state: GCRFstate) -> None:
+        """class used to propagate a satellite state
+
+        :param state: ECI state of the satellite to be propagated
+        :type state: GCRFstate
+        """
         self.state: GCRFstate = state.copy()
         self.step_size: float = RK4.MAX_STEP
 
     def step(self) -> None:
-
+        """advance the propagator state by the stored time step"""
         h = self.step_size
 
         epoch_0: Epoch = self.state.epoch.copy()
@@ -48,17 +55,30 @@ class RK4:
         )
 
     def step_to_epoch(self, epoch: Epoch) -> None:
+        """advance the propagator state to the argument epoch
 
+        :param epoch: time of state to be calculated
+        :type epoch: Epoch
+        """
+
+        # Calculate time delta in seconds
         dt = (epoch.value - self.state.epoch.value) * SECONDS_IN_DAY
+
+        # Determine number of steps required to meet new epoch while staying below the maximum step
         num_steps = ceil(abs(dt / self.MAX_STEP))
 
+        # Store current step size
         old_step = self.step_size
+
+        # Temporarily set step size to calculated dt
         if num_steps > 0:
             self.step_size = dt / num_steps
 
+        # Step until desired epoch is achieved
         step_n = 0
         while step_n < num_steps:
             self.step()
             step_n += 1
 
+        # Reset step size
         self.step_size = old_step
