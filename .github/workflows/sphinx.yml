@@ -19,7 +19,6 @@ jobs:
         git checkout -b gh-pages origin/dev
         pip install .
         cd ./docs
-        sphinx-apidoc -o ./source ../pyxis
         make html
         cd ../
         mv ./docs/build/html/ ../docs/
