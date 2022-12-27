@@ -2,7 +2,7 @@ pyxis.math
 ==========
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.math.constants
    pyxis.math.functions

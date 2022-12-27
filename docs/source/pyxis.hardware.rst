@@ -2,7 +2,7 @@ pyxis.hardware
 ==============
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.hardware.constraints
    pyxis.hardware.payloads

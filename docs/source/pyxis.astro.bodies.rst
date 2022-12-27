@@ -2,7 +2,7 @@ pyxis.astro.bodies
 ==================
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.astro.bodies.artificial
    pyxis.astro.bodies.celestial

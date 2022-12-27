@@ -2,7 +2,7 @@ pyxis.estimation
 ================
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.estimation.filtering
    pyxis.estimation.obs

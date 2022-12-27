@@ -2,7 +2,7 @@ pyxis.astro.propagators
 =======================
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.astro.propagators.inertial
    pyxis.astro.propagators.relative

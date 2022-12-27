@@ -2,13 +2,13 @@ pyxis.astro
 ===========
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.astro.bodies
    pyxis.astro.propagators
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.astro.coordinates
 
