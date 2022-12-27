@@ -81,9 +81,9 @@ class Spacecraft:
         self.update_attitude()
 
     def sma(self) -> float:
-        """_summary_
+        """method to calculate the semi-major axis of the calling spacecraft
 
-        :return: _description_
+        :return: the spacecraft's semi-major axis in km
         :rtype: float
         """
         r = self.position().magnitude()
