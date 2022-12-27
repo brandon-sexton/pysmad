@@ -9,7 +9,6 @@ pyxis
    pyxis.examples
    pyxis.hardware
    pyxis.math
-   pyxis.tests
 
 .. toctree::
    :maxdepth: 6
