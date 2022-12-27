@@ -1,4 +1,4 @@
-propagtion example
+propagation example
 ==================
 
-.. literalinclude:: ../../examples/example_propagation.py
+.. literalinclude:: ../examples/example_propagation.py
