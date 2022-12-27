@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: build html
       run: |
-        git checkout -b gh-pages origin/dev
+        git checkout -b gh-pages
         pip install .
         cd ./docs
         sphinx-apidoc -e -E -d 6 -o ./source ../pyxis
