@@ -6,7 +6,6 @@ pyxis
 
    pyxis.astro
    pyxis.estimation
-   pyxis.examples
    pyxis.hardware
    pyxis.math
 
