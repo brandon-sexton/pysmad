@@ -1,4 +1,1 @@
-.. automodule:: pyxis.examples.example_propagation
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. literalinclude:: pyxis.examples.example_propagation.py
