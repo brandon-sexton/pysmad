@@ -1,19 +1,20 @@
+from math import asin, atan2, cos, radians, sin
 from typing import List
-from math import cos, sin, asin, atan2, radians
 
-from pyxis.math.linalg import Vector3D, Vector6D, Matrix3D
-from pyxis.time import Epoch
-from pyxis.astro.bodies.celestial import Sun, Earth, Moon
+from pyxis.astro.bodies.celestial import Earth, Moon, Sun
 from pyxis.math.functions import Conversions
+from pyxis.math.linalg import Matrix3D, Vector3D, Vector6D
+from pyxis.time import Epoch
+
 
 class HillState:
-    def __init__(self, position:Vector3D, velocity:Vector3D) -> None:
-        self.position:Vector3D = position.copy()
-        self.velocity:Vector3D = velocity.copy()
+    def __init__(self, position: Vector3D, velocity: Vector3D) -> None:
+        self.position: Vector3D = position.copy()
+        self.velocity: Vector3D = velocity.copy()
         self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
 
     @classmethod
-    def from_state_vector(cls, state:Vector6D) -> "HillState":
+    def from_state_vector(cls, state: Vector6D) -> "HillState":
         return cls(Vector3D(state.x, state.y, state.z), Vector3D(state.vx, state.vy, state.vz))
 
     @classmethod
@@ -54,7 +55,7 @@ class HillState:
         return cls(rhill, vhill)
 
     @staticmethod
-    def frame_matrix(origin:"GCRFstate") -> Matrix3D:
+    def frame_matrix(origin: "GCRFstate") -> Matrix3D:
         r = origin.position.normalized()
         c = origin.position.cross(origin.velocity).normalized()
         i = c.cross(r)
@@ -86,9 +87,7 @@ class HillState:
         rdotint = self.velocity.x + vtgtrsw.x
         lambdadotint = self.velocity.y / magrtgt + lambdadottgt
         phidotint = self.velocity.z / magrtgt
-        vintsez = Vector3D(
-            -magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint
-        )
+        vintsez = Vector3D(-magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint)
         vintrsw = rot_rsw_sez.transpose().multiply_vector(vintsez)
         vinteci = rot_eci_rsw.transpose().multiply_vector(vintrsw)
 
@@ -102,14 +101,15 @@ class HillState:
 
         return GCRFstate(origin.epoch, rinteci, vinteci)
 
+
 class GCRFstate:
-    def __init__(self, epoch:Epoch, position:Vector3D, velocity:Vector3D) -> None:
-        self.epoch:Epoch = epoch.copy()
-        self.position:Vector3D = position.copy()
-        self.velocity:Vector3D = velocity.copy()
+    def __init__(self, epoch: Epoch, position: Vector3D, velocity: Vector3D) -> None:
+        self.epoch: Epoch = epoch.copy()
+        self.position: Vector3D = position.copy()
+        self.velocity: Vector3D = velocity.copy()
 
     @classmethod
-    def from_hill(cls, origin:"GCRFstate", state:HillState) -> "GCRFstate":
+    def from_hill(cls, origin: "GCRFstate", state: HillState) -> "GCRFstate":
         return state.to_gcrf(origin)
 
     def copy(self) -> "GCRFstate":
@@ -119,30 +119,30 @@ class GCRFstate:
         return [self.position.copy(), self.velocity.copy()]
 
     def acceleration_from_earth(self) -> Vector3D:
-        r_mag:float = self.position.magnitude()
-        return self.position.scaled(-Earth.MU/(r_mag*r_mag*r_mag))
+        r_mag: float = self.position.magnitude()
+        return self.position.scaled(-Earth.MU / (r_mag * r_mag * r_mag))
 
     def acceleration_from_moon(self) -> Vector3D:
-        s:Vector3D = Moon.get_position(self.epoch)
-        r:Vector3D = s.minus(self.position)
-        r_mag:float = r.magnitude()
-        s_mag:float = s.magnitude()
-        vec_1:Vector3D = r.scaled(1/(r_mag*r_mag*r_mag))
-        vec_2:Vector3D = s.scaled(1/(s_mag*s_mag*s_mag))
+        s: Vector3D = Moon.get_position(self.epoch)
+        r: Vector3D = s.minus(self.position)
+        r_mag: float = r.magnitude()
+        s_mag: float = s.magnitude()
+        vec_1: Vector3D = r.scaled(1 / (r_mag * r_mag * r_mag))
+        vec_2: Vector3D = s.scaled(1 / (s_mag * s_mag * s_mag))
         return vec_1.minus(vec_2).scaled(Moon.MU)
 
     def acceleration_from_sun(self) -> Vector3D:
-        s:Vector3D = Sun.get_position(self.epoch)
-        r:Vector3D = s.minus(self.position)
-        r_mag:float = r.magnitude()
-        s_mag:float = s.magnitude()
-        vec_1:Vector3D = r.scaled(1/(r_mag*r_mag*r_mag))
-        vec_2:Vector3D = s.scaled(1/(s_mag*s_mag*s_mag))
+        s: Vector3D = Sun.get_position(self.epoch)
+        r: Vector3D = s.minus(self.position)
+        r_mag: float = r.magnitude()
+        s_mag: float = s.magnitude()
+        vec_1: Vector3D = r.scaled(1 / (r_mag * r_mag * r_mag))
+        vec_2: Vector3D = s.scaled(1 / (s_mag * s_mag * s_mag))
         return vec_1.minus(vec_2).scaled(Sun.MU)
 
     def acceleration_from_srp(self) -> Vector3D:
-        sun_vec:Vector3D = self.sun_vector().normalized()
-        return sun_vec.scaled(-Sun.P*3.6e-5)
+        sun_vec: Vector3D = self.sun_vector().normalized()
+        return sun_vec.scaled(-Sun.P * 3.6e-5)
 
     def derivative(self) -> List[Vector3D]:
         net_0 = Vector3D(0, 0, 0)
@@ -164,39 +164,39 @@ class GCRFstate:
         tod = Nutation.matrix(self.epoch).multiply_vector(mod)
         return Rotation.matrix(self.epoch).multiply_vector(tod)
 
-class Rotation:
 
+class Rotation:
     @staticmethod
-    def matrix(epoch:Epoch) -> Matrix3D:
+    def matrix(epoch: Epoch) -> Matrix3D:
         d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
-        arg1 = radians(125.0 - .05295*d)
-        arg2 = radians(200.9 + 1.97129*d)
-        a = radians(-.0048)
-        b = radians(.0004)
-        dpsi = a*sin(arg1) - b*sin(arg2)
+        arg1 = radians(125.0 - 0.05295 * d)
+        arg2 = radians(200.9 + 1.97129 * d)
+        a = radians(-0.0048)
+        b = radians(0.0004)
+        dpsi = a * sin(arg1) - b * sin(arg2)
         eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
         gmst = epoch.greenwich_hour_angle()
-        gast = dpsi*cos(eps) + gmst
+        gast = dpsi * cos(eps) + gmst
         return Vector3D.rotation_matrix(Vector3D(0, 0, 1), -gast)
 
-class Precession:
 
+class Precession:
     @staticmethod
-    def matrix(epoch:Epoch) -> Matrix3D:
+    def matrix(epoch: Epoch) -> Matrix3D:
         t = epoch.julian_centuries_past_j2000()
         a = Conversions.dms_to_radians(0, 0, 2306.2181)
-        b = Conversions.dms_to_radians(0, 0, .30188)
-        c = Conversions.dms_to_radians(0, 0, .017998)
-        x = a*t + b*t*t + c*t*t*t
+        b = Conversions.dms_to_radians(0, 0, 0.30188)
+        c = Conversions.dms_to_radians(0, 0, 0.017998)
+        x = a * t + b * t * t + c * t * t * t
 
         a = Conversions.dms_to_radians(0, 0, 2004.3109)
-        b = Conversions.dms_to_radians(0, 0, .42665)
-        c = Conversions.dms_to_radians(0, 0, .041833)
-        y = a*t - b*t*t - c*t*t*t
+        b = Conversions.dms_to_radians(0, 0, 0.42665)
+        c = Conversions.dms_to_radians(0, 0, 0.041833)
+        y = a * t - b * t * t - c * t * t * t
 
-        a = Conversions.dms_to_radians(0, 0, .7928)
-        b = Conversions.dms_to_radians(0, 0, .000205)
-        z = x + a*t*t + b*t*t*t
+        a = Conversions.dms_to_radians(0, 0, 0.7928)
+        b = Conversions.dms_to_radians(0, 0, 0.000205)
+        z = x + a * t * t + b * t * t * t
 
         sz = sin(z)
         sy = sin(y)
@@ -205,47 +205,52 @@ class Precession:
         cy = cos(y)
         cx = cos(x)
 
-        p11 = -sz*sx + cz*cy*cx
-        p21 = cz*sx + sz*cy*cx
-        p31 = sy*cx
+        p11 = -sz * sx + cz * cy * cx
+        p21 = cz * sx + sz * cy * cx
+        p31 = sy * cx
 
-        p12 = -sz*cx - cz*cy*sx
-        p22 = cz*cx - sz*cy*sx
-        p32 = -sy*sx
+        p12 = -sz * cx - cz * cy * sx
+        p22 = cz * cx - sz * cy * sx
+        p32 = -sy * sx
 
-        p13 = -cz*sy
-        p23 = -sz*sy
+        p13 = -cz * sy
+        p23 = -sz * sy
         p33 = cy
 
         return Matrix3D(Vector3D(p11, p12, p13), Vector3D(p21, p22, p23), Vector3D(p31, p32, p33))
 
-class Nutation:
 
+class Nutation:
     @staticmethod
-    def matrix(epoch:Epoch) -> Matrix3D:
+    def matrix(epoch: Epoch) -> Matrix3D:
         d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
-        arg1 = radians(125.0 - .05295*d)
-        arg2 = radians(200.9 + 1.97129*d)
-        a = radians(-.0048)
-        b = radians(.0004)
-        dpsi = a*sin(arg1) - b*sin(arg2)
-        a = radians(.0026)
-        b = radians(.0002)
-        deps = a*cos(arg1) + b*cos(arg2)
+        arg1 = radians(125.0 - 0.05295 * d)
+        arg2 = radians(200.9 + 1.97129 * d)
+        a = radians(-0.0048)
+        b = radians(0.0004)
+        dpsi = a * sin(arg1) - b * sin(arg2)
+        a = radians(0.0026)
+        b = radians(0.0002)
+        deps = a * cos(arg1) + b * cos(arg2)
         eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
 
         ce = cos(eps)
         se = sin(eps)
 
-        return Matrix3D(Vector3D(1.0, -dpsi*ce, -dpsi*se), Vector3D(dpsi*ce, 1.0, -deps), Vector3D(dpsi*se, deps, 1.0))
+        return Matrix3D(
+            Vector3D(1.0, -dpsi * ce, -dpsi * se),
+            Vector3D(dpsi * ce, 1.0, -deps),
+            Vector3D(dpsi * se, deps, 1.0),
+        )
+
 
 class ITRFstate:
-    def __init__(self, epoch:Epoch, position:Vector3D, velocity:Vector3D) -> None:
-        self.epoch:Epoch = epoch.copy()
-        self.position:Vector3D = position.copy()
-        self.velocity:Vector3D = velocity.copy() 
+    def __init__(self, epoch: Epoch, position: Vector3D, velocity: Vector3D) -> None:
+        self.epoch: Epoch = epoch.copy()
+        self.position: Vector3D = position.copy()
+        self.velocity: Vector3D = velocity.copy()
 
     def gcrf_position(self) -> Vector3D:
-        tod:Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
-        mod:Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
+        tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
+        mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
         return Precession.matrix(self.epoch).transpose().multiply_vector(mod)

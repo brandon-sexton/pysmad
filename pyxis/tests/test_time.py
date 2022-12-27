@@ -1,8 +1,8 @@
 import unittest
-
 from math import degrees
 
 from pyxis.time import Epoch
+
 
 class TestEpoch(unittest.TestCase):
 

@@ -1,60 +1,126 @@
-from math import pi, sin, cos, log10, radians
-from random import gauss
+from math import cos, log10, pi, radians, sin
+from random import gauss, uniform
+from typing import List
 
+from pyxis.astro.bodies.celestial import Earth
 from pyxis.astro.coordinates import GCRFstate, HillState
 from pyxis.astro.propagators.inertial import RK4
 from pyxis.astro.propagators.relative import Hill
-from pyxis.time import Epoch
-from pyxis.math.linalg import Vector3D
-from pyxis.hardware.payloads import Camera
-from pyxis.math.constants import SECONDS_IN_DAY
-from pyxis.astro.bodies.celestial import Earth
 from pyxis.estimation.filtering import RelativeKalman
 from pyxis.estimation.obs import PositionOb
+from pyxis.hardware.payloads import Camera
+from pyxis.math.constants import SECONDS_IN_DAY
+from pyxis.math.linalg import Vector3D
+from pyxis.time import Epoch
+
 
 class Spacecraft:
 
-    DEFAULT_RADIUS = .005
-    DEFAULT_ALBEDO = .3
-    STEERING_MODES = ["lvlh", "solar", "target"]
-    DEFAULT_SLEW_RATE = radians(.5)*SECONDS_IN_DAY
+    #: The default body radius of the satellite (km)
+    DEFAULT_RADIUS: float = 0.005
 
-    def __init__(self, state:GCRFstate):
-        self.initial_state:GCRFstate = state.copy()
-        self.propagator:RK4 = RK4(self.initial_state)
-        self.albedo:float = Spacecraft.DEFAULT_ALBEDO
-        self.body_radius:float = Spacecraft.DEFAULT_RADIUS
-        self.wfov:Camera = Camera.wfov()
-        self.nfov:Camera = Camera.nfov()
-        self.filter:RelativeKalman = None
-        self.steering:str = Spacecraft.STEERING_MODES[0]
-        self.tracked_target:Spacecraft = None
-        self.slewing:bool = False
-        self.slew_stop:Epoch = None
-        self.slew_rate:float = Spacecraft.DEFAULT_SLEW_RATE
+    #: The default albedo of the satellite used for optical modeling (unitless)
+    DEFAULT_ALBEDO: float = 0.3
+
+    #: Available control methods of the vehicle's attitude (lvlh == z to earth, solar == -z to sun, target == z to rso)
+    STEERING_MODES: List[str] = ["lvlh", "solar", "target"]
+
+    #: Default scalar to use with calculating slew times (1/(radians per day))
+    DEFAULT_SLEW_SCALE: float = 1 / (radians(0.5) * SECONDS_IN_DAY)
+
+    #: Default tolerance to use for statistical attitude modeling (radians)
+    DEFAULT_POINTING_ACCURACY: float = 1e-5
+
+    def __init__(self, state: GCRFstate) -> None:
+        """Class used to model the behaviors of man-made satellites
+
+        Args:
+            state: The starting inertial state of the satellite
+
+        """
+
+        #: Used to retain knowledge of the state when the satellite was first created
+        self.initial_state: GCRFstate = state.copy()
+
+        #: Used to solve the state of the spacecraft at various times in the orbit
+        self.propagator: RK4 = RK4(self.initial_state)
+
+        #: Used for optical modeling of the satellite
+        self.albedo: float = Spacecraft.DEFAULT_ALBEDO
+
+        #: Used for various physical modeling methods of the satellite
+        self.body_radius: float = Spacecraft.DEFAULT_RADIUS
+
+        #: Payload used for metric observation and close-proximity tracking
+        self.wfov: Camera = Camera.wfov()
+
+        #: Payload used for distant tracking and characterization
+        self.nfov: Camera = Camera.nfov()
+
+        #: Used for state estimation when target-tracking
+        self.filter: RelativeKalman
+
+        #: Used to store the current steering mode of the satellite
+        self.steering: str = Spacecraft.STEERING_MODES[0]
+
+        #: The target satellite when the calling spacecraft is in target-tracking mode
+        self.tracked_target: Spacecraft
+
+        #: Indicates whether the spacecraft is in a stable attitude mode or in a transitioning slew
+        self.slewing: bool = False
+
+        #: Epoch used to indicate when self.slewing can be switched to 'False'
+        self.slew_stop: Epoch
+
+        #: Used to calculate slew times
+        self.slew_scalar: float = Spacecraft.DEFAULT_SLEW_SCALE
+
+        #: Used to apply noise to attitude vectors
+        self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
+
         self.update_attitude()
-    
+
     def sma(self):
         r = self.position().magnitude()
         v = self.velocity().magnitude()
-        return 1/(2/r - v*v/Earth.MU)
+        return 1 / (2 / r - v * v / Earth.MU)
 
-    def acquire(self, seed:"Spacecraft") -> None:
+    def acquire(self, seed: "Spacecraft") -> None:
         self.filter = RelativeKalman(
-            self.current_epoch(), 
-            Hill(HillState.from_gcrf(seed.current_state(), self.current_state()), self.sma())
+            self.current_epoch(),
+            Hill(
+                HillState.from_gcrf(seed.current_state(), self.current_state()),
+                self.sma(),
+            ),
         )
         self.track_state(seed)
 
-    def observe_wfov(self, target:"Spacecraft") -> PositionOb:
+    def observe_wfov(self, target: "Spacecraft") -> PositionOb:
         tgt = HillState.from_gcrf(target.current_state(), self.current_state())
         r = tgt.position.magnitude()
-        err = self.wfov.range_error(r, target.body_radius*2)
+        err = self.wfov.range_error(r, target.body_radius * 2)
         ob_r = gauss(r, err)
-        return PositionOb(self.current_epoch(), tgt.position.normalized().scaled(ob_r), err)
+        ang_err = gauss(0, self.pointing_accuracy)
+        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
+        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
+        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
 
-    def process_wfov(self, target:"Spacecraft") -> None:
+    def observe_nfov(self, target: "Spacecraft") -> PositionOb:
+        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+        r = tgt.position.magnitude()
+        err = self.nfov.range_error(r, target.body_radius * 2)
+        ob_r = gauss(r, err)
+        ang_err = gauss(0, self.pointing_accuracy)
+        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
+        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
+        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
+
+    def process_wfov(self, target: "Spacecraft") -> None:
         ob = self.observe_wfov(target)
+        self.filter.process(ob)
+
+    def process_nfov(self, target: "Spacecraft") -> None:
+        ob = self.observe_nfov(target)
         self.filter.process(ob)
 
     def update_attitude(self) -> None:
@@ -80,37 +146,35 @@ class Spacecraft:
     def track_lvlh(self) -> None:
         if self.steering != Spacecraft.STEERING_MODES[0]:
             self.steering = Spacecraft.STEERING_MODES[0]
-            self.tracked_target = None
-            self.slewing = True 
-            t:float = self.body_z.angle(self.position().scaled(-1))/(self.slew_rate*SECONDS_IN_DAY)
+            self.slewing = True
+            t: float = self.body_z.angle(self.position().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
     def track_sun(self) -> None:
         if self.steering != Spacecraft.STEERING_MODES[1]:
             self.steering = Spacecraft.STEERING_MODES[1]
-            self.tracked_target = None
-            self.slewing = True 
-            self.slewing = True 
-            t:float = self.body_z.angle(self.sun_vector().scaled(-1))/(self.slew_rate*SECONDS_IN_DAY)
+            self.slewing = True
+            self.slewing = True
+            t: float = self.body_z.angle(self.sun_vector().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
-    def track_state(self, target:"Spacecraft") -> None:
+    def track_state(self, target: "Spacecraft") -> None:
         if self.steering != Spacecraft.STEERING_MODES[2]:
             self.steering = Spacecraft.STEERING_MODES[2]
             self.tracked_target = target
-            self.slewing = True 
-            self.slewing = True 
-            t:float = self.body_z.angle(self.target_vector(target))/(self.slew_rate*SECONDS_IN_DAY)
+            self.slewing = True
+            self.slewing = True
+            t: float = self.body_z.angle(self.target_vector(target)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
             self.update_attitude()
 
     def velocity(self) -> Vector3D:
         return self.propagator.state.velocity
 
-    def detect(self, target:"Spacecraft") -> bool:
-        success:bool = True
+    def detect(self, target: "Spacecraft") -> bool:
+        success: bool = True
         if self.sun_angle(target) < self.wfov.limits.sun_soft:
             success = False
         elif self.earth_angle(target) < self.wfov.limits.earth:
@@ -123,23 +187,23 @@ class Spacecraft:
             success = False
         return success
 
-    def visual_magnitude(self, target:"Spacecraft") -> float:
-        r:float = self.body_radius
-        dist:float = self.range(target)
-        phi:float = pi - self.sun_angle(target)
-        fdiff:float = (2/3)*self.albedo*r*r/(pi*dist*dist)*((sin(phi) + (pi-phi)*cos(phi)))
-        return -26.74 - 2.5*log10(fdiff)
+    def visual_magnitude(self, target: "Spacecraft") -> float:
+        r: float = self.body_radius
+        dist: float = self.range(target)
+        phi: float = pi - self.sun_angle(target)
+        fdiff: float = (2 / 3) * self.albedo * r * r / (pi * dist * dist) * ((sin(phi) + (pi - phi) * cos(phi)))
+        return -26.74 - 2.5 * log10(fdiff)
 
-    def sun_angle(self, target:"Spacecraft") -> float:
+    def sun_angle(self, target: "Spacecraft") -> float:
         return self.sun_vector().angle(self.target_vector(target))
 
-    def moon_angle(self, target:"Spacecraft") -> float:
+    def moon_angle(self, target: "Spacecraft") -> float:
         return self.moon_vector().angle(self.target_vector(target))
 
-    def earth_angle(self, target:"Spacecraft") -> float:
+    def earth_angle(self, target: "Spacecraft") -> float:
         return self.earth_vector().angle(self.target_vector(target))
 
-    def range(self, target:"Spacecraft") -> float:
+    def range(self, target: "Spacecraft") -> float:
         return self.target_vector(target).magnitude()
 
     def position(self) -> Vector3D:
@@ -149,7 +213,7 @@ class Spacecraft:
         self.propagator.step()
         self.update_attitude()
 
-    def step_to_epoch(self, epoch:Epoch) -> None:
+    def step_to_epoch(self, epoch: Epoch) -> None:
         self.propagator.step_to_epoch(epoch)
         self.update_attitude()
 
@@ -162,10 +226,10 @@ class Spacecraft:
     def earth_vector(self) -> Vector3D:
         return self.position().scaled(-1)
 
-    def target_vector(self, target:"Spacecraft") -> Vector3D:
+    def target_vector(self, target: "Spacecraft") -> Vector3D:
         return target.position().minus(self.position())
 
-    def hill_position(self, target:"Spacecraft") -> Vector3D:
+    def hill_position(self, target: "Spacecraft") -> Vector3D:
         return HillState.from_gcrf(target.current_state(), self.current_state()).position
 
     def current_state(self) -> "GCRFstate":
