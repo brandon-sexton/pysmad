@@ -1,6 +1,6 @@
 # PYXIS
 This package is a public astrodynamics analysis and simulation sandbox not intended for commercial use.  Further details
-on functionality can be found on the [documentation] page.
+on functionality can be found on the [documentation page](https://rogue-solutions.github.io/pyxis/).
 
 ## Contributing
 When making contributions to the pyxis code repository, please follow these standards as closely as possible:
