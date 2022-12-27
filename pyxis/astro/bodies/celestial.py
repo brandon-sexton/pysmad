@@ -9,13 +9,27 @@ class Earth:
 
     """Class used to store Earth properties base on the WGS84 model"""
 
+    #: G*M given in km^3/s^2
     MU: float = 398600.4418
+
+    #: distance from earth center to surface at the equator in km
     RADIUS: float = 6378.137
+
+    #: value defining the ellipsoid of an oblate earth
     FLATTENING: float = 1 / 298.257223563
+
+    #: inclination of ecliptic relative to earth equator in radians
     OBLIQUITY_OF_ECLIPTIC: float = radians(23.43929111)
 
     @staticmethod
     def obliquity_of_ecliptic_at_epoch(epoch: Epoch) -> float:
+        """calculate the obliquity of ecliptic (epsilon) at a given epoch
+
+        :param epoch: time of interest
+        :type epoch: Epoch
+        :return: true-of-date epsilon
+        :rtype: float
+        """
         # Equation 5.39
         t = epoch.julian_centuries_past_j2000()
 
@@ -29,16 +43,35 @@ class Earth:
 
 class Sun:
 
+    """class used to store properties of the sun for a force model"""
+
+    #: RAAN + argument of periapsis in radians
     W_PLUS_W = radians(282.94)
+
+    #: cosine of obliquity of ecliptic
     COS_OBLIQUITY = cos(Earth.OBLIQUITY_OF_ECLIPTIC)
+
+    #: sine of obliquity of ecliptic
     SIN_OBLIQUITY = sin(Earth.OBLIQUITY_OF_ECLIPTIC)
+
+    #: G*M in km^3/s^
     MU = 1.327124400419e11
-    RADIUS = 696.34e3
+
+    #: Estimate of srp
     P = 4.56e-6
+
+    #: Distance to earth in km
     AU = 149597870.691
 
     @staticmethod
     def get_position(epoch: Epoch) -> Vector3D:
+        """calculate the ECI position at a given epoch
+
+        :param epoch: time of calculated position vector
+        :type epoch: Epoch
+        :return: ECI position in km
+        :rtype: Vector3D
+        """
         a = Conversions.dms_to_radians(0, 0, 6892)
         b = Conversions.dms_to_radians(0, 0, 72)
         t = epoch.julian_centuries_past_j2000()
@@ -63,13 +96,23 @@ class Sun:
 
 
 class Moon:
+    """class used to store properties of the moon to be used in force modeling"""
 
+    #: G*M in km^3/s^2
     MU = 4902.800305555
+
+    #: distance from center of moon to surface in km
     RADIUS = 1737.4000
 
     @staticmethod
     def get_position(epoch: Epoch) -> Vector3D:
+        """calculate ECI position of moon
 
+        :param epoch: time of calculated position vector
+        :type epoch: Epoch
+        :return: ECI position in km
+        :rtype: Vector3D
+        """
         # Equation 3.47
         t = epoch.julian_centuries_past_j2000()
         l0 = radians(218.31617 + 481267.88088 * t - 1.3972 * t)
