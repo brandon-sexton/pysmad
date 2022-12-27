@@ -7,15 +7,30 @@ from pyxis.math.linalg import Matrix6D, Vector6D
 
 class Hill:
 
+    #: Nominal time to advance the propagator in seconds when no dt is given
     DEFAULT_STEP_SIZE: float = 600
 
     def __init__(self, state: HillState, sma: float) -> None:
+        """class used to calculate the relative position of a spacecraft using Hill's equations
+
+        :param state: relative state of the satellite to be propagated
+        :type state: HillState
+        :param sma: semi-major axis of the origin vehicle in km
+        :type sma: float
+        """
         self.state: HillState = state.copy()
         self.sma: float = sma
         self.n: float = sqrt(Earth.MU / (sma * sma * sma))
         self.step_size = Hill.DEFAULT_STEP_SIZE
 
     def system_matrix(self, t: float) -> Matrix6D:
+        """return the system matrix required to advance the initial state by the input t
+
+        :param t: number of seconds between initial state and desired state
+        :type t: float
+        :return: system matrix used to advance the propagator
+        :rtype: Matrix6D
+        """
         n = self.n
         n_inv = 1 / n
         sn = sin(n * t)
@@ -41,7 +56,13 @@ class Hill:
         return sys_mat
 
     def step_by_seconds(self, t: float) -> None:
+        """advance the propagator by a variable time
+
+        :param t: number of seconds to advance the propagator
+        :type t: float
+        """
         self.state = HillState.from_state_vector(self.system_matrix(t).multiply_vector(self.state.vector))
 
     def step(self) -> None:
+        """advance the propagator by one time step"""
         self.step_by_seconds(self.step_size)
