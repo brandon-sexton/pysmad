@@ -2,7 +2,7 @@ pyxis
 =====
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.astro
    pyxis.estimation
@@ -10,7 +10,7 @@ pyxis
    pyxis.math
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
 
    pyxis.time
 
