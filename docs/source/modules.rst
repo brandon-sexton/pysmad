@@ -1,5 +1,5 @@
-pyxis
-=====
+modules
+=======
 
 .. toctree::
    :maxdepth: 2
