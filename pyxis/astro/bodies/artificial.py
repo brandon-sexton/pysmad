@@ -81,7 +81,7 @@ class Spacecraft:
         self.update_attitude()
 
     def sma(self) -> float:
-        """method to calculate the semi-major axis of the calling spacecraft
+        """calculate the semi-major axis of the calling spacecraft
 
         :return: the spacecraft's semi-major axis in km
         :rtype: float
@@ -91,6 +91,11 @@ class Spacecraft:
         return 1 / (2 / r - v * v / Earth.MU)
 
     def acquire(self, seed: "Spacecraft") -> None:
+        """initialize the kalman filter and begin tracking the argument satellite
+
+        :param seed: the estimated state of the satellite to be tracked
+        :type seed: Spacecraft
+        """
 
         self.filter = RelativeKalman(
             self.current_epoch(),
@@ -102,13 +107,28 @@ class Spacecraft:
         self.track_state(seed)
 
     def observe_wfov(self, target: "Spacecraft") -> PositionOb:
+        """produce a simulated observation from the wfov
+
+        :param target: satellite to be observed
+        :type target: Spacecraft
+        :return: simulated observation
+        :rtype: PositionOb
+        """
+        # Create hill state of self to target
         tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+
+        # Calculate the range error based on sensor settings
         r = tgt.position.magnitude()
         err = self.wfov.range_error(r, target.body_radius * 2)
+
+        # Apply noise to the range estimate
         ob_r = gauss(r, err)
+
+        # Apply noise to the angular estimate
         ang_err = gauss(0, self.pointing_accuracy)
         ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
         ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
+
         return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
 
     def observe_nfov(self, target: "Spacecraft") -> PositionOb:
