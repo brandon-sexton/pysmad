@@ -132,37 +132,85 @@ class Spacecraft:
         return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
 
     def observe_nfov(self, target: "Spacecraft") -> PositionOb:
+        """produce a simulated observation from the nfov
+
+        :param target: satellite to be observed
+        :type target: Spacecraft
+        :return: simulated observation
+        :rtype: PositionOb
+        """
+        # Create hill state of self to target
         tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+
+        # Calculate the range error based on sensor settings
         r = tgt.position.magnitude()
         err = self.nfov.range_error(r, target.body_radius * 2)
+
+        # Apply noise to the range estimate
         ob_r = gauss(r, err)
+
+        # Apply noise to the angular estimate
         ang_err = gauss(0, self.pointing_accuracy)
         ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
         ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
+
         return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
 
     def process_wfov(self, target: "Spacecraft") -> None:
+        """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter
+
+        :param target: satellite to be observed
+        :type target: Spacecraft
+        """
         ob = self.observe_wfov(target)
         self.filter.process(ob)
 
     def process_nfov(self, target: "Spacecraft") -> None:
+        """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter
+
+        :param target: satellite to be observed
+        :type target: Spacecraft
+        """
         ob = self.observe_nfov(target)
         self.filter.process(ob)
 
     def update_attitude(self) -> None:
+        """calculate and store the appropriate body axis values depending on steering mode"""
         if self.steering == Spacecraft.STEERING_MODES[0]:
+
+            # Point payload deck at Earth
             self.body_z = self.earth_vector()
+
+            # Align solar panels with orbit normal
             self.body_y = self.position().cross(self.velocity())
+
+            # Complete right-hand rule
             self.body_x = self.body_y.cross(self.body_z)
+
         elif self.steering == Spacecraft.STEERING_MODES[1]:
+
+            # Point payload deck away from Sun
             self.body_z = self.sun_vector().scaled(-1)
+
+            # Create arbitrary x
             self.body_x = self.body_z.cross(Vector3D(0, 0, 1))
+
+            # Complete right-hand rule
             self.body_y = self.body_z.cross(self.body_x)
+
         elif self.steering == Spacecraft.STEERING_MODES[2]:
+
+            # Step the tracked spacecraft if epochs are not in sync
             if self.tracked_target.current_epoch().value != self.current_epoch().value:
                 self.tracked_target.step_to_epoch(self.current_epoch())
+
+            # Point payload deck at target
             self.body_z = self.target_vector(self.tracked_target)
+
+            # Align solar panels
             self.body_y = self.body_z.cross(self.sun_vector())
+
+            # Complete right-hand rule
             self.body_x = self.body_y.cross(self.body_z)
 
         if self.slewing:
