@@ -80,12 +80,18 @@ class Spacecraft:
 
         self.update_attitude()
 
-    def sma(self):
+    def sma(self) -> float:
+        """_summary_
+
+        :return: _description_
+        :rtype: float
+        """
         r = self.position().magnitude()
         v = self.velocity().magnitude()
         return 1 / (2 / r - v * v / Earth.MU)
 
     def acquire(self, seed: "Spacecraft") -> None:
+
         self.filter = RelativeKalman(
             self.current_epoch(),
             Hill(
