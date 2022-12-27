@@ -32,11 +32,10 @@ class Spacecraft:
     DEFAULT_POINTING_ACCURACY: float = 1e-5
 
     def __init__(self, state: GCRFstate) -> None:
-        """Class used to model the behaviors of man-made satellites
+        """class used to model the behaviors of man-made satellites
 
-        Args:
-            state: The starting inertial state of the satellite
-
+        :param state: starting inertial state of the satellite
+        :type state: GCRFstate
         """
 
         #: Used to retain knowledge of the state when the satellite was first created
@@ -218,36 +217,59 @@ class Spacecraft:
                 self.slewing = False
 
     def track_lvlh(self) -> None:
+        """store attitude with payload toward earth and panels along orbit normal"""
+        # Include slew duration if not already in lvlh
         if self.steering != Spacecraft.STEERING_MODES[0]:
             self.steering = Spacecraft.STEERING_MODES[0]
             self.slewing = True
             t: float = self.body_z.angle(self.position().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
-            self.update_attitude()
+
+        self.update_attitude()
 
     def track_sun(self) -> None:
+        """store attitude with payload opposite to Sun"""
+        # Include slew duration if not already sun-pointing
         if self.steering != Spacecraft.STEERING_MODES[1]:
             self.steering = Spacecraft.STEERING_MODES[1]
             self.slewing = True
-            self.slewing = True
             t: float = self.body_z.angle(self.sun_vector().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
-            self.update_attitude()
+
+        self.update_attitude()
 
     def track_state(self, target: "Spacecraft") -> None:
+        """store attitude with payload toward target
+
+        :param target: spacecraft to be tracked
+        :type target: Spacecraft
+        """
+        # Include slew duration if not already target-pointing
         if self.steering != Spacecraft.STEERING_MODES[2]:
             self.steering = Spacecraft.STEERING_MODES[2]
             self.tracked_target = target
             self.slewing = True
-            self.slewing = True
             t: float = self.body_z.angle(self.target_vector(target)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
-            self.update_attitude()
+
+        self.update_attitude()
 
     def velocity(self) -> Vector3D:
-        return self.propagator.state.velocity
+        """retrieve current ECI velocity vector
+
+        :return: velocity vector as determined by the satellite's propagator
+        :rtype: Vector3D
+        """
+        return self.propagator.state.velocity.copy()
 
     def detect(self, target: "Spacecraft") -> bool:
+        """determine if a satellite can be detected given payload constraints
+
+        :param target: satellite to be detected
+        :type target: Spacecraft
+        :return: status of detection
+        :rtype: bool
+        """
         success: bool = True
         if self.sun_angle(target) < self.wfov.limits.sun_soft:
             success = False
@@ -262,52 +284,144 @@ class Spacecraft:
         return success
 
     def visual_magnitude(self, target: "Spacecraft") -> float:
+        """calculate the visual magnitude of a satellite
+
+        :param target: satellite being observed
+        :type target: Spacecraft
+        :return: visual magnitude of the observed spacecraft
+        :rtype: float
+        """
+        # Store the target's body radius
         r: float = self.body_radius
+
+        # Calculate the range to the target
         dist: float = self.range(target)
+
+        # Calculate the sun angle
         phi: float = pi - self.sun_angle(target)
+
+        # Calculate the flux and vismag
         fdiff: float = (2 / 3) * self.albedo * r * r / (pi * dist * dist) * ((sin(phi) + (pi - phi) * cos(phi)))
         return -26.74 - 2.5 * log10(fdiff)
 
     def sun_angle(self, target: "Spacecraft") -> float:
+        """calculate the angle between the sun and target using the calling spacecraft as the vertex
+
+        :param target: satellite being observed
+        :type target: Spacecraft
+        :return: angle between target and sun vector in radians
+        :rtype: float
+        """
         return self.sun_vector().angle(self.target_vector(target))
 
     def moon_angle(self, target: "Spacecraft") -> float:
+        """calculate the angle between the moon and target using the calling spacecraft as the vertex
+
+        :param target: satellite being observed
+        :type target: Spacecraft
+        :return: angle between target and moon vector in radians
+        :rtype: float
+        """
         return self.moon_vector().angle(self.target_vector(target))
 
     def earth_angle(self, target: "Spacecraft") -> float:
+        """calculate the angle between the earth and target using the calling spacecraft as the vertex
+
+        :param target: satellite being observed
+        :type target: Spacecraft
+        :return: angle between target and earth vector in radians
+        :rtype: float
+        """
         return self.earth_vector().angle(self.target_vector(target))
 
     def range(self, target: "Spacecraft") -> float:
+        """calculate the distance from the calling spacecraft to the argument spacecraft
+
+        :param target: spacecraft representing the range vector's head
+        :type target: Spacecraft
+        :return: distance to the argument spacecraft in km
+        :rtype: float
+        """
         return self.target_vector(target).magnitude()
 
     def position(self) -> Vector3D:
+        """retrieve the spacecraft's current ECI position vector
+
+        :return: spacecraft's current position vector as determined by the propagator
+        :rtype: Vector3D
+        """
         return self.current_state().position.copy()
 
     def step(self) -> None:
+        """solve the vehicle's position and velocity at the next time step"""
         self.propagator.step()
         self.update_attitude()
 
     def step_to_epoch(self, epoch: Epoch) -> None:
+        """solve the vehicle's position and velocity at the argument epoch
+
+        :param epoch: desired time at which the vehicle's state should be solved
+        :type epoch: Epoch
+        """
         self.propagator.step_to_epoch(epoch)
         self.update_attitude()
 
     def sun_vector(self) -> Vector3D:
+        """calculate the ECI vector from the vehicle to the sun
+
+        :return: vector originating at self and terminating at the sun
+        :rtype: Vector3D
+        """
         return self.current_state().sun_vector()
 
     def moon_vector(self) -> Vector3D:
+        """calculate the ECI vector from the vehicle to the moon
+
+        :return: vector originating at self and terminating at the moon
+        :rtype: Vector3D
+        """
         return self.current_state().moon_vector()
 
     def earth_vector(self) -> Vector3D:
+        """calculate the ECI vector from the vehicle to the earth
+
+        :return: vector originating at self and terminating at the earth
+        :rtype: Vector3D
+        """
         return self.position().scaled(-1)
 
     def target_vector(self, target: "Spacecraft") -> Vector3D:
+        """calculate the ECI vector from the vehicle to the argument spacecraft
+
+        :param target: spacecraft acting as the vector head
+        :type target: Spacecraft
+        :return: vector originating at self and terminating at the target's position
+        :rtype: Vector3D
+        """
         return target.position().minus(self.position())
 
     def hill_position(self, target: "Spacecraft") -> Vector3D:
+        """calculate the hill position vector from self to the argument spacecraft
+
+        :param target: vehicle acting as the relative position vector head
+        :type target: Spacecraft
+        :return: vector originating at self and terminating at the target's position in the hill frame
+        :rtype: Vector3D
+        """
         return HillState.from_gcrf(target.current_state(), self.current_state()).position
 
     def current_state(self) -> "GCRFstate":
+        """retrieve the vehicle's current ECI state
+
+        :return: current ECI state as determined by the propagator
+        :rtype: GCRFstate
+        """
         return self.propagator.state.copy()
 
     def current_epoch(self) -> Epoch:
+        """retrieve the vehicle's current time
+
+        :return: epoch of the vehicle as determined by the propagator
+        :rtype: Epoch
+        """
         return self.current_state().epoch.copy()
