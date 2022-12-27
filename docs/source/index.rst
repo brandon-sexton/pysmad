@@ -8,4 +8,4 @@ pyxis space operations toolkit
 
 .. toctree::
 
-    modules
+    pyxis
