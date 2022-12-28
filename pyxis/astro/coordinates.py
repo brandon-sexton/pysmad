@@ -9,16 +9,44 @@ from pyxis.time import Epoch
 
 class HillState:
     def __init__(self, position: Vector3D, velocity: Vector3D) -> None:
+        """used to perform relative motion operations for two spacecraft represented in the Hill frame
+
+        :param position: relative position of the two spacecraft in km
+        :type position: Vector3D
+        :param velocity: relative velocity of the two spacecraft in km/s
+        :type velocity: Vector3D
+        """
+        #: relative position of the two spacecraft in km
         self.position: Vector3D = position.copy()
+
+        #: relative velocity of the two spacecraft in km/s
         self.velocity: Vector3D = velocity.copy()
+
+        #: state vector whose elements are equal to that of the position and velocity unpacked
         self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
 
     @classmethod
     def from_state_vector(cls, state: Vector6D) -> "HillState":
+        """create a HillState from a 6-D state vector
+
+        :param state: state vector with components of the position and velocity in km and km/s respectively
+        :type state: Vector6D
+        :return: the 6-D vector represented as a relative state object
+        :rtype: HillState
+        """
         return cls(Vector3D(state.x, state.y, state.z), Vector3D(state.vx, state.vy, state.vz))
 
     @classmethod
     def from_gcrf(cls, state: "GCRFstate", origin: "GCRFstate") -> "HillState":
+        """create a relative state from two inertial states
+
+        :param state: inertial state of the chase vehicle
+        :type state: GCRFstate
+        :param origin: inertial state that will act as the origin for the frame
+        :type origin: GCRFstate
+        :return: relative state of the two inertial states
+        :rtype: HillState
+        """
         magrtgt = origin.position.magnitude()
         magrint = state.position.magnitude()
         rot_eci_rsw = HillState.frame_matrix(origin)
@@ -56,15 +84,34 @@ class HillState:
 
     @staticmethod
     def frame_matrix(origin: "GCRFstate") -> Matrix3D:
+        """create a radial, in-track, cross-track axes matrix
+
+        :param origin: inertial state that acts as the origin for the RIC frame
+        :type origin: GCRFstate
+        :return: matrix with rows of radial, in-track, and cross-track
+        :rtype: Matrix3D
+        """
         r = origin.position.normalized()
         c = origin.position.cross(origin.velocity).normalized()
         i = c.cross(r)
         return Matrix3D(r, i, c)
 
     def copy(self) -> "HillState":
+        """create a replica of the calling state
+
+        :return: state with elements equal to that of the calling state
+        :rtype: HillState
+        """
         return HillState(self.position, self.velocity)
 
     def to_gcrf(self, origin: "GCRFstate") -> "GCRFstate":
+        """create an inertial state for the calling state
+
+        :param origin: inertial state that acts as the origin for the relative state
+        :type origin: GCRFstate
+        :return: inertial state of the relative spacecraft
+        :rtype: GCRFstate
+        """
         magrtgt = origin.position.magnitude()
         magrint = magrtgt + self.position.x
         rot_eci_rsw = HillState.frame_matrix(origin)
@@ -104,25 +151,68 @@ class HillState:
 
 class GCRFstate:
     def __init__(self, epoch: Epoch, position: Vector3D, velocity: Vector3D) -> None:
+        """used to perform operations in the ECI frame
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :param position: position of the inertial state in km
+        :type position: Vector3D
+        :param velocity: velocity of the inertial state in km/s
+        :type velocity: Vector3D
+        """
+        #: valid time of the state
         self.epoch: Epoch = epoch.copy()
+
+        #: position of the inertial state in km
         self.position: Vector3D = position.copy()
+
+        #: velocity of the inertial state in km/s
         self.velocity: Vector3D = velocity.copy()
 
     @classmethod
     def from_hill(cls, origin: "GCRFstate", state: HillState) -> "GCRFstate":
+        """create an inertial state from a relative state
+
+        :param origin: inertial state that acts as the origin for the relative system
+        :type origin: GCRFstate
+        :param state: relative state of the spacecraft
+        :type state: HillState
+        :return: inertial state of the spacecraft
+        :rtype: GCRFstate
+        """
         return state.to_gcrf(origin)
 
     def copy(self) -> "GCRFstate":
+        """create a replica of the calling state
+
+        :return: state with attributes equal to the calling state
+        :rtype: GCRFstate
+        """
         return GCRFstate(self.epoch, self.position, self.velocity)
 
     def vector_list(self) -> List[Vector3D]:
+        """create a list with elements of 0 == position and 1 == velocity
+
+        :return: list of position and velocity
+        :rtype: List[Vector3D]
+        """
         return [self.position.copy(), self.velocity.copy()]
 
     def acceleration_from_earth(self) -> Vector3D:
+        """calculate the acceleration on the state due to earth's gravity
+
+        :return: vector representing the acceleration from earth
+        :rtype: Vector3D
+        """
         r_mag: float = self.position.magnitude()
         return self.position.scaled(-Earth.MU / (r_mag * r_mag * r_mag))
 
     def acceleration_from_moon(self) -> Vector3D:
+        """calculate the acceleration on the state due to the moon
+
+        :return: vector representing the acceleration from the moon
+        :rtype: Vector3D
+        """
         s: Vector3D = Moon.get_position(self.epoch)
         r: Vector3D = s.minus(self.position)
         r_mag: float = r.magnitude()
@@ -132,6 +222,11 @@ class GCRFstate:
         return vec_1.minus(vec_2).scaled(Moon.MU)
 
     def acceleration_from_sun(self) -> Vector3D:
+        """calculate the acceleration on the state due to the sun
+
+        :return: vector representing the acceleration from the sun
+        :rtype: Vector3D
+        """
         s: Vector3D = Sun.get_position(self.epoch)
         r: Vector3D = s.minus(self.position)
         r_mag: float = r.magnitude()
@@ -141,10 +236,20 @@ class GCRFstate:
         return vec_1.minus(vec_2).scaled(Sun.MU)
 
     def acceleration_from_srp(self) -> Vector3D:
+        """calculate the acceleration on the state from solar radiation pressure
+
+        :return: vector representing the acceleration from srp
+        :rtype: Vector3D
+        """
         sun_vec: Vector3D = self.sun_vector().normalized()
         return sun_vec.scaled(-Sun.P * 3.6e-5)
 
     def derivative(self) -> List[Vector3D]:
+        """create a list with elements 0 == velocity and 1 == acceleration
+
+        :return: list of velocity and acceleration
+        :rtype: List[Vector3D]
+        """
         net_0 = Vector3D(0, 0, 0)
         net_1 = net_0.plus(self.acceleration_from_moon())
         net_2 = net_1.plus(self.acceleration_from_sun())
@@ -153,21 +258,48 @@ class GCRFstate:
         return [self.velocity.copy(), net_a]
 
     def sun_vector(self) -> Vector3D:
+        """create a vector pointing from the calling state to the sun
+
+        :return: vector originating at the calling state and terminating at the sun
+        :rtype: Vector3D
+        """
         return Sun.get_position(self.epoch).minus(self.position)
 
     def moon_vector(self) -> Vector3D:
+        """create a vector pointing from the calling state to the moon
+
+        :return: vector originating at the calling state and terminating at the moon
+        :rtype: Vector3D
+        """
         return Moon.get_position(self.epoch).minus(self.position)
 
     def itrf_position(self) -> Vector3D:
+        """create a vector that represents the state's position in the earth-fixed frame
 
+        :return: the position of the state in the itrf frame
+        :rtype: Vector3D
+        """
         mod = Precession.matrix(self.epoch).multiply_vector(self.position)
         tod = Nutation.matrix(self.epoch).multiply_vector(mod)
         return Rotation.matrix(self.epoch).multiply_vector(tod)
 
 
 class Rotation:
+    """class used to transform between itrf and tod
+
+    :return: defined in static methods
+    :rtype: defined in static methods
+    """
+
     @staticmethod
     def matrix(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform an itrf position to tod and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
         d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
         arg1 = radians(125.0 - 0.05295 * d)
         arg2 = radians(200.9 + 1.97129 * d)
@@ -181,8 +313,21 @@ class Rotation:
 
 
 class Precession:
+    """class used to transform between tod and mod
+
+    :return: defined in static methods
+    :rtype: defined in static methods
+    """
+
     @staticmethod
     def matrix(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform a tod position to mod and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
         t = epoch.julian_centuries_past_j2000()
         a = Conversions.dms_to_radians(0, 0, 2306.2181)
         b = Conversions.dms_to_radians(0, 0, 0.30188)
@@ -221,8 +366,21 @@ class Precession:
 
 
 class Nutation:
+    """class used to transform between mod and gcrf
+
+    :return: defined in static methods
+    :rtype: defined in static methods
+    """
+
     @staticmethod
     def matrix(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform a mod position to gcrf and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
         d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
         arg1 = radians(125.0 - 0.05295 * d)
         arg2 = radians(200.9 + 1.97129 * d)
@@ -246,11 +404,30 @@ class Nutation:
 
 class ITRFstate:
     def __init__(self, epoch: Epoch, position: Vector3D, velocity: Vector3D) -> None:
+        """used to represent states in the earth-fixed frame
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :param position: position of the state in km
+        :type position: Vector3D
+        :param velocity: velocity of the state in km/s
+        :type velocity: Vector3D
+        """
+        #: valid time of the state
         self.epoch: Epoch = epoch.copy()
+
+        #: position of the state in km
         self.position: Vector3D = position.copy()
+
+        #: velocity of the state in km/s
         self.velocity: Vector3D = velocity.copy()
 
     def gcrf_position(self) -> Vector3D:
+        """create a vector that represents the position of the calling state in the inertial frame
+
+        :return: ECI position of the calling state
+        :rtype: Vector3D
+        """
         tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
         mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
         return Precession.matrix(self.epoch).transpose().multiply_vector(mod)
