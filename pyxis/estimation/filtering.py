@@ -85,9 +85,6 @@ class RelativeKalman:
         #: measurement uncertainty matrix
         self.r: Matrix3D
 
-        #:
-        self.angles_only: bool = True
-
     def predict_covariance(self) -> None:
         """calculate the next covariance"""
         self.p10 = self.f.multiply_matrix(self.p00.multiply_matrix(self.f.transpose())).plus(self.q)
