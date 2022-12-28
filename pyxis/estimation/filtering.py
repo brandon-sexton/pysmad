@@ -49,18 +49,43 @@ class RelativeKalman:
         :param propagator: estimated Hill state of the spacecraft being observed
         :type propagator: Hill
         """
+        #: current time of the filter state
         self.epoch: Epoch = epoch.copy()
+
+        #: propagator used to estimate the relative state of the observed spacecraft
         self.propagator: Hill = propagator
+
+        #: current state of the filter
         self.x00: Vector6D = self.propagator.state.vector.copy()
+
+        #: predicted state of the filter
         self.x10: Vector6D
+
+        #: current covariance of the state
         self.p00: Matrix6D = RelativeKalman.DEFAULT_COVARIANCE
+
+        #: predicted covariance of the state
         self.p10: Matrix6D
+
+        #: processing noise of the filter
         self.q: Matrix6D = RelativeKalman.DEFAULT_NOISE
+
+        #: state transition matrix for the filter state
         self.f: Matrix6D = self.propagator.system_matrix(0)
+
+        #: gain of the filter
         self.k: Matrix6by3
+
+        #: current measurement
         self.z: Vector3D
+
+        #: error in km of the current measurement
         self.range_error: float = 0
+
+        #: measurement uncertainty matrix
         self.r: Matrix3D
+
+        #:
         self.angles_only: bool = True
 
     def predict_covariance(self) -> None:
