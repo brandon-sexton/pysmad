@@ -539,9 +539,21 @@ class Matrix3by6:
         return Vector3D(self.row1.vz, self.row2.vz, self.row3.vz)
 
     def multiply_vector(self, vec: Vector6D) -> Vector3D:
+        """create a vector that is the product of the calling matrix and the argument vector
+
+        :param vec: vector to be used in the product
+        :type vec: Vector6D
+        :return: product vector
+        :rtype: Vector3D
+        """
         return Vector3D(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
 
     def transpose(self) -> "Matrix6by3":
+        """create a matrix whose rows are equal to the columns of the calling matrix
+
+        :return: the transpose of the calling matrix
+        :rtype: Matrix6by3
+        """
         return Matrix6by3(
             self.column_1(),
             self.column_2(),
@@ -552,6 +564,13 @@ class Matrix3by6:
         )
 
     def multiply_matrix_6by3(self, mat: "Matrix6by3") -> Matrix3D:
+        """create a matrix equal to the product of the calling matrix and the argument matrix
+
+        :param mat: matrix to be used in the product
+        :type mat: Matrix6by3
+        :return: product matrix
+        :rtype: Matrix3D
+        """
         return Matrix3D(
             Vector3D(
                 self.row1.dot(mat.column_1()),
@@ -581,26 +600,79 @@ class Matrix6by3:
         r5: Vector3D,
         r6: Vector3D,
     ) -> None:
+        """used to perform operations for a 6x3 matrix
+
+        :param r1: first row of the matrix
+        :type r1: Vector3D
+        :param r2: second row of the matrix
+        :type r2: Vector3D
+        :param r3: third row of the matrix
+        :type r3: Vector3D
+        :param r4: fourth row of the matrix
+        :type r4: Vector3D
+        :param r5: fifth row of the matrix
+        :type r5: Vector3D
+        :param r6: sixth row of the matrix
+        :type r6: Vector3D
+        """
+        #: first row of the matrix
         self.row1: Vector3D = r1.copy()
+
+        #: second row of the matrix
         self.row2: Vector3D = r2.copy()
+
+        #: third row of the matrix
         self.row3: Vector3D = r3.copy()
+
+        #: fourth row of the matrix
         self.row4: Vector3D = r4.copy()
+
+        #: fifth row of the matrix
         self.row5: Vector3D = r5.copy()
+
+        #: sixth row of the matrix
         self.row6: Vector3D = r6.copy()
 
     def column_1(self) -> Vector6D:
+        """create a vector whose elements equal the first column of the matrix
+
+        :return: first column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.x, self.row2.x, self.row3.x, self.row4.x, self.row5.x, self.row6.x)
 
     def column_2(self) -> Vector6D:
+        """create a vector whose elements equal the second column of the matrix
+
+        :return: second column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.y, self.row2.y, self.row3.y, self.row4.y, self.row5.y, self.row6.y)
 
     def column_3(self) -> Vector6D:
+        """create a vector whose elements equal the third column of the matrix
+
+        :return: third column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.z, self.row2.z, self.row3.z, self.row4.z, self.row5.z, self.row6.z)
 
     def transpose(self) -> Matrix3by6:
+        """create a matrix whose rows equal the columns of the calling matrix
+
+        :return: transpose of the calling matrix
+        :rtype: Matrix3by6
+        """
         return Matrix3by6(self.column_1(), self.column_2(), self.column_3())
 
     def multiply(self, mat: Matrix3D) -> "Matrix6by3":
+        """create a matrix that is the product of the calling and argument matrices
+
+        :param mat: matrix to be used in the product
+        :type mat: Matrix3D
+        :return: product matrix
+        :rtype: Matrix6by3
+        """
         return Matrix6by3(
             Vector3D(
                 self.row1.dot(mat.column_1()),
@@ -635,6 +707,13 @@ class Matrix6by3:
         )
 
     def multiply_vector(self, vec: "Vector3D") -> Vector6D:
+        """create a vector equal to the product of the calling matrix and the argument vector
+
+        :param vec: vector to be used in the product
+        :type vec: Vector3D
+        :return: product vector
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.dot(vec),
             self.row2.dot(vec),
@@ -645,6 +724,13 @@ class Matrix6by3:
         )
 
     def multiply_matrix3by6(self, mat: "Matrix3by6") -> "Matrix6D":
+        """create a matrix equal to the product of the calling and the argument matrices
+
+        :param mat: matrix to be used in the product
+        :type mat: Matrix3by6
+        :return: product matrix
+        :rtype: Matrix6D
+        """
         return Matrix6D(
             Vector6D(
                 self.row1.dot(mat.column_1()),
@@ -707,15 +793,46 @@ class Matrix6D:
         r5: Vector6D,
         r6: Vector6D,
     ) -> None:
+        """used to perform operations for a 6x6 matrix
+
+        :param r1: first row of the matrix
+        :type r1: Vector6D
+        :param r2: second row of the matrix
+        :type r2: Vector6D
+        :param r3: third row of the matrix
+        :type r3: Vector6D
+        :param r4: fourth row of the matrix
+        :type r4: Vector6D
+        :param r5: fifth row of the matrix
+        :type r5: Vector6D
+        :param r6: sixth row of the matrix
+        :type r6: Vector6D
+        """
+        #: first row of the matrix
         self.row1: Vector6D = r1.copy()
+
+        #: second row of the matrix
         self.row2: Vector6D = r2.copy()
+
+        #: third row of the matrix
         self.row3: Vector6D = r3.copy()
+
+        #: fourth row of the matrix
         self.row4: Vector6D = r4.copy()
+
+        #: fifth row of the matrix
         self.row5: Vector6D = r5.copy()
+
+        #: sixth row of the matrix
         self.row6: Vector6D = r6.copy()
 
     @classmethod
     def identity(cls) -> "Matrix6D":
+        """create a matrix with a diagonal with elements of 1 and off-diagonal elements of 0
+
+        :return: the identity matrix
+        :rtype: Matrix6D
+        """
         return cls(
             Vector6D(1, 0, 0, 0, 0, 0),
             Vector6D(0, 1, 0, 0, 0, 0),
@@ -726,6 +843,11 @@ class Matrix6D:
         )
 
     def diagonal(self) -> Vector6D:
+        """create a vector whose elements are equal to the diagonal of the matrix
+
+        :return: vector whose elements equal the diagonal
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.x,
             self.row2.y,
@@ -736,6 +858,13 @@ class Matrix6D:
         )
 
     def multiply_vector(self, vec: Vector6D) -> Vector6D:
+        """create a vector equal to the product of the calling matrix and the argument vector
+
+        :param vec: vector to be used in the product
+        :type vec: Vector6D
+        :return: product vector
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.dot(vec),
             self.row2.dot(vec),
@@ -746,15 +875,35 @@ class Matrix6D:
         )
 
     def column_1(self) -> Vector6D:
+        """create a vector whose elements equal the first column of the matrix
+
+        :return: first column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.x, self.row2.x, self.row3.x, self.row4.x, self.row5.x, self.row6.x)
 
     def column_2(self) -> Vector6D:
+        """create a vector whose elements equal the second column of the matrix
+
+        :return: second column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.y, self.row2.y, self.row3.y, self.row4.y, self.row5.y, self.row6.y)
 
     def column_3(self) -> Vector6D:
+        """create a vector whose elements equal the third column of the matrix
+
+        :return: third column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(self.row1.z, self.row2.z, self.row3.z, self.row4.z, self.row5.z, self.row6.z)
 
     def column_4(self) -> Vector6D:
+        """create a vector whose elements equal the fourth column of the matrix
+
+        :return: fourth column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.vx,
             self.row2.vx,
@@ -765,6 +914,11 @@ class Matrix6D:
         )
 
     def column_5(self) -> Vector6D:
+        """create a vector whose elements equal the fifth column of the matrix
+
+        :return: fifth column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.vy,
             self.row2.vy,
@@ -775,6 +929,11 @@ class Matrix6D:
         )
 
     def column_6(self) -> Vector6D:
+        """create a vector whose elements equal the sixth column of the matrix
+
+        :return: sixth column of the matrix
+        :rtype: Vector6D
+        """
         return Vector6D(
             self.row1.vz,
             self.row2.vz,
@@ -785,6 +944,11 @@ class Matrix6D:
         )
 
     def transpose(self) -> "Matrix6D":
+        """create a matrix whose rows equal the columns of the calling matrix
+
+        :return: transpose of the calling matrix
+        :rtype: Matrix6D
+        """
         return Matrix6D(
             self.column_1(),
             self.column_2(),
@@ -795,6 +959,13 @@ class Matrix6D:
         )
 
     def multiply_matrix_6by3(self, mat: Matrix6by3) -> Matrix6by3:
+        """create a matrix equal to the product of the calling and argument matrices
+
+        :param mat: matrix to be used in the product
+        :type mat: Matrix6by3
+        :return: product matrix
+        :rtype: Matrix6by3
+        """
         return Matrix6by3(
             Vector3D(
                 self.row1.dot(mat.column_1()),
@@ -829,6 +1000,13 @@ class Matrix6D:
         )
 
     def multiply_matrix(self, mat: "Matrix6D") -> "Matrix6D":
+        """create a matrix equal to the product of the calling and the argument matrices
+
+        :param mat: matrix to be used in the product
+        :type mat: Matrix6D
+        :return: product matrix
+        :rtype: Matrix6D
+        """
         return Matrix6D(
             Vector6D(
                 self.row1.dot(mat.column_1()),
@@ -881,6 +1059,13 @@ class Matrix6D:
         )
 
     def plus(self, mat: "Matrix6D") -> "Matrix6D":
+        """create a matrix whose elements are equal to the sum of the elements in the calling and argument matrices
+
+        :param mat: matrix to be used in the sum
+        :type mat: Matrix6D
+        :return: sum matrix
+        :rtype: Matrix6D
+        """
         return Matrix6D(
             self.row1.plus(mat.row1),
             self.row2.plus(mat.row2),
@@ -891,6 +1076,13 @@ class Matrix6D:
         )
 
     def minus(self, mat: "Matrix6D") -> "Matrix6D":
+        """create a matrix whose elements are equal to the difference of the elements in the calling and argument matrices
+
+        :param mat: matrix to be used in the difference
+        :type mat: Matrix6D
+        :return: difference matrix
+        :rtype: Matrix6D
+        """
         return Matrix6D(
             self.row1.minus(mat.row1),
             self.row2.minus(mat.row2),
