@@ -4,8 +4,10 @@
    contain the root `toctree` directive.
 
 pyxis space operations toolkit
-=================================
+==============================
 
 .. toctree::
+    :maxdepth: 2
 
-    pyxis
+    modules
+    examples

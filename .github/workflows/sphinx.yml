@@ -2,6 +2,8 @@ name: documentation
 
 on:
   push:
+    branches:
+      - dev
 
 jobs:
   build:
@@ -19,11 +21,10 @@ jobs:
         git checkout -b gh-pages
         pip install .
         cd ./docs
-        sphinx-apidoc -e -E -d 6 -o ./source ../pyxis
         make html
         cd ../
         mv ./docs/build/html/ ../docs/
-        cp .nojekyll ../docs/
+        cp ./docs/.nojekyll ../docs/
         git rm -rf '*'
         cp -r ../docs/ ./
     - name: deploy
