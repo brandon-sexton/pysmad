@@ -13,6 +13,11 @@ class PositionOb:
         :param error: error associated with the magnitude of the observed position vector in km
         :type error: float
         """
+        #: time of the observation
         self.epoch: Epoch = epoch.copy()
+
+        #: observed position in km
         self.position: Vector3D = position.copy()
+
+        #: error in km of the observed position magnitude
         self.error: float = error

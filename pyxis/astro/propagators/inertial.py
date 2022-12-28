@@ -18,7 +18,10 @@ class RK4:
         :param state: ECI state of the satellite to be propagated
         :type state: GCRFstate
         """
+        #: the current state of the propagator
         self.state: GCRFstate = state.copy()
+
+        #: integration step to be taken when the propagator is advanced
         self.step_size: float = RK4.MAX_STEP
 
     def step(self) -> None:
