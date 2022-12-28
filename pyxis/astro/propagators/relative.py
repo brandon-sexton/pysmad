@@ -18,9 +18,16 @@ class Hill:
         :param sma: semi-major axis of the origin vehicle in km
         :type sma: float
         """
+        #: current state of the propagator
         self.state: HillState = state.copy()
+
+        #: semi-major axis of the origin spacecraft
         self.sma: float = sma
+
+        #: orbital rate of the system
         self.n: float = sqrt(Earth.MU / (sma * sma * sma))
+
+        #: step in seconds used to advance the propagator
         self.step_size = Hill.DEFAULT_STEP_SIZE
 
     def system_matrix(self, t: float) -> Matrix6D:
