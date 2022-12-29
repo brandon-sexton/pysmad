@@ -431,3 +431,24 @@ class ITRFstate:
         tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
         mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
         return Precession.matrix(self.epoch).transpose().multiply_vector(mod)
+
+
+class LLAstate:
+    def __init__(self, lat: float, longit: float, alt: float) -> None:
+        """used to perform operations for a state in an oblate earth frame
+
+        :param lat: geodetic latitude in radians
+        :type lat: float
+        :param long: geodetic longitude in radians
+        :type long: float
+        :param alt: altitude above the surface in km
+        :type alt: float
+        """
+        #: geodetic latitude in radians
+        self.latitude: float = lat
+
+        #: geodetic longitude in radians
+        self.longitude: float = longit
+
+        #: altitude above the surface in km
+        self.altitude: float = alt
