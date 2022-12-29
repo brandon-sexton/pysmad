@@ -39,3 +39,19 @@ class Conversions:
         :rtype: float
         """
         return radians(d + m / MINUTES_IN_HOUR + s / SECONDS_IN_HOUR)
+
+
+def sign(num: float) -> float:
+    """function to determine if a value is positive or negative
+
+    :param num: expression to be signed
+    :type num: float
+    :return: 1 if positive -1 if negative 0 if neither
+    :rtype: float
+    """
+    val = 0
+    if num > 0:
+        val = 1
+    elif num < 0:
+        val = -1
+    return val
