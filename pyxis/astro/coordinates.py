@@ -1,8 +1,8 @@
-from math import asin, atan2, cos, radians, sin
+from math import asin, atan2, cos, pi, radians, sin, sqrt
 from typing import List
 
 from pyxis.astro.bodies.celestial import Earth, Moon, Sun
-from pyxis.math.functions import Conversions
+from pyxis.math.functions import Conversions, sign
 from pyxis.math.linalg import Matrix3D, Vector3D, Vector6D
 from pyxis.time import Epoch
 
@@ -431,6 +431,58 @@ class ITRFstate:
         tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.position)
         mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
         return Precession.matrix(self.epoch).transpose().multiply_vector(mod)
+
+    def lla_state(self) -> "LLAstate":
+        """calculate the latitude, longitude, and altitude of the ecf position
+
+        :return: geodetic lat, long, altitude of the ecf position
+        :rtype: LLAstate
+        """
+        pos = self.position
+        x = pos.x
+        y = pos.y
+        z = pos.z
+
+        # Equation 2.77a
+        a2 = Earth.RADIUS * Earth.RADIUS
+        f = Earth.FLATTENING
+        e2 = f * (2.0 - f)
+        b2 = a2 - e2 * a2
+        eps2 = a2 / b2 - 1.0
+        rho = sqrt(x * x + y * y)
+
+        # Equation 2.77b
+        p = abs(z) / eps2
+        s = rho * rho / (e2 * eps2)
+        q = p * p - b2 + s
+
+        # Equation 2.77c
+        u = p / sqrt(q)
+        v = b2 * u * u / q
+        capP = 27.0 * v * s / q
+        capQ = (sqrt(capP + 1) + sqrt(capP)) ** 2.0 / 3.0
+
+        # Equation 2.77d
+        t = (1.0 + capQ + 1.0 / capQ) / 6.0
+        c = sqrt(u * u - 1.0 + 2.0 * t)
+        w = (c - u) / 2.0
+
+        # Equation 2.77e
+        base = sqrt(t * t + v) - u * w - t / 2.0 - 0.25
+        arg = w + sqrt(base)
+        d = sign(z) * sqrt(q) * arg
+
+        # Equation 2.77f
+        n = sqrt(a2) * sqrt(1.0 + eps2 * d * d / b2)
+        lamb = asin((eps2 + 1.0) * (d / n))
+
+        # Equation 2.77g
+        h = rho * cos(lamb) + z * sin(lamb) - a2 / n
+        phi = atan2(y, x)
+        if phi < 0:
+            phi += pi * 2.0
+
+        return LLAstate(lamb, phi, h)
 
 
 class LLAstate:
