@@ -6,6 +6,7 @@ pyxis.astro.bodies
 
    pyxis.astro.bodies.artificial
    pyxis.astro.bodies.celestial
+   pyxis.astro.bodies.terrestrial
 
 .. automodule:: pyxis.astro.bodies
    :members:
