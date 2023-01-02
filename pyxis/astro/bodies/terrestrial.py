@@ -1,8 +1,9 @@
 from math import cos, sin
 
 from pyxis.astro.bodies.artificial import Spacecraft
-from pyxis.astro.coordinates import AzElRange, LLAstate
+from pyxis.astro.coordinates import AzElRange, ITRFstate, LLAstate
 from pyxis.math.linalg import Matrix3D, Vector3D
+from pyxis.time import Epoch
 
 
 class GroundSite:
@@ -23,6 +24,17 @@ class GroundSite:
             Vector3D(-spsi * clamb, -spsi * slamb, cpsi),
             Vector3D(cpsi * clamb, cpsi * slamb, spsi),
         )
+
+    @classmethod
+    def from_itrf_position(cls, itrf: Vector3D) -> "GroundSite":
+        """create a groundsite from cartesian coordinates
+
+        :param itrf: earth-fixed position of the groundsite
+        :type itrf: Vector3D
+        :return: object stationed at the input earth-fixed vector
+        :rtype: GroundSite
+        """
+        return cls(ITRFstate(Epoch(0), itrf, Vector3D(0, 0, 0)).lla_state())
 
     def enz_position(self, obj_itrf: Vector3D) -> Vector3D:
         """calculates the east-north-zenith coordinates of the argument position
