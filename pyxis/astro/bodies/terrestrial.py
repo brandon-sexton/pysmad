@@ -1,6 +1,7 @@
 from math import cos, sin
 
-from pyxis.astro.coordinates import LLAstate
+from pyxis.astro.bodies.artificial import Spacecraft
+from pyxis.astro.coordinates import AzElRange, LLAstate
 from pyxis.math.linalg import Matrix3D, Vector3D
 
 
@@ -32,3 +33,13 @@ class GroundSite:
         :rtype: Vector3D
         """
         return self.enz_matrix.multiply_vector(obj_itrf.minus(self.itrf_position))
+
+    def angles_and_range(self, target: Spacecraft) -> AzElRange:
+        """calculate the topo-centric angles and range to the argument spacecraft
+
+        :param target: spacecraft being observed
+        :type target: Spacecraft
+        :return: azimuth, elevation, and range to the spacecraft from the ground site
+        :rtype: AzElRange
+        """
+        return AzElRange.from_enz(self.enz_position(target.current_state().itrf_position()))
