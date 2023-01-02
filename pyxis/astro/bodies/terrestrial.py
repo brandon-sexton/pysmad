@@ -5,7 +5,7 @@ from pyxis.math.linalg import Matrix3D, Vector3D
 
 
 class GroundSite:
-    def __self__(self, lla: LLAstate) -> None:
+    def __init__(self, lla: LLAstate) -> None:
         """used for operations that require modeling of a terrestrial location
 
         :param lla: state that holds the latitude, longitude, and altitude of the ground station
