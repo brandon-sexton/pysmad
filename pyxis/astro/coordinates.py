@@ -47,34 +47,34 @@ class HillState:
         :return: relative state of the two inertial states
         :rtype: HillState
         """
-        magrtgt = origin.position.magnitude()
-        magrint = state.position.magnitude()
-        rot_eci_rsw = HillState.frame_matrix(origin)
-        vtgtrsw = rot_eci_rsw.multiply_vector(origin.velocity)
-        rintrsw = rot_eci_rsw.multiply_vector(state.position)
-        vintrsw = rot_eci_rsw.multiply_vector(state.velocity)
+        magrtgt: float = origin.position.magnitude()
+        magrint: float = state.position.magnitude()
+        rot_eci_rsw: Matrix3D = HillState.frame_matrix(origin)
+        vtgtrsw: Vector3D = rot_eci_rsw.multiply_vector(origin.velocity)
+        rintrsw: Vector3D = rot_eci_rsw.multiply_vector(state.position)
+        vintrsw: Vector3D = rot_eci_rsw.multiply_vector(state.velocity)
 
-        sinphiint = rintrsw.z / magrint
-        phiint = asin(sinphiint)
-        cosphiint = cos(phiint)
-        lambdaint = atan2(rintrsw.y, rintrsw.x)
-        sinlambdaint = sin(lambdaint)
-        coslambdaint = cos(lambdaint)
-        lambdadottgt = vtgtrsw.y / magrtgt
+        sinphiint: float = rintrsw.z / magrint
+        phiint: float = asin(sinphiint)
+        cosphiint: float = cos(phiint)
+        lambdaint: float = atan2(rintrsw.y, rintrsw.x)
+        sinlambdaint: float = sin(lambdaint)
+        coslambdaint: float = cos(lambdaint)
+        lambdadottgt: float = vtgtrsw.y / magrtgt
 
-        rhill = Vector3D(magrint - magrtgt, lambdaint * magrtgt, phiint * magrtgt)
+        rhill: Vector3D = Vector3D(magrint - magrtgt, lambdaint * magrtgt, phiint * magrtgt)
 
-        rot_rsw_sez = Matrix3D(
+        rot_rsw_sez: Matrix3D = Matrix3D(
             Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
             Vector3D(-sinlambdaint, coslambdaint, 0),
             Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
         )
 
-        vintsez = rot_rsw_sez.multiply_vector(vintrsw)
-        phidotint = -vintsez.x / magrint
-        lambdadotint = vintsez.y / (magrint * cosphiint)
+        vintsez: Vector3D = rot_rsw_sez.multiply_vector(vintrsw)
+        phidotint: float = -vintsez.x / magrint
+        lambdadotint: float = vintsez.y / (magrint * cosphiint)
 
-        vhill = Vector3D(
+        vhill: Vector3D = Vector3D(
             vintsez.z - vtgtrsw.x,
             magrtgt * (lambdadotint - lambdadottgt),
             magrtgt * phidotint,
