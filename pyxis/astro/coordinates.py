@@ -353,7 +353,7 @@ class Precession:
         return Matrix3D(
             Vector3D(-sz * sx + cz * cy * cx, -sz * cx - cz * cy * sx, -cz * sy),
             Vector3D(cz * sx + sz * cy * cx, cz * cx - sz * cy * sx, -sz * sy),
-            Vector3D(sy * cx, sy * sx, cy),
+            Vector3D(sy * cx, -sy * sx, cy),
         )
 
 
