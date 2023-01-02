@@ -91,9 +91,9 @@ class HillState:
         :return: matrix with rows of radial, in-track, and cross-track
         :rtype: Matrix3D
         """
-        r = origin.position.normalized()
-        c = origin.position.cross(origin.velocity).normalized()
-        i = c.cross(r)
+        r: Vector3D = origin.position.normalized()
+        c: Vector3D = origin.position.cross(origin.velocity).normalized()
+        i: Vector3D = c.cross(r)
         return Matrix3D(r, i, c)
 
     def copy(self) -> "HillState":
@@ -112,39 +112,39 @@ class HillState:
         :return: inertial state of the relative spacecraft
         :rtype: GCRFstate
         """
-        magrtgt = origin.position.magnitude()
-        magrint = magrtgt + self.position.x
-        rot_eci_rsw = HillState.frame_matrix(origin)
-        vtgtrsw = rot_eci_rsw.multiply_vector(origin.velocity)
+        magrtgt: float = origin.position.magnitude()
+        magrint: float = magrtgt + self.position.x
+        rot_eci_rsw: Matrix3D = HillState.frame_matrix(origin)
+        vtgtrsw: Vector3D = rot_eci_rsw.multiply_vector(origin.velocity)
 
-        lambdadottgt = vtgtrsw.y / magrtgt
-        lambdaint = self.position.y / magrtgt
-        phiint = self.position.z / magrtgt
-        sinphiint = sin(phiint)
-        cosphiint = cos(phiint)
-        sinlambdaint = sin(lambdaint)
-        coslambdaint = cos(lambdaint)
+        lambdadottgt: float = vtgtrsw.y / magrtgt
+        lambdaint: float = self.position.y / magrtgt
+        phiint: float = self.position.z / magrtgt
+        sinphiint: float = sin(phiint)
+        cosphiint: float = cos(phiint)
+        sinlambdaint: float = sin(lambdaint)
+        coslambdaint: float = cos(lambdaint)
 
-        rot_rsw_sez = Matrix3D(
+        rot_rsw_sez: Matrix3D = Matrix3D(
             Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
             Vector3D(-sinlambdaint, coslambdaint, 0),
             Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
         )
 
-        rdotint = self.velocity.x + vtgtrsw.x
-        lambdadotint = self.velocity.y / magrtgt + lambdadottgt
-        phidotint = self.velocity.z / magrtgt
-        vintsez = Vector3D(-magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint)
-        vintrsw = rot_rsw_sez.transpose().multiply_vector(vintsez)
-        vinteci = rot_eci_rsw.transpose().multiply_vector(vintrsw)
+        rdotint: float = self.velocity.x + vtgtrsw.x
+        lambdadotint: float = self.velocity.y / magrtgt + lambdadottgt
+        phidotint: float = self.velocity.z / magrtgt
+        vintsez: Vector3D = Vector3D(-magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint)
+        vintrsw: Vector3D = rot_rsw_sez.transpose().multiply_vector(vintsez)
+        vinteci: Vector3D = rot_eci_rsw.transpose().multiply_vector(vintrsw)
 
-        rintrsw = Vector3D(
+        rintrsw: Vector3D = Vector3D(
             cosphiint * magrint * coslambdaint,
             cosphiint * magrint * sinlambdaint,
             sinphiint * magrint,
         )
 
-        rinteci = rot_eci_rsw.transpose().multiply_vector(rintrsw)
+        rinteci: Vector3D = rot_eci_rsw.transpose().multiply_vector(rintrsw)
 
         return GCRFstate(origin.epoch, rinteci, vinteci)
 
