@@ -250,11 +250,11 @@ class GCRFstate:
         :return: list of velocity and acceleration
         :rtype: List[Vector3D]
         """
-        net_0 = Vector3D(0, 0, 0)
-        net_1 = net_0.plus(self.acceleration_from_moon())
-        net_2 = net_1.plus(self.acceleration_from_sun())
-        net_3 = net_2.plus(self.acceleration_from_srp())
-        net_a = net_3.plus(self.acceleration_from_earth())
+        net_0: Vector3D = Vector3D(0, 0, 0)
+        net_1: Vector3D = net_0.plus(self.acceleration_from_moon())
+        net_2: Vector3D = net_1.plus(self.acceleration_from_sun())
+        net_3: Vector3D = net_2.plus(self.acceleration_from_srp())
+        net_a: Vector3D = net_3.plus(self.acceleration_from_earth())
         return [self.velocity.copy(), net_a]
 
     def sun_vector(self) -> Vector3D:
@@ -279,8 +279,8 @@ class GCRFstate:
         :return: the position of the state in the itrf frame
         :rtype: Vector3D
         """
-        mod = Precession.matrix(self.epoch).multiply_vector(self.position)
-        tod = Nutation.matrix(self.epoch).multiply_vector(mod)
+        mod: Vector3D = Precession.matrix(self.epoch).multiply_vector(self.position)
+        tod: Vector3D = Nutation.matrix(self.epoch).multiply_vector(mod)
         return Rotation.matrix(self.epoch).multiply_vector(tod)
 
 
@@ -300,15 +300,15 @@ class Rotation:
         :return: transformation matrix
         :rtype: Matrix3D
         """
-        d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
-        arg1 = radians(125.0 - 0.05295 * d)
-        arg2 = radians(200.9 + 1.97129 * d)
-        a = radians(-0.0048)
-        b = radians(0.0004)
-        dpsi = a * sin(arg1) - b * sin(arg2)
-        eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
-        gmst = epoch.greenwich_hour_angle()
-        gast = dpsi * cos(eps) + gmst
+        d: float = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        arg1: float = radians(125.0 - 0.05295 * d)
+        arg2: float = radians(200.9 + 1.97129 * d)
+        a: float = radians(-0.0048)
+        b: float = radians(0.0004)
+        dpsi: float = a * sin(arg1) - b * sin(arg2)
+        eps: float = Earth.obliquity_of_ecliptic_at_epoch(epoch)
+        gmst: float = epoch.greenwich_hour_angle()
+        gast: float = dpsi * cos(eps) + gmst
         return Vector3D.rotation_matrix(Vector3D(0, 0, 1), -gast)
 
 
@@ -328,20 +328,20 @@ class Precession:
         :return: transformation matrix
         :rtype: Matrix3D
         """
-        t = epoch.julian_centuries_past_j2000()
-        a = Conversions.dms_to_radians(0, 0, 2306.2181)
-        b = Conversions.dms_to_radians(0, 0, 0.30188)
-        c = Conversions.dms_to_radians(0, 0, 0.017998)
-        x = a * t + b * t * t + c * t * t * t
+        t: float = epoch.julian_centuries_past_j2000()
+        a: float = Conversions.dms_to_radians(0, 0, 2306.2181)
+        b: float = Conversions.dms_to_radians(0, 0, 0.30188)
+        c: float = Conversions.dms_to_radians(0, 0, 0.017998)
+        x: float = a * t + b * t * t + c * t * t * t
 
         a = Conversions.dms_to_radians(0, 0, 2004.3109)
         b = Conversions.dms_to_radians(0, 0, 0.42665)
         c = Conversions.dms_to_radians(0, 0, 0.041833)
-        y = a * t - b * t * t - c * t * t * t
+        y: float = a * t - b * t * t - c * t * t * t
 
         a = Conversions.dms_to_radians(0, 0, 0.7928)
         b = Conversions.dms_to_radians(0, 0, 0.000205)
-        z = x + a * t * t + b * t * t * t
+        z: float = x + a * t * t + b * t * t * t
 
         sz = sin(z)
         sy = sin(y)
@@ -350,19 +350,11 @@ class Precession:
         cy = cos(y)
         cx = cos(x)
 
-        p11 = -sz * sx + cz * cy * cx
-        p21 = cz * sx + sz * cy * cx
-        p31 = sy * cx
-
-        p12 = -sz * cx - cz * cy * sx
-        p22 = cz * cx - sz * cy * sx
-        p32 = -sy * sx
-
-        p13 = -cz * sy
-        p23 = -sz * sy
-        p33 = cy
-
-        return Matrix3D(Vector3D(p11, p12, p13), Vector3D(p21, p22, p23), Vector3D(p31, p32, p33))
+        return Matrix3D(
+            Vector3D(-sz * sx + cz * cy * cx, -sz * cx - cz * cy * sx, -cz * sy),
+            Vector3D(cz * sx + sz * cy * cx, cz * cx - sz * cy * sx, -sz * sy),
+            Vector3D(sy * cx, sy * sx, cy),
+        )
 
 
 class Nutation:
@@ -438,47 +430,47 @@ class ITRFstate:
         :return: geodetic lat, long, altitude of the ecf position
         :rtype: LLAstate
         """
-        pos = self.position
-        x = pos.x
-        y = pos.y
-        z = pos.z
+        pos: Vector3D = self.position
+        x: float = pos.x
+        y: float = pos.y
+        z: float = pos.z
 
         # Equation 2.77a
-        a2 = Earth.RADIUS * Earth.RADIUS
-        f = Earth.FLATTENING
-        e2 = f * (2.0 - f)
-        b2 = a2 - e2 * a2
-        eps2 = a2 / b2 - 1.0
-        rho = sqrt(x * x + y * y)
+        a2: float = Earth.RADIUS * Earth.RADIUS
+        f: float = Earth.FLATTENING
+        e2: float = f * (2.0 - f)
+        b2: float = a2 - e2 * a2
+        eps2: float = a2 / b2 - 1.0
+        rho: float = sqrt(x * x + y * y)
 
         # Equation 2.77b
-        p = abs(z) / eps2
-        s = rho * rho / (e2 * eps2)
-        q = p * p - b2 + s
+        p: float = abs(z) / eps2
+        s: float = rho * rho / (e2 * eps2)
+        q: float = p * p - b2 + s
 
         # Equation 2.77c
-        u = p / sqrt(q)
-        v = b2 * u * u / q
-        capP = 27.0 * v * s / q
-        capQ = (sqrt(capP + 1) + sqrt(capP)) ** 2.0 / 3.0
+        u: float = p / sqrt(q)
+        v: float = b2 * u * u / q
+        cap_p: float = 27.0 * v * s / q
+        cap_q: float = (sqrt(cap_p + 1) + sqrt(cap_p)) ** 2.0 / 3.0
 
         # Equation 2.77d
-        t = (1.0 + capQ + 1.0 / capQ) / 6.0
-        c = sqrt(u * u - 1.0 + 2.0 * t)
-        w = (c - u) / 2.0
+        t: float = (1.0 + cap_q + 1.0 / cap_q) / 6.0
+        c: float = sqrt(u * u - 1.0 + 2.0 * t)
+        w: float = (c - u) / 2.0
 
         # Equation 2.77e
-        base = sqrt(t * t + v) - u * w - t / 2.0 - 0.25
-        arg = w + sqrt(base)
-        d = sign(z) * sqrt(q) * arg
+        base: float = sqrt(t * t + v) - u * w - t / 2.0 - 0.25
+        arg: float = w + sqrt(base)
+        d: float = sign(z) * sqrt(q) * arg
 
         # Equation 2.77f
-        n = sqrt(a2) * sqrt(1.0 + eps2 * d * d / b2)
-        lamb = asin((eps2 + 1.0) * (d / n))
+        n: float = sqrt(a2) * sqrt(1.0 + eps2 * d * d / b2)
+        lamb: float = asin((eps2 + 1.0) * (d / n))
 
         # Equation 2.77g
-        h = rho * cos(lamb) + z * sin(lamb) - a2 / n
-        phi = atan2(y, x)
+        h: float = rho * cos(lamb) + z * sin(lamb) - a2 / n
+        phi: float = atan2(y, x)
         if phi < 0:
             phi += pi * 2.0
 
@@ -504,3 +496,31 @@ class LLAstate:
 
         #: altitude above the surface in km
         self.altitude: float = alt
+
+    def copy(self) -> "LLAstate":
+        """creates a duplicate of the calling state
+
+        :return: state with properties that match that of the calling state
+        :rtype: LLAstate
+        """
+        return LLAstate(self.latitude, self.longitude, self.altitude)
+
+    def itrf_position(self) -> Vector3D:
+        """creates a cartesian vector to represent the lat, long, and altitude
+
+        :return: the earth-fixed cartesian position of the lat, long, and altitude
+        :rtype: Vector3D
+        """
+        lat: float = self.latitude
+        longitude: float = self.longitude
+        alt: float = self.altitude
+
+        f: float = Earth.FLATTENING
+        e: float = sqrt(f * (2 - f))
+        slat: float = sin(lat)
+        clat: float = cos(lat)
+        n: float = Earth.RADIUS / sqrt(1 - e * e * slat * slat)
+
+        return Vector3D(
+            (n + alt) * clat * cos(longitude), (n + alt) * clat * sin(longitude), (n * (1.0 - e * e) + alt) * slat
+        )
