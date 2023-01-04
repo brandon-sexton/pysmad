@@ -1,4 +1,4 @@
-name: test pyxis
+name: test
 
 on:
   push:
