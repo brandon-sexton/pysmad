@@ -20,3 +20,5 @@ jobs:
       run: |
         python -m build
         twine upload --repository-url https://github.com/brandon-sexton/pyxis/packages dist/*
+      with:
+        password: ${{ secrets.PYXIS_DISTRIBUTION_TOKEN }}
