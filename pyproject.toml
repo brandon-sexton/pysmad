@@ -1,5 +1,5 @@
 [project]
-name = "pyxis"
+name = "pyxis-toolkit"
 version = "1.0.0"
 description = "astrodynamics analysis and simulation package"
 readme = "README.md"
@@ -10,7 +10,7 @@ authors = [
 ]
 
 [project.urls]
-"Homepage" = "https://rogue-solutions.github.io/pyxis/"
+"Homepage" = "https://pyxis-docs.com/"
 
 [build-system]
 requires = ["setuptools>=43.0.0", "wheel"]
