@@ -1,5 +1,6 @@
 from math import cos, radians, sin
 
+from pyxis.astro.geopotential import EGM2008
 from pyxis.math.functions import Conversions
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
@@ -7,16 +8,16 @@ from pyxis.time import Epoch
 
 class Earth:
 
-    """Class used to store Earth properties base on the WGS84 model"""
+    """Class used to store Earth properties"""
 
     #: G*M given in km^3/s^2
-    MU: float = 398600.4418
+    MU: float = EGM2008.MU
 
     #: distance from earth center to surface at the equator in km
-    RADIUS: float = 6378.137
+    RADIUS: float = EGM2008.RADIUS
 
     #: value defining the ellipsoid of an oblate earth
-    FLATTENING: float = 1 / 298.257223563
+    FLATTENING: float = EGM2008.FLATTENING
 
     #: inclination of ecliptic relative to earth equator in radians
     OBLIQUITY_OF_ECLIPTIC: float = radians(23.43929111)
