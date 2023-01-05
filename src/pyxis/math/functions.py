@@ -1,4 +1,5 @@
-from math import radians
+from math import cos, radians, sin, sqrt
+from typing import List
 
 from pyxis.math.constants import HOURS_IN_DAY, MINUTES_IN_DAY, MINUTES_IN_HOUR, SECONDS_IN_DAY, SECONDS_IN_HOUR
 
@@ -55,3 +56,37 @@ def sign(num: float) -> float:
     elif num < 0:
         val = -1
     return val
+
+
+s3: float = sqrt(3)
+s5: float = sqrt(5)
+s7: float = sqrt(7)
+s105: float = s3 * s5 * s7
+
+
+class LegendrePolynomial:
+    def __init__(self, phi: float) -> None:
+        self.phi: float = phi
+        cp: float = cos(phi)
+        sp: float = sin(phi)
+        cp2: float = cp * cp
+        sp2: float = sp * sp
+
+        self.p: List[List[float]] = [
+            [1],
+            [s3 * cp, s3 * sp],
+            [s5 * (3 * cp2 - 1) * 0.5, s3 * s5 * sp * cp, s3 * s5 * sp * cp],
+            [
+                s7 * (5 * cp2 * cp - 3 * cp) * 0.5,
+                s3 * s7 * (5 * cp2 - 1) * sp * 0.5,
+                s105 * cp * sp2,
+                s7 * s5 * sp2 * sp,
+            ],
+            [
+                0.375 * (35 * cp2 * cp2 - 30 * cp2 + 3),
+                0.75 * s5 * (7 * cp2 * cp - 3 * cp) * sp,
+                s105 * (7 * cp2 - 1) * sp2 * 0.5,
+                s105 * cp * sp2 * sp,
+                3 * sp2 * sp2,
+            ],
+        ]
