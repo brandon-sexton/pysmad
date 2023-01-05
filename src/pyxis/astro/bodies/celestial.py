@@ -1,6 +1,6 @@
 from math import cos, radians, sin
 
-from pyxis.astro.geopotential import EGM2008
+from pyxis.astro.bodies.geopotential import EGM2008
 from pyxis.math.functions import Conversions
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
