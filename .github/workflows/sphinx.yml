@@ -25,6 +25,7 @@ jobs:
         cd ../
         mv ./docs/build/html/ ../docs/
         cp ./docs/.nojekyll ../docs/
+        cp ./docs/CNAME ../docs/
         git rm -rf '*'
         cp -r ../docs/ ./
     - name: deploy
