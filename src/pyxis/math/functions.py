@@ -66,12 +66,17 @@ s105: float = s3 * s5 * s7
 
 class LegendrePolynomial:
     def __init__(self, phi: float) -> None:
-        self.phi: float = phi
+        """stores the explicit solution to normalized legendre polynomials used in the geopotential calculations
+
+        :param phi: geodetic latitude in radians
+        :type phi: float
+        """
         cp: float = cos(phi)
         sp: float = sin(phi)
         cp2: float = cp * cp
         sp2: float = sp * sp
 
+        #: the polynomial list of lists with indices n, m
         self.p: List[List[float]] = [
             [1],
             [s3 * cp, s3 * sp],
