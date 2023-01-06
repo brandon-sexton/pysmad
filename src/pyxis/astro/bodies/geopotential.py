@@ -4,6 +4,7 @@ from typing import List
 class EGM2008:
     """class used to store the normalized coefficients of the EGM2008 model"""
 
+    #: normalized c coefficients used for geopotential calculation
     C: List[List[float]] = [
         [1],
         [0, 0],
@@ -18,6 +19,7 @@ class EGM2008:
         ],
     ]
 
+    #: normalized s coefficients used for geopotential calculation
     S: List[List[float]] = [
         [0],
         [0, 0],
