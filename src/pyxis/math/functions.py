@@ -1,7 +1,17 @@
-from math import cos, radians, sin, sqrt
+from math import cos, radians, sin
 from typing import List
 
-from pyxis.math.constants import HOURS_IN_DAY, MINUTES_IN_DAY, MINUTES_IN_HOUR, SECONDS_IN_DAY, SECONDS_IN_HOUR
+from pyxis.math.constants import (
+    HOURS_IN_DAY,
+    MINUTES_IN_DAY,
+    MINUTES_IN_HOUR,
+    SECONDS_IN_DAY,
+    SECONDS_IN_HOUR,
+    SQRT3,
+    SQRT5,
+    SQRT7,
+    SQRT105,
+)
 
 
 class Conversions:
@@ -58,12 +68,6 @@ def sign(num: float) -> float:
     return val
 
 
-s3: float = sqrt(3)
-s5: float = sqrt(5)
-s7: float = sqrt(7)
-s105: float = s3 * s5 * s7
-
-
 class LegendrePolynomial:
     def __init__(self, phi: float) -> None:
         """stores the explicit solution to normalized legendre polynomials used in the geopotential calculations
@@ -71,27 +75,31 @@ class LegendrePolynomial:
         :param phi: geodetic latitude in radians
         :type phi: float
         """
-        cp: float = cos(phi)
-        sp: float = sin(phi)
-        cp2: float = cp * cp
-        sp2: float = sp * sp
+        cos_phi: float = cos(phi)
+        sin_phi: float = sin(phi)
+        cos_phi_squared: float = cos_phi * cos_phi
+        sin_phi_squared: float = sin_phi * sin_phi
 
         #: the polynomial list of lists with indices n, m
         self.p: List[List[float]] = [
             [1],
-            [s3 * cp, s3 * sp],
-            [s5 * (3 * cp2 - 1) * 0.5, s3 * s5 * sp * cp, s3 * s5 * sp * cp],
+            [SQRT3 * cos_phi, SQRT3 * sin_phi],
             [
-                s7 * (5 * cp2 * cp - 3 * cp) * 0.5,
-                s3 * s7 * (5 * cp2 - 1) * sp * 0.5,
-                s105 * cp * sp2,
-                s7 * s5 * sp2 * sp,
+                SQRT5 * (3 * cos_phi_squared - 1) * 0.5,
+                SQRT3 * SQRT5 * sin_phi * cos_phi,
+                SQRT3 * SQRT5 * sin_phi * cos_phi,
             ],
             [
-                0.375 * (35 * cp2 * cp2 - 30 * cp2 + 3),
-                0.75 * s5 * (7 * cp2 * cp - 3 * cp) * sp,
-                s105 * (7 * cp2 - 1) * sp2 * 0.5,
-                s105 * cp * sp2 * sp,
-                3 * sp2 * sp2,
+                SQRT7 * (5 * cos_phi_squared * cos_phi - 3 * cos_phi) * 0.5,
+                SQRT3 * SQRT7 * (5 * cos_phi_squared - 1) * sin_phi * 0.5,
+                SQRT105 * cos_phi * sin_phi_squared,
+                SQRT7 * SQRT5 * sin_phi_squared * sin_phi,
+            ],
+            [
+                0.375 * (35 * cos_phi_squared * cos_phi_squared - 30 * cos_phi_squared + 3),
+                0.75 * SQRT5 * (7 * cos_phi_squared * cos_phi - 3 * cos_phi) * sin_phi,
+                SQRT105 * (7 * cos_phi_squared - 1) * sin_phi_squared * 0.5,
+                SQRT105 * cos_phi * sin_phi_squared * sin_phi,
+                3 * sin_phi_squared * sin_phi_squared,
             ],
         ]
