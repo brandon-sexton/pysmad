@@ -1,8 +1,8 @@
-from math import asin, atan2, cos, pi, radians, sin, sqrt
+from math import asin, atan2, cos, pi, radians, sin, sqrt, tan
 from typing import List
 
 from pyxis.astro.bodies.celestial import Earth, Moon, Sun
-from pyxis.math.functions import Conversions, sign
+from pyxis.math.functions import Conversions, LegendrePolynomial, sign
 from pyxis.math.linalg import Matrix3D, Vector3D, Vector6D
 from pyxis.time import Epoch
 
@@ -205,7 +205,67 @@ class GCRFstate:
         :rtype: Vector3D
         """
         r_mag: float = self.position.magnitude()
-        return self.position.scaled(-Earth.MU / (r_mag * r_mag * r_mag))
+
+        a: Vector3D
+
+        if Earth.USE_GEODETIC_MODEL:
+            ecef: ITRFstate = ITRFstate(self.epoch, self.itrf_position(), Vector3D(0, 0, 0))
+            lla: LLAstate = ecef.lla_state()
+            p: List[List[float]] = LegendrePolynomial(lla.latitude).p
+
+            m: int = 0
+            n: int = 2
+
+            partial_r: float = 0
+            partial_phi: float = 0
+            partial_lamb: float = 0
+            recip_r: float = 1 / r_mag
+            mu_over_r: float = Earth.MU * recip_r
+            r_over_r: float = Earth.RADIUS * recip_r
+            r_exponent: float = 0
+            clam: float = 0
+            slam: float = 0
+            recip_root: float = 1 / sqrt(ecef.position.x * ecef.position.x + ecef.position.y * ecef.position.y)
+            rz_over_root: float = ecef.position.z * recip_r * recip_r * recip_root
+            while n < Earth.DEGREE_AND_ORDER:
+                m = 0
+                r_exponent = r_over_r**n
+                while m <= n:
+                    clam = cos(m * lla.longitude)
+                    slam = sin(m * lla.longitude)
+
+                    partial_r += r_exponent * (n + 1) * p[n][m] * (Earth.C[n][m] * clam + Earth.S[n][m] * slam)
+                    partial_phi += (
+                        r_exponent
+                        * (p[n][m + 1] - m * tan(lla.latitude) * p[n][m])
+                        * (Earth.C[n][m] * clam + Earth.S[n][m] * slam)
+                    )
+                    partial_lamb += r_exponent * m * p[n][m] * (Earth.S[n][m] * clam - Earth.C[n][m] * slam)
+
+                    m += 1
+
+                n += 1
+
+            partial_r *= -recip_r
+            partial_r *= mu_over_r
+            partial_phi *= mu_over_r
+            partial_lamb *= mu_over_r
+
+            a = Vector3D(
+                (recip_r * partial_r - rz_over_root * partial_phi) * ecef.position.x
+                - (recip_root * recip_root * partial_lamb) * ecef.position.y
+                - mu_over_r * recip_r,
+                (recip_r * partial_r - rz_over_root * partial_phi) * ecef.position.y
+                + (recip_root * recip_root * partial_lamb) * ecef.position.x
+                - mu_over_r * recip_r,
+                recip_r * partial_r * ecef.position.z
+                + (1 / recip_root) * recip_r * recip_r * partial_phi
+                - mu_over_r * recip_r,
+            )
+        else:
+            a = self.position.scaled(-Earth.MU / (r_mag * r_mag * r_mag))
+
+        return a
 
     def acceleration_from_moon(self) -> Vector3D:
         """calculate the acceleration on the state due to the moon
@@ -466,7 +526,12 @@ class ITRFstate:
 
         # Equation 2.77f
         n: float = sqrt(a2) * sqrt(1.0 + eps2 * d * d / b2)
-        lamb: float = asin((eps2 + 1.0) * (d / n))
+        arg = (eps2 + 1.0) * (d / n)
+        if arg > 1:
+            arg = 1
+        elif arg < -1:
+            arg = -1
+        lamb: float = asin(arg)
 
         # Equation 2.77g
         h: float = rho * cos(lamb) + z * sin(lamb) - a2 / n

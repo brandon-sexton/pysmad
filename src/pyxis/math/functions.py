@@ -82,18 +82,20 @@ class LegendrePolynomial:
 
         #: the polynomial list of lists with indices n, m
         self.p: List[List[float]] = [
-            [1],
-            [SQRT3 * cos_phi, SQRT3 * sin_phi],
+            [1, 0],
+            [SQRT3 * cos_phi, SQRT3 * sin_phi, 0],
             [
                 SQRT5 * (3 * cos_phi_squared - 1) * 0.5,
                 SQRT3 * SQRT5 * sin_phi * cos_phi,
                 SQRT3 * SQRT5 * sin_phi * cos_phi,
+                0,
             ],
             [
                 SQRT7 * (5 * cos_phi_squared * cos_phi - 3 * cos_phi) * 0.5,
                 SQRT3 * SQRT7 * (5 * cos_phi_squared - 1) * sin_phi * 0.5,
                 SQRT105 * cos_phi * sin_phi_squared,
                 SQRT7 * SQRT5 * sin_phi_squared * sin_phi,
+                0,
             ],
             [
                 0.375 * (35 * cos_phi_squared * cos_phi_squared - 30 * cos_phi_squared + 3),
@@ -101,5 +103,6 @@ class LegendrePolynomial:
                 SQRT105 * (7 * cos_phi_squared - 1) * sin_phi_squared * 0.5,
                 SQRT105 * cos_phi * sin_phi_squared * sin_phi,
                 3 * sin_phi_squared * sin_phi_squared,
+                0,
             ],
         ]
