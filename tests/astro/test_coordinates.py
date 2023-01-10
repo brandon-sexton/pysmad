@@ -17,9 +17,16 @@ class TestGCRFstate(unittest.TestCase):
         self.assertAlmostEqual(itrf.y, -41216.97127606, 0)
         self.assertAlmostEqual(itrf.z, -4978.360362079, 0)
 
+    def test_total_acceleration_from_earth(self):
+        a = self.EARTH_SURFACE.acceleration_from_gravity().plus(self.EARTH_SURFACE.acceleration_from_earth())
+        self.assertAlmostEqual(0.009814696076649412, a.magnitude())
+
+    def test_acceleration_from_gravity(self):
+        a = self.EARTH_SURFACE.acceleration_from_gravity()
+        self.assertAlmostEqual(1.5990836818112354e-05, a.magnitude())
+
     def test_acceleration_from_earth(self):
         a = self.EARTH_SURFACE.acceleration_from_earth()
-        self.assertAlmostEqual(0, a.z)
         self.assertAlmostEqual(0.00979870641977297, a.magnitude())
 
 

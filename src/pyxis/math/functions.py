@@ -1,17 +1,7 @@
 from math import cos, radians, sin
 from typing import List
 
-from pyxis.math.constants import (
-    HOURS_IN_DAY,
-    MINUTES_IN_DAY,
-    MINUTES_IN_HOUR,
-    SECONDS_IN_DAY,
-    SECONDS_IN_HOUR,
-    SQRT3,
-    SQRT5,
-    SQRT7,
-    SQRT105,
-)
+from pyxis.math.constants import HOURS_IN_DAY, MINUTES_IN_DAY, MINUTES_IN_HOUR, SECONDS_IN_DAY, SECONDS_IN_HOUR
 
 
 class Conversions:
@@ -83,26 +73,26 @@ class LegendrePolynomial:
         #: the polynomial list of lists with indices n, m
         self.p: List[List[float]] = [
             [1, 0],
-            [SQRT3 * cos_phi, SQRT3 * sin_phi, 0],
+            [sin_phi, cos_phi, 0],
             [
-                SQRT5 * (3 * cos_phi_squared - 1) * 0.5,
-                SQRT3 * SQRT5 * sin_phi * cos_phi,
-                SQRT3 * SQRT5 * sin_phi * cos_phi,
+                (3 * sin_phi_squared - 1) * 0.5,
+                3 * sin_phi * cos_phi,
+                3 * cos_phi_squared,
                 0,
             ],
             [
-                SQRT7 * (5 * cos_phi_squared * cos_phi - 3 * cos_phi) * 0.5,
-                SQRT3 * SQRT7 * (5 * cos_phi_squared - 1) * sin_phi * 0.5,
-                SQRT105 * cos_phi * sin_phi_squared,
-                SQRT7 * SQRT5 * sin_phi_squared * sin_phi,
+                sin_phi * (5 * sin_phi_squared - 3) * 0.5,
+                (15 * sin_phi_squared - 3) * cos_phi * 0.5,
+                15 * sin_phi * cos_phi_squared,
+                15 * cos_phi_squared * cos_phi,
                 0,
             ],
             [
-                0.375 * (35 * cos_phi_squared * cos_phi_squared - 30 * cos_phi_squared + 3),
-                0.75 * SQRT5 * (7 * cos_phi_squared * cos_phi - 3 * cos_phi) * sin_phi,
-                SQRT105 * (7 * cos_phi_squared - 1) * sin_phi_squared * 0.5,
-                SQRT105 * cos_phi * sin_phi_squared * sin_phi,
-                3 * sin_phi_squared * sin_phi_squared,
+                0.125 * (35 * sin_phi_squared * sin_phi_squared - 30 * sin_phi_squared + 3),
+                2.5 * (7 * sin_phi_squared * sin_phi - 3 * sin_phi) * cos_phi,
+                (7 * sin_phi_squared - 1) * cos_phi_squared * 7.5,
+                105 * cos_phi * cos_phi_squared * sin_phi,
+                105 * cos_phi_squared * cos_phi_squared,
                 0,
             ],
         ]
