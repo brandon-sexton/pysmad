@@ -79,6 +79,14 @@ class Spacecraft:
 
         self.update_attitude()
 
+    def impulsive_maneuver(self, ric_burn: Vector3D) -> None:
+        """applies a velocity change to the current state to model an instant maneuver
+
+        :param ric_burn: burn vector with components of radial, in-track, and cross-track (km/s)
+        :type ric_burn: Vector3D
+        """
+        self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
+
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
 
