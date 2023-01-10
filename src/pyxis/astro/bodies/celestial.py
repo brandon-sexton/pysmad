@@ -1,4 +1,5 @@
-from math import cos, radians, sin
+from math import cos, radians, sin, sqrt
+from typing import List
 
 from pyxis.math.functions import Conversions
 from pyxis.math.linalg import Vector3D
@@ -7,7 +8,50 @@ from pyxis.time import Epoch
 
 class Earth:
 
-    """Class used to store Earth properties base on the WGS84 model"""
+    """Class used to store Earth properties"""
+
+    #: normalized c coefficients used for geopotential calculation
+    C: List[List[float]] = [
+        [1],
+        [0, 0],
+        [-0.484165143790815e-3 / sqrt(0.2), -0.206615509074176e-9 / sqrt(0.6), 0.243938357328313e-5 / sqrt(2.4)],
+        [
+            0.957161207093473e-6 / sqrt(1 / 7),
+            0.203046201047864e-5 / sqrt(6 / 7),
+            0.904787894809528e-6 / sqrt(60 / 7),
+            0.721321757121568e-6 / sqrt(360 / 7),
+        ],
+        [
+            0.539965866638991e-6 / sqrt(24 / 216),
+            -0.536157389388867e-6 / sqrt(10 / 9),
+            0.350501623962649e-6 / sqrt(20),
+            0.990856766672321e-6 / sqrt(280),
+            -0.188519633023033e-6 / sqrt(2240),
+        ],
+    ]
+
+    #: normalized s coefficients used for geopotential calculation
+    S: List[List[float]] = [
+        [0],
+        [0, 0],
+        [0, 0.138441389137979e-8 / sqrt(0.6), -0.140027370385934e-5 / sqrt(2.4)],
+        [
+            0,
+            0.248200415856872e-6 / sqrt(6 / 7),
+            -0.619005475177618e-6 / sqrt(60 / 7),
+            0.141434926192941e-5 / sqrt(360 / 7),
+        ],
+        [
+            0,
+            -0.473567346518086e-6 / sqrt(10 / 9),
+            0.662480026275829e-6 / sqrt(20),
+            -0.200956723567452e-6 / sqrt(280),
+            0.308803882149194e-6 / sqrt(2240),
+        ],
+    ]
+
+    #: the number of zonal and tesseral terms to be used in the gravity calculation
+    DEGREE_AND_ORDER: int = len(S)
 
     #: G*M given in km^3/s^2
     MU: float = 398600.4418
@@ -16,10 +60,13 @@ class Earth:
     RADIUS: float = 6378.137
 
     #: value defining the ellipsoid of an oblate earth
-    FLATTENING: float = 1 / 298.257223563
+    FLATTENING: float = 1 / 298.2572235
 
     #: inclination of ecliptic relative to earth equator in radians
     OBLIQUITY_OF_ECLIPTIC: float = radians(23.43929111)
+
+    #: boolean identifying if gravity will be modeled as a point-source or with non-spherical methods
+    USE_GEODETIC_MODEL = True
 
     @staticmethod
     def obliquity_of_ecliptic_at_epoch(epoch: Epoch) -> float:
