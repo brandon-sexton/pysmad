@@ -32,10 +32,10 @@ class Spacecraft:
     DEFAULT_POINTING_ACCURACY: float = 1e-5
 
     #: Default dry mass of the spacecraft at launch (kg)
-    DEFAULT_MASS: float = 800
+    DEFAULT_MASS: float = 300
 
     #: Default propellant mass of the spacecraft at launch (kg)
-    DEFAULT_PROP_MASS: float = 200
+    DEFAULT_PROP_MASS: float = 100
 
     #: Default mass flow rate used to calculate thrust
     DEFAULT_M_DOT: float = 0.003
@@ -128,7 +128,13 @@ class Spacecraft:
         :type dt: float
         """
         ric_a: Vector3D = ric_direction.normalized().scaled(self.m_dot * self.isp * SEA_LEVEL_G / self.total_mass())
-        self.propagator.maneuver(HillState.frame_matrix(self.current_state()).multiply_vector(ric_a), dt)
+        self.propagator.maneuver(
+            HillState.frame_matrix(self.current_state()).multiply_vector(ric_a),
+            dt,
+            self.m_dot,
+            self.total_mass(),
+            self.isp,
+        )
 
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
