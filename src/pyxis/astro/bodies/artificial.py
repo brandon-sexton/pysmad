@@ -32,10 +32,10 @@ class Spacecraft:
     DEFAULT_POINTING_ACCURACY: float = 1e-5
 
     #: Default dry mass of the spacecraft at launch (kg)
-    DEFAULT_MASS: float = 300
+    DEFAULT_MASS: float = 600
 
     #: Default propellant mass of the spacecraft at launch (kg)
-    DEFAULT_PROP_MASS: float = 100
+    DEFAULT_PROP_MASS: float = 200
 
     #: Default mass flow rate used to calculate thrust
     DEFAULT_M_DOT: float = 0.003
