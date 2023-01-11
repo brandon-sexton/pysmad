@@ -9,7 +9,7 @@ from pyxis.astro.propagators.relative import Hill
 from pyxis.estimation.filtering import RelativeKalman
 from pyxis.estimation.obs import PositionOb
 from pyxis.hardware.payloads import Camera
-from pyxis.math.constants import SECONDS_IN_DAY
+from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
@@ -30,6 +30,18 @@ class Spacecraft:
 
     #: Default tolerance to use for statistical attitude modeling (radians)
     DEFAULT_POINTING_ACCURACY: float = 1e-5
+
+    #: Default dry mass of the spacecraft at launch (kg)
+    DEFAULT_MASS: float = 800
+
+    #: Default propellant mass of the spacecraft at launch (kg)
+    DEFAULT_PROP_MASS: float = 200
+
+    #: Default mass flow rate used to calculate thrust
+    DEFAULT_M_DOT: float = 0.003
+
+    #: Default specific impulse of the propellant used to calculate thrust
+    DEFAULT_ISP: float = 350
 
     def __init__(self, state: GCRFstate) -> None:
         """class used to model the behaviors of man-made satellites
@@ -77,7 +89,27 @@ class Spacecraft:
         #: Used to apply noise to attitude vectors
         self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
 
+        #: Mass flow rate used to perform finite maneuvers
+        self.m_dot = Spacecraft.DEFAULT_M_DOT
+
+        #: specific impulse used to perform finite maneuvers
+        self.isp = Spacecraft.DEFAULT_ISP
+
+        #: Mass of the spacecraft without propellant included
+        self.dry_mass = Spacecraft.DEFAULT_MASS
+
+        #: Mass of the propellant on the spacecraft
+        self.propellant_mass = Spacecraft.DEFAULT_PROP_MASS
+
         self.update_attitude()
+
+    def total_mass(self) -> float:
+        """calculates the mass of the bus plus propellant
+
+        :return: wet mass of the spacecraft (kg)
+        :rtype: float
+        """
+        return self.dry_mass + self.propellant_mass
 
     def impulsive_maneuver(self, ric_burn: Vector3D) -> None:
         """applies a velocity change to the current state to model an instant maneuver
@@ -87,18 +119,16 @@ class Spacecraft:
         """
         self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
 
-    def finite_maneuver(self, ric_a: Vector3D, dt: float) -> None:
+    def finite_maneuver(self, ric_direction: Vector3D, dt: float) -> None:
         """perform a maneuver using ric acceleration accross a specified time
 
-        :param ric_a: acceleration in the radial, in-track, and cross-track components (km/s^2)
-        :type ric_a: Vector3D
+        :param ric_direction: direction of maneuver in the radial, in-track, and cross-track components (km/s)
+        :type ric_direction: Vector3D
         :param dt: duration of the maneuver in days
         :type dt: float
         """
-        net_gcrf_state: GCRFstate = GCRFstate.from_hill(
-            self.current_state(), HillState(Vector3D(0, 0, 0), ric_a.scaled(dt * SECONDS_IN_DAY))
-        )
-        self.propagator.maneuver(net_gcrf_state.velocity.minus(self.velocity()), dt)
+        ric_a: Vector3D = ric_direction.normalized().scaled(self.m_dot * self.isp * SEA_LEVEL_G / self.total_mass())
+        self.propagator.maneuver(HillState.frame_matrix(self.current_state()).multiply_vector(ric_a), dt)
 
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
