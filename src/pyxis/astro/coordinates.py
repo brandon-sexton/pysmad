@@ -305,6 +305,11 @@ class GCRFstate:
         return sun_vec.scaled(-Sun.P * 3.6e-5)
 
     def acceleration_from_thrust(self) -> Vector3D:
+        """retrieve the stored acceleration to be applied from thrusters
+
+        :return: the current acceleration vector in the GCRF frame
+        :rtype: Vector3D
+        """
         return self.thrust.copy()
 
     def derivative(self) -> List[Vector3D]:
