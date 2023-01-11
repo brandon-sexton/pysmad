@@ -87,6 +87,19 @@ class Spacecraft:
         """
         self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
 
+    def finite_maneuver(self, ric_a: Vector3D, dt: float) -> None:
+        """perform a maneuver using ric acceleration accross a specified time
+
+        :param ric_a: acceleration in the radial, in-track, and cross-track components (km/s^2)
+        :type ric_a: Vector3D
+        :param dt: duration of the maneuver in days
+        :type dt: float
+        """
+        net_gcrf_state: GCRFstate = GCRFstate.from_hill(
+            self.current_state(), HillState(Vector3D(0, 0, 0), ric_a.scaled(dt * SECONDS_IN_DAY))
+        )
+        self.propagator.maneuver(net_gcrf_state.velocity.minus(self.velocity()), dt)
+
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
 

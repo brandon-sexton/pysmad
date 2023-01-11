@@ -57,6 +57,18 @@ class RK4:
             self.state.velocity.plus(da.scaled(h)),
         )
 
+    def maneuver(self, gcrf_thrust: Vector3D, dv_duration: float) -> None:
+        """advance the propagator using a specified thrust
+
+        :param gcrf_thrust: net maneuver components in the gcrf frame
+        :type gcrf_thrust: Vector3D
+        :param dv_duration: duration of the maneuver in days
+        :type dv_duration: float
+        """
+        self.state.thrust = gcrf_thrust.copy()
+        self.step_to_epoch(self.state.epoch.plus_days(dv_duration))
+        self.state.thrust = Vector3D(0, 0, 0)
+
     def step_to_epoch(self, epoch: Epoch) -> None:
         """advance the propagator state to the argument epoch
 
