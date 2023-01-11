@@ -135,6 +135,7 @@ class Spacecraft:
             self.total_mass(),
             self.isp,
         )
+        self.propellant_mass -= self.m_dot * dt * SECONDS_IN_DAY
 
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
