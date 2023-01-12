@@ -169,6 +169,9 @@ class GCRFstate:
         #: velocity of the inertial state in km/s
         self.velocity: Vector3D = velocity.copy()
 
+        #: acceleration due to thrust
+        self.thrust: Vector3D = Vector3D(0, 0, 0)
+
     @classmethod
     def from_hill(cls, origin: "GCRFstate", state: HillState) -> "GCRFstate":
         """create an inertial state from a relative state
@@ -301,13 +304,21 @@ class GCRFstate:
         sun_vec: Vector3D = self.sun_vector().normalized()
         return sun_vec.scaled(-Sun.P * 3.6e-5)
 
+    def acceleration_from_thrust(self) -> Vector3D:
+        """retrieve the stored acceleration to be applied from thrusters
+
+        :return: the current acceleration vector in the GCRF frame
+        :rtype: Vector3D
+        """
+        return self.thrust.copy()
+
     def derivative(self) -> List[Vector3D]:
         """create a list with elements 0 == velocity and 1 == acceleration
 
         :return: list of velocity and acceleration
         :rtype: List[Vector3D]
         """
-        net_0: Vector3D = Vector3D(0, 0, 0)
+        net_0: Vector3D = self.acceleration_from_thrust()
         net_1: Vector3D = net_0.plus(self.acceleration_from_moon())
         net_2: Vector3D = net_1.plus(self.acceleration_from_sun())
         net_3: Vector3D = net_2.plus(self.acceleration_from_srp())

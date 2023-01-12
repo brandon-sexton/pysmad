@@ -1,8 +1,8 @@
-from math import ceil
+from math import ceil, log
 from typing import List
 
 from pyxis.astro.coordinates import GCRFstate
-from pyxis.math.constants import SECONDS_IN_DAY
+from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
@@ -24,12 +24,25 @@ class RK4:
         #: integration step to be taken when the propagator is advanced
         self.step_size: float = RK4.MAX_STEP
 
+        #: mass flow rate used to apply thrusts to propagator
+        self.m_dot: float = 0
+
+        #: initial mass when using the propagator to apply thrust
+        self.m0: float = 0
+
+        #: gcrf direction of any applied thrusts
+        self.thrust_direction: Vector3D = Vector3D(0, 0, 0)
+
+        #: specific impulse used to apply thrusts
+        self.isp: float = 0
+
     def step(self) -> None:
         """advance the propagator state by the stored time step"""
         h = self.step_size
 
         epoch_0: Epoch = self.state.epoch.copy()
 
+        self.state.thrust = self.thrust_vector(0)
         y: List[Vector3D] = self.state.vector_list()
 
         k1: List[Vector3D] = self.state.derivative()
@@ -38,13 +51,16 @@ class RK4:
         ddays: float = dsecs / SECONDS_IN_DAY
         epoch_1 = epoch_0.plus_days(ddays)
         y1: GCRFstate = GCRFstate(epoch_1, y[0].plus(k1[0].scaled(dsecs)), y[1].plus(k1[1].scaled(dsecs)))
+        y1.thrust = self.thrust_vector(dsecs)
         k2: List[Vector3D] = y1.derivative()
 
         y2: GCRFstate = GCRFstate(epoch_1, y[0].plus(k2[0].scaled(dsecs)), y[1].plus(k2[1].scaled(dsecs)))
+        y2.thrust = self.thrust_vector(dsecs)
         k3: List[Vector3D] = y2.derivative()
 
         epoch_2 = epoch_1.plus_days(ddays)
         y3: GCRFstate = GCRFstate(epoch_2, y[0].plus(k3[0].scaled(h)), y[1].plus(k3[1].scaled(h)))
+        y3.thrust = self.thrust_vector(dsecs * 2)
         k4: List[Vector3D] = y3.derivative()
 
         coeff: float = 1 / 6
@@ -56,6 +72,22 @@ class RK4:
             self.state.position.plus(dv.scaled(h)),
             self.state.velocity.plus(da.scaled(h)),
         )
+
+    def maneuver(self, gcrf_thrust: Vector3D, dv_duration: float, m_dot: float, m0: float, isp: float) -> None:
+        """advance the propagator using a specified thrust
+
+        :param gcrf_thrust: net maneuver components in the gcrf frame
+        :type gcrf_thrust: Vector3D
+        :param dv_duration: duration of the maneuver in days
+        :type dv_duration: float
+        """
+        self.thrust_direction = gcrf_thrust.copy()
+        self.m0 = m0
+        self.m_dot = m_dot
+        self.isp = isp
+        self.step_to_epoch(self.state.epoch.plus_days(dv_duration))
+        self.m0 = 0
+        self.m_dot = 0
 
     def step_to_epoch(self, epoch: Epoch) -> None:
         """advance the propagator state to the argument epoch
@@ -85,3 +117,17 @@ class RK4:
 
         # Reset step size
         self.step_size = old_step
+
+    def thrust_vector(self, dt: float) -> Vector3D:
+        a: Vector3D = Vector3D(0, 0, 0)
+        if self.m_dot != 0:
+            if dt == 0:
+                a = self.thrust_direction.normalized().scaled(self.m_dot * self.isp * SEA_LEVEL_G / self.m0)
+            else:
+                ln = log(1 - self.m_dot * dt / self.m0)
+                mt = self.m0 - self.m_dot * dt
+                f = self.m_dot * self.isp * SEA_LEVEL_G
+                dv: Vector3D = self.thrust_direction.normalized().scaled((-f / self.m_dot) * ln)
+                a = dv.scaled((self.m_dot / mt) * (1 / (-log(1 - self.m_dot * dt / self.m0))))
+
+        return a

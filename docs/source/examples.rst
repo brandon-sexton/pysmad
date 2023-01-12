@@ -7,3 +7,4 @@ examples
    kalman
    propagation
    sensing
+   finite
