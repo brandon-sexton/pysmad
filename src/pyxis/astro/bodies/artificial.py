@@ -3,11 +3,11 @@ from random import gauss, uniform
 from typing import List
 
 from pyxis.astro.bodies.celestial import Earth
-from pyxis.astro.coordinates import GCRFstate, HillState
+from pyxis.astro.coordinates import GCRFstate, HillState, SphericalPosition
 from pyxis.astro.propagators.inertial import RK4
 from pyxis.astro.propagators.relative import Hill
 from pyxis.estimation.filtering import RelativeKalman
-from pyxis.estimation.obs import PositionOb
+from pyxis.estimation.obs import PositionOb, SpaceObservation
 from pyxis.hardware.payloads import Camera
 from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from pyxis.math.linalg import Vector3D
@@ -163,30 +163,18 @@ class Spacecraft:
         )
         self.track_state(seed)
 
-    def observe_wfov(self, target: "Spacecraft") -> PositionOb:
+    def observe_wfov(self, target: "Spacecraft") -> SpaceObservation:
         """produce a simulated observation from the wfov
 
         :param target: satellite to be observed
         :type target: Spacecraft
         :return: simulated observation
-        :rtype: PositionOb
+        :rtype: SpaceObservation
         """
-        # Create hill state of self to target
-        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
-
-        # Calculate the range error based on sensor settings
-        r = tgt.position.magnitude()
-        err = self.wfov.range_error(r, target.body_radius * 2)
-
-        # Apply noise to the range estimate
-        ob_r = gauss(r, err)
-
-        # Apply noise to the angular estimate
-        ang_err = gauss(0, self.pointing_accuracy)
-        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
-        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
-
-        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
+        return SpaceObservation(
+            self.current_state(),
+            SphericalPosition.from_cartesian(self.target_vector(target).with_angular_noise(self.pointing_accuracy)),
+        )
 
     def observe_nfov(self, target: "Spacecraft") -> PositionOb:
         """produce a simulated observation from the nfov
@@ -219,8 +207,9 @@ class Spacecraft:
         :param target: satellite to be observed
         :type target: Spacecraft
         """
-        ob = self.observe_wfov(target)
-        self.filter.process(ob)
+        # ob = self.observe_wfov(target)
+        # self.filter.process(ob)
+        pass
 
     def process_nfov(self, target: "Spacecraft") -> None:
         """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter

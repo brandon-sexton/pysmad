@@ -553,12 +553,28 @@ class ITRFstate:
 
 class SphericalPosition:
     def __init__(self, r: float, ra: float, dec: float) -> None:
+        """class used to perform spherical transformations
+
+        :param r: magnitude of the vector
+        :type r: float
+        :param ra: right ascension of the vector (radians)
+        :type ra: float
+        :param dec: declination of the vector (radians)
+        :type dec: float
+        """
         self.radius: float = r
         self.right_ascension: float = ra
         self.declination: float = dec
 
     @classmethod
     def from_cartesian(cls, pos: Vector3D) -> "SphericalPosition":
+        """create a spherical vector using cartesian components
+
+        :param pos: cartesian vector
+        :type pos: Vector3D
+        :return: position represented with spherical components
+        :rtype: SphericalPosition
+        """
         ra: float = atan2(pos.y, pos.x)
 
         dec: float = atan2(pos.z, sqrt(pos.x * pos.x + pos.y * pos.y))
