@@ -1,4 +1,4 @@
-from math import ceil, log
+from math import ceil, e, log
 from typing import List
 
 from pyxis.astro.coordinates import GCRFstate
@@ -73,19 +73,27 @@ class RK4:
             self.state.velocity.plus(da.scaled(h)),
         )
 
-    def maneuver(self, gcrf_thrust: Vector3D, dv_duration: float, m_dot: float, m0: float, isp: float) -> None:
-        """advance the propagator using a specified thrust
+    def maneuver(self, gcrf_thrust: Vector3D, m_dot: float, m0: float, isp: float) -> None:
+        """propagate the state using continuous thrust principles
 
-        :param gcrf_thrust: net maneuver components in the gcrf frame
+        :param gcrf_thrust: components of the maneuver in the gcrf frame
         :type gcrf_thrust: Vector3D
-        :param dv_duration: duration of the maneuver in days
-        :type dv_duration: float
+        :param m_dot: mass flow rate
+        :type m_dot: float
+        :param m0: initial mass
+        :type m0: float
+        :param isp: specific impulse
+        :type isp: float
         """
+        m_spec: float = m_dot / m0
+        dv_duration: float = (1 / m_spec) * (
+            1 - e ** (m_spec * gcrf_thrust.magnitude() / (-isp * m_spec * SEA_LEVEL_G))
+        )
         self.thrust_direction = gcrf_thrust.copy()
         self.m0 = m0
         self.m_dot = m_dot
         self.isp = isp
-        self.step_to_epoch(self.state.epoch.plus_days(dv_duration))
+        self.step_to_epoch(self.state.epoch.plus_days(dv_duration / SECONDS_IN_DAY))
         self.m0 = 0
         self.m_dot = 0
 
@@ -119,6 +127,13 @@ class RK4:
         self.step_size = old_step
 
     def thrust_vector(self, dt: float) -> Vector3D:
+        """calculate the acceleration vector due to thrust
+
+        :param dt: time step at which to calculate the thrust
+        :type dt: float
+        :return: thrust vector with gcrf components
+        :rtype: Vector3D
+        """
         a: Vector3D = Vector3D(0, 0, 0)
         if self.m_dot != 0:
             if dt == 0:
