@@ -1,4 +1,4 @@
-from math import cos, log10, pi, radians, sin
+from math import cos, e, log10, pi, radians, sin
 from random import gauss, uniform
 from typing import List
 
@@ -119,23 +119,24 @@ class Spacecraft:
         """
         self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
 
-    def finite_maneuver(self, ric_direction: Vector3D, dt: float) -> None:
+    def finite_maneuver(self, ric_dv: Vector3D) -> None:
         """perform a maneuver using ric acceleration accross a specified time
 
-        :param ric_direction: direction of maneuver in the radial, in-track, and cross-track components (km/s)
-        :type ric_direction: Vector3D
+        :param ric_dv: maneuver in the radial, in-track, and cross-track components (km/s)
+        :type ric_dv: Vector3D
         :param dt: duration of the maneuver in days
         :type dt: float
         """
-        ric_a: Vector3D = ric_direction.normalized().scaled(self.m_dot * self.isp * SEA_LEVEL_G / self.total_mass())
+        gcrf_thrust: Vector3D = HillState.frame_matrix(self.current_state()).multiply_vector(ric_dv)
         self.propagator.maneuver(
-            HillState.frame_matrix(self.current_state()).multiply_vector(ric_a),
-            dt,
+            gcrf_thrust,
             self.m_dot,
             self.total_mass(),
             self.isp,
         )
-        self.propellant_mass -= self.m_dot * dt * SECONDS_IN_DAY
+        m_spec: float = self.m_dot / self.total_mass()
+        dt: float = (-1 / m_spec) * (1 - e ** (m_spec * gcrf_thrust.magnitude() / (-self.isp * m_spec * SEA_LEVEL_G)))
+        self.propellant_mass -= self.m_dot * dt
 
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft

@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 
 from pyxis.astro.bodies.artificial import Spacecraft
 from pyxis.astro.coordinates import GCRFstate
-from pyxis.math.constants import SECONDS_IN_DAY
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
@@ -22,8 +21,7 @@ maneuver: Spacecraft = Spacecraft(passive_state)
 rk_r = []
 rk_i = []
 maneuver_complete: bool = False
-maneuver_duration: float = 300 / SECONDS_IN_DAY
-maneuver_direction: Vector3D = Vector3D(0, 1, 0)
+maneuver_direction: Vector3D = Vector3D(0, 0.003, 0)
 
 # Propagate
 while freeflight.current_epoch().value < end_epoch.value:
@@ -37,7 +35,7 @@ while freeflight.current_epoch().value < end_epoch.value:
 
     # Perform a maneuver after one day
     if freeflight.current_epoch().value > start_epoch.value + 1 and not maneuver_complete:
-        maneuver.finite_maneuver(maneuver_direction, maneuver_duration)
+        maneuver.finite_maneuver(maneuver_direction)
         freeflight.step_to_epoch(maneuver.current_epoch())
         maneuver_complete = True
 
