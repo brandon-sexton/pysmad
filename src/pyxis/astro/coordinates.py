@@ -562,8 +562,13 @@ class SphericalPosition:
         :param dec: declination of the vector (radians)
         :type dec: float
         """
+        #: magnitude of the vector
         self.radius: float = r
+
+        #: right ascension of the vector in radians
         self.right_ascension: float = ra
+
+        #: declination of the vector in radians
         self.declination: float = dec
 
     @classmethod
