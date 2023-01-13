@@ -1,6 +1,6 @@
-from pyxis.astro.coordinates import HillState
+from pyxis.astro.coordinates import GCRFstate, HillState, SphericalPosition
 from pyxis.astro.propagators.relative import Hill
-from pyxis.estimation.obs import PositionOb
+from pyxis.estimation.obs import SpaceObservation
 from pyxis.math.constants import SECONDS_IN_DAY
 from pyxis.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
 from pyxis.time import Epoch
@@ -82,6 +82,9 @@ class RelativeKalman:
         #: error in km of the current measurement
         self.range_error: float = 0
 
+        #: error in radians of the current measurement
+        self.angular_error: float = 0
+
         #: measurement uncertainty matrix
         self.r: Matrix3D
 
@@ -91,24 +94,6 @@ class RelativeKalman:
 
     def gain(self) -> None:
         """calculate the gain of the system"""
-        normal_measurment = self.z.normalized()
-        self.r = Matrix3D(
-            Vector3D(
-                normal_measurment.x * self.range_error * normal_measurment.x * self.range_error,
-                0,
-                0,
-            ),
-            Vector3D(
-                0,
-                normal_measurment.y * self.range_error * normal_measurment.y * self.range_error,
-                0,
-            ),
-            Vector3D(
-                0,
-                0,
-                normal_measurment.z * self.range_error * normal_measurment.z * self.range_error,
-            ),
-        )
         hph: Matrix3D = self.H.multiply_matrix_6by3(self.p10.multiply_matrix_6by3(self.HT))
         self.k = self.p10.multiply_matrix_6by3(self.HT.multiply(hph.plus(self.r).inverse()))
 
@@ -143,15 +128,45 @@ class RelativeKalman:
         self.update_state()
         self.update_covariance()
 
-    def process(self, ob: PositionOb) -> None:
+    def process(self, ob: SpaceObservation) -> None:
         """include a new observation into the current estimation
 
         :param ob: observation to be added into the system
-        :type ob: PositionOb
+        :type ob: SpaceObservation
         """
-        dt = (ob.epoch.value - self.epoch.value) * SECONDS_IN_DAY
-        self.epoch = ob.epoch.copy()
-        self.z = ob.position.copy()
-        self.range_error = ob.error
+        dt: float = (ob.observer_state.epoch.value - self.epoch.value) * SECONDS_IN_DAY
+        self.epoch = ob.observer_state.epoch.copy()
+        gcrf_ob: GCRFstate = GCRFstate(
+            self.epoch, ob.observer_state.position.plus(ob.observed_direction), ob.observer_state.velocity
+        )
+        self.z = HillState.from_gcrf(gcrf_ob, ob.observer_state).position
+
+        spherical_ob = SphericalPosition(
+            ob.range + ob.range_error, ob.right_ascension + ob.angular_error, ob.declination + ob.angular_error
+        )
+        errors: Vector3D = spherical_ob.to_cartesian().minus(ob.observed_direction)
+        gcrf_errors: GCRFstate = GCRFstate(
+            self.epoch, ob.observer_state.position.plus(errors), ob.observer_state.velocity
+        )
+        hill_errors: Vector3D = HillState.from_gcrf(gcrf_errors, ob.observer_state).position
+        self.r = Matrix3D(
+            Vector3D(
+                hill_errors.x * hill_errors.x,
+                0,
+                0,
+            ),
+            Vector3D(
+                0,
+                hill_errors.y * hill_errors.y,
+                0,
+            ),
+            Vector3D(
+                0,
+                0,
+                hill_errors.z * hill_errors.z,
+            ),
+        )
+        self.range_error = ob.range_error
+        self.angular_error = ob.angular_error
         self.predict(dt)
         self.update()

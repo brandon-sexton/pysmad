@@ -576,9 +576,19 @@ class SphericalPosition:
         :rtype: SphericalPosition
         """
         ra: float = atan2(pos.y, pos.x)
-
         dec: float = atan2(pos.z, sqrt(pos.x * pos.x + pos.y * pos.y))
         return cls(pos.magnitude(), ra, dec)
+
+    def to_cartesian(self) -> Vector3D:
+        """calculate the vector as represented by x, y, and z
+
+        :return: vector of equal magnitude in direction but in cartesian coordinates
+        :rtype: Vector3D
+        """
+        cd: float = cos(self.declination)
+        return Vector3D(cd * cos(self.right_ascension), cd * sin(self.right_ascension), sin(self.declination)).scaled(
+            self.radius
+        )
 
 
 class LLAstate:

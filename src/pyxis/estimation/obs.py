@@ -4,11 +4,17 @@ from pyxis.time import Epoch
 
 
 class SpaceObservation:
-    def __init__(self, observer_state: GCRFstate, observed_state: SphericalPosition) -> None:
-        self.observer_state = observer_state.copy()
-        self.range: float = observed_state.radius
-        self.right_ascension: float = observed_state.right_ascension
-        self.declination: float = observed_state.declination
+    def __init__(
+        self, observer_state: GCRFstate, observed_direction: Vector3D, r_error: float, ang_error: float
+    ) -> None:
+        self.observer_state: GCRFstate = observer_state.copy()
+        self.observed_direction: Vector3D = observed_direction.copy()
+        spherical: SphericalPosition = SphericalPosition.from_cartesian(observed_direction)
+        self.range: float = spherical.radius
+        self.right_ascension: float = spherical.right_ascension
+        self.declination: float = spherical.declination
+        self.range_error: float = r_error
+        self.angular_error: float = ang_error
 
 
 class PositionOb:
