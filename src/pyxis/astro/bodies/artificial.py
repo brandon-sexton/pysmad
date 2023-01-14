@@ -1,5 +1,4 @@
-from math import cos, log10, pi, radians, sin
-from random import gauss, uniform
+from math import cos, e, log10, pi, radians, sin
 from typing import List
 
 from pyxis.astro.bodies.celestial import Earth
@@ -7,9 +6,9 @@ from pyxis.astro.coordinates import GCRFstate, HillState
 from pyxis.astro.propagators.inertial import RK4
 from pyxis.astro.propagators.relative import Hill
 from pyxis.estimation.filtering import RelativeKalman
-from pyxis.estimation.obs import PositionOb
+from pyxis.estimation.obs import SpaceObservation
 from pyxis.hardware.payloads import Camera
-from pyxis.math.constants import SECONDS_IN_DAY
+from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from pyxis.math.linalg import Vector3D
 from pyxis.time import Epoch
 
@@ -30,6 +29,18 @@ class Spacecraft:
 
     #: Default tolerance to use for statistical attitude modeling (radians)
     DEFAULT_POINTING_ACCURACY: float = 1e-5
+
+    #: Default dry mass of the spacecraft at launch (kg)
+    DEFAULT_MASS: float = 600
+
+    #: Default propellant mass of the spacecraft at launch (kg)
+    DEFAULT_PROP_MASS: float = 200
+
+    #: Default mass flow rate used to calculate thrust
+    DEFAULT_M_DOT: float = 0.003
+
+    #: Default specific impulse of the propellant used to calculate thrust
+    DEFAULT_ISP: float = 350
 
     def __init__(self, state: GCRFstate) -> None:
         """class used to model the behaviors of man-made satellites
@@ -77,7 +88,54 @@ class Spacecraft:
         #: Used to apply noise to attitude vectors
         self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
 
+        #: Mass flow rate used to perform finite maneuvers
+        self.m_dot = Spacecraft.DEFAULT_M_DOT
+
+        #: specific impulse used to perform finite maneuvers
+        self.isp = Spacecraft.DEFAULT_ISP
+
+        #: Mass of the spacecraft without propellant included
+        self.dry_mass = Spacecraft.DEFAULT_MASS
+
+        #: Mass of the propellant on the spacecraft
+        self.propellant_mass = Spacecraft.DEFAULT_PROP_MASS
+
         self.update_attitude()
+
+    def total_mass(self) -> float:
+        """calculates the mass of the bus plus propellant
+
+        :return: wet mass of the spacecraft (kg)
+        :rtype: float
+        """
+        return self.dry_mass + self.propellant_mass
+
+    def impulsive_maneuver(self, ric_burn: Vector3D) -> None:
+        """applies a velocity change to the current state to model an instant maneuver
+
+        :param ric_burn: burn vector with components of radial, in-track, and cross-track (km/s)
+        :type ric_burn: Vector3D
+        """
+        self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
+
+    def finite_maneuver(self, ric_dv: Vector3D) -> None:
+        """perform a maneuver using ric acceleration accross a specified time
+
+        :param ric_dv: maneuver in the radial, in-track, and cross-track components (km/s)
+        :type ric_dv: Vector3D
+        :param dt: duration of the maneuver in days
+        :type dt: float
+        """
+        gcrf_thrust: Vector3D = HillState.frame_matrix(self.current_state()).multiply_vector(ric_dv)
+        self.propagator.maneuver(
+            gcrf_thrust,
+            self.m_dot,
+            self.total_mass(),
+            self.isp,
+        )
+        m_spec: float = self.m_dot / self.total_mass()
+        dt: float = (-1 / m_spec) * (1 - e ** (m_spec * gcrf_thrust.magnitude() / (-self.isp * m_spec * SEA_LEVEL_G)))
+        self.propellant_mass -= self.m_dot * dt
 
     def sma(self) -> float:
         """calculate the semi-major axis of the calling spacecraft
@@ -105,55 +163,41 @@ class Spacecraft:
         )
         self.track_state(seed)
 
-    def observe_wfov(self, target: "Spacecraft") -> PositionOb:
+    def observe_wfov(self, target: "Spacecraft") -> SpaceObservation:
         """produce a simulated observation from the wfov
 
         :param target: satellite to be observed
         :type target: Spacecraft
         :return: simulated observation
-        :rtype: PositionOb
+        :rtype: SpaceObservation
         """
-        # Create hill state of self to target
-        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
+        truth_vector: Vector3D = self.target_vector(target)
+        truth_range: float = truth_vector.magnitude()
+        range_error: float = self.wfov.range_error(truth_range, target.body_radius * 2)
+        return SpaceObservation(
+            self.current_state(),
+            truth_vector.with_noise(range_error, self.pointing_accuracy),
+            range_error,
+            self.pointing_accuracy,
+        )
 
-        # Calculate the range error based on sensor settings
-        r = tgt.position.magnitude()
-        err = self.wfov.range_error(r, target.body_radius * 2)
-
-        # Apply noise to the range estimate
-        ob_r = gauss(r, err)
-
-        # Apply noise to the angular estimate
-        ang_err = gauss(0, self.pointing_accuracy)
-        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
-        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
-
-        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
-
-    def observe_nfov(self, target: "Spacecraft") -> PositionOb:
+    def observe_nfov(self, target: "Spacecraft") -> SpaceObservation:
         """produce a simulated observation from the nfov
 
         :param target: satellite to be observed
         :type target: Spacecraft
         :return: simulated observation
-        :rtype: PositionOb
+        :rtype: SpaceObservation
         """
-        # Create hill state of self to target
-        tgt = HillState.from_gcrf(target.current_state(), self.current_state())
-
-        # Calculate the range error based on sensor settings
-        r = tgt.position.magnitude()
-        err = self.nfov.range_error(r, target.body_radius * 2)
-
-        # Apply noise to the range estimate
-        ob_r = gauss(r, err)
-
-        # Apply noise to the angular estimate
-        ang_err = gauss(0, self.pointing_accuracy)
-        ob = tgt.position.normalized().rotation_about_axis(tgt.position.cross(Vector3D(0, 0, 1)), ang_err)
-        ob = ob.rotation_about_axis(tgt.position, uniform(0, 2 * pi))
-
-        return PositionOb(self.current_epoch(), ob.scaled(ob_r), err)
+        truth_vector: Vector3D = self.target_vector(target)
+        truth_range: float = truth_vector.magnitude()
+        range_error: float = self.nfov.range_error(truth_range, target.body_radius * 2)
+        return SpaceObservation(
+            self.current_state(),
+            truth_vector.with_noise(range_error, self.pointing_accuracy),
+            range_error,
+            self.pointing_accuracy,
+        )
 
     def process_wfov(self, target: "Spacecraft") -> None:
         """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter

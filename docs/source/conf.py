@@ -19,11 +19,11 @@ sys.path.insert(0, os.path.abspath("../../"))
 # -- Project information -----------------------------------------------------
 
 project = "pyxis"
-copyright = "2022, Rogue Solutions"
+copyright = "2022, Brandon Sexton"
 author = "Brandon Sexton"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = "1.1.0"
 
 
 # -- General configuration ---------------------------------------------------

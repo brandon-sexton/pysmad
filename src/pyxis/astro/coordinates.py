@@ -1,8 +1,8 @@
-from math import asin, atan2, cos, pi, radians, sin, sqrt
+from math import asin, atan2, cos, pi, radians, sin, sqrt, tan
 from typing import List
 
 from pyxis.astro.bodies.celestial import Earth, Moon, Sun
-from pyxis.math.functions import Conversions, sign
+from pyxis.math.functions import Conversions, LegendrePolynomial, sign
 from pyxis.math.linalg import Matrix3D, Vector3D, Vector6D
 from pyxis.time import Epoch
 
@@ -169,6 +169,9 @@ class GCRFstate:
         #: velocity of the inertial state in km/s
         self.velocity: Vector3D = velocity.copy()
 
+        #: acceleration due to thrust
+        self.thrust: Vector3D = Vector3D(0, 0, 0)
+
     @classmethod
     def from_hill(cls, origin: "GCRFstate", state: HillState) -> "GCRFstate":
         """create an inertial state from a relative state
@@ -198,6 +201,62 @@ class GCRFstate:
         """
         return [self.position.copy(), self.velocity.copy()]
 
+    def acceleration_from_gravity(self) -> Vector3D:
+        """calculates the gravity due to a nonspherical earth
+
+        :return: vector representing the acceleration due to gravity
+        :rtype: Vector3D
+        """
+        ecef: Vector3D = self.itrf_position()
+        sphr_pos: SphericalPosition = SphericalPosition.from_cartesian(ecef)
+        p: List[List[float]] = LegendrePolynomial(sphr_pos.declination).p
+
+        m: int = 0
+        n: int = 2
+
+        partial_r: float = 0
+        partial_phi: float = 0
+        partial_lamb: float = 0
+        recip_r: float = 1 / self.position.magnitude()
+        mu_over_r: float = Earth.MU * recip_r
+        r_over_r: float = Earth.RADIUS * recip_r
+        r_exponent: float = 0
+        clam: float = 0
+        slam: float = 0
+        recip_root: float = 1 / sqrt(ecef.x * ecef.x + ecef.y * ecef.y)
+        rz_over_root: float = ecef.z * recip_r * recip_r * recip_root
+        while n < Earth.DEGREE_AND_ORDER:
+            m = 0
+            r_exponent = r_over_r**n
+            while m <= n:
+                clam = cos(m * sphr_pos.right_ascension)
+                slam = sin(m * sphr_pos.right_ascension)
+                partial_r += r_exponent * (n + 1) * p[n][m] * (Earth.C[n][m] * clam + Earth.S[n][m] * slam)
+                partial_phi += (
+                    r_exponent
+                    * (p[n][m + 1] - m * tan(sphr_pos.declination) * p[n][m])
+                    * (Earth.C[n][m] * clam + Earth.S[n][m] * slam)
+                )
+                partial_lamb += r_exponent * m * p[n][m] * (Earth.S[n][m] * clam - Earth.C[n][m] * slam)
+
+                m += 1
+
+            n += 1
+
+        partial_r *= -recip_r * mu_over_r
+        partial_phi *= mu_over_r
+        partial_lamb *= mu_over_r
+
+        ecef_a: Vector3D = Vector3D(
+            (recip_r * partial_r - rz_over_root * partial_phi) * ecef.x
+            - (recip_root * recip_root * partial_lamb) * ecef.y,
+            (recip_r * partial_r - rz_over_root * partial_phi) * ecef.y
+            + (recip_root * recip_root * partial_lamb) * ecef.x,
+            recip_r * partial_r * ecef.z + (1 / recip_root) * recip_r * recip_r * partial_phi,
+        )
+
+        return ITRFstate(self.epoch, ecef_a, Vector3D(0, 0, 0)).gcrf_position()
+
     def acceleration_from_earth(self) -> Vector3D:
         """calculate the acceleration on the state due to earth's gravity
 
@@ -205,6 +264,7 @@ class GCRFstate:
         :rtype: Vector3D
         """
         r_mag: float = self.position.magnitude()
+
         return self.position.scaled(-Earth.MU / (r_mag * r_mag * r_mag))
 
     def acceleration_from_moon(self) -> Vector3D:
@@ -244,17 +304,26 @@ class GCRFstate:
         sun_vec: Vector3D = self.sun_vector().normalized()
         return sun_vec.scaled(-Sun.P * 3.6e-5)
 
+    def acceleration_from_thrust(self) -> Vector3D:
+        """retrieve the stored acceleration to be applied from thrusters
+
+        :return: the current acceleration vector in the GCRF frame
+        :rtype: Vector3D
+        """
+        return self.thrust.copy()
+
     def derivative(self) -> List[Vector3D]:
         """create a list with elements 0 == velocity and 1 == acceleration
 
         :return: list of velocity and acceleration
         :rtype: List[Vector3D]
         """
-        net_0: Vector3D = Vector3D(0, 0, 0)
+        net_0: Vector3D = self.acceleration_from_thrust()
         net_1: Vector3D = net_0.plus(self.acceleration_from_moon())
         net_2: Vector3D = net_1.plus(self.acceleration_from_sun())
         net_3: Vector3D = net_2.plus(self.acceleration_from_srp())
-        net_a: Vector3D = net_3.plus(self.acceleration_from_earth())
+        net_4: Vector3D = net_3.plus(self.acceleration_from_gravity())
+        net_a: Vector3D = net_4.plus(self.acceleration_from_earth())
         return [self.velocity.copy(), net_a]
 
     def sun_vector(self) -> Vector3D:
@@ -436,10 +505,12 @@ class ITRFstate:
         z: float = pos.z
 
         # Equation 2.77a
-        a2: float = Earth.RADIUS * Earth.RADIUS
+        a: float = Earth.RADIUS
+        a2: float = a * a
         f: float = Earth.FLATTENING
-        e2: float = f * (2.0 - f)
-        b2: float = a2 - e2 * a2
+        b: float = a - f * a
+        b2: float = b * b
+        e2: float = 1 - b2 / a2
         eps2: float = a2 / b2 - 1.0
         rho: float = sqrt(x * x + y * y)
 
@@ -452,7 +523,7 @@ class ITRFstate:
         u: float = p / sqrt(q)
         v: float = b2 * u * u / q
         cap_p: float = 27.0 * v * s / q
-        cap_q: float = (sqrt(cap_p + 1) + sqrt(cap_p)) ** 2.0 / 3.0
+        cap_q: float = (sqrt(cap_p + 1) + sqrt(cap_p)) ** (2.0 / 3.0)
 
         # Equation 2.77d
         t: float = (1.0 + cap_q + 1.0 / cap_q) / 6.0
@@ -461,12 +532,15 @@ class ITRFstate:
 
         # Equation 2.77e
         base: float = sqrt(t * t + v) - u * w - t / 2.0 - 0.25
+        if base < 0:
+            base = 0
         arg: float = w + sqrt(base)
         d: float = sign(z) * sqrt(q) * arg
 
         # Equation 2.77f
-        n: float = sqrt(a2) * sqrt(1.0 + eps2 * d * d / b2)
-        lamb: float = asin((eps2 + 1.0) * (d / n))
+        n: float = a * sqrt(1.0 + eps2 * d * d / b2)
+        arg = (eps2 + 1.0) * (d / n)
+        lamb: float = asin(arg)
 
         # Equation 2.77g
         h: float = rho * cos(lamb) + z * sin(lamb) - a2 / n
@@ -475,6 +549,51 @@ class ITRFstate:
             phi += pi * 2.0
 
         return LLAstate(lamb, phi, h)
+
+
+class SphericalPosition:
+    def __init__(self, r: float, ra: float, dec: float) -> None:
+        """class used to perform spherical transformations
+
+        :param r: magnitude of the vector
+        :type r: float
+        :param ra: right ascension of the vector (radians)
+        :type ra: float
+        :param dec: declination of the vector (radians)
+        :type dec: float
+        """
+        #: magnitude of the vector
+        self.radius: float = r
+
+        #: right ascension of the vector in radians
+        self.right_ascension: float = ra
+
+        #: declination of the vector in radians
+        self.declination: float = dec
+
+    @classmethod
+    def from_cartesian(cls, pos: Vector3D) -> "SphericalPosition":
+        """create a spherical vector using cartesian components
+
+        :param pos: cartesian vector
+        :type pos: Vector3D
+        :return: position represented with spherical components
+        :rtype: SphericalPosition
+        """
+        ra: float = atan2(pos.y, pos.x)
+        dec: float = atan2(pos.z, sqrt(pos.x * pos.x + pos.y * pos.y))
+        return cls(pos.magnitude(), ra, dec)
+
+    def to_cartesian(self) -> Vector3D:
+        """calculate the vector as represented by x, y, and z
+
+        :return: vector of equal magnitude in direction but in cartesian coordinates
+        :rtype: Vector3D
+        """
+        cd: float = cos(self.declination)
+        return Vector3D(cd * cos(self.right_ascension), cd * sin(self.right_ascension), sin(self.declination)).scaled(
+            self.radius
+        )
 
 
 class LLAstate:

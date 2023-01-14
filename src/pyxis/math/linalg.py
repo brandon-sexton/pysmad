@@ -1,4 +1,5 @@
-from math import acos, cos, sin, sqrt
+from math import acos, cos, pi, sin, sqrt
+from random import gauss, uniform
 
 
 class Vector6D:
@@ -136,6 +137,40 @@ class Vector3D:
 
         #: third component of the vector
         self.z: float = z
+
+    def with_noise(self, range_err: float, ang_err: float) -> "Vector3D":
+        """calculate a new vector with noise applied to magnitude and direction
+
+        :param range_err: one-sigma range error in units consistent with the calling vector
+        :type range_err: float
+        :param ang_err: one-sigma anglular error in radians
+        :type ang_err: float
+        :return: new vector with gaussian noise applied
+        :rtype: Vector3D
+        """
+        return self.with_magnitude_noise(range_err).with_angular_noise(ang_err)
+
+    def with_magnitude_noise(self, range_err: float) -> "Vector3D":
+        """calculate a new vector with noise applied to the magnitude
+
+        :param range_err: one-sigma range error in units consistent with the calling vector
+        :type range_err: float
+        :return: new vector with the magnitude adjusted by gaussian distribution
+        :rtype: Vector3D
+        """
+        return self.normalized().scaled(gauss(self.magnitude(), range_err))
+
+    def with_angular_noise(self, ang_err: float) -> "Vector3D":
+        """calculate a new vector with angular noise applied
+
+        :param ang_err: one-sigma anglular error in radians
+        :type ang_err: float
+        :return: new vector offset using gaussian distribution for the angle
+        :rtype: Vector3D
+        """
+        return self.rotation_about_axis(self.cross(Vector3D(0, 0, 1)), gauss(0, ang_err)).rotation_about_axis(
+            self, uniform(0, 2 * pi)
+        )
 
     def __str__(self) -> str:
         """overrides the string method so the elements can be viewed

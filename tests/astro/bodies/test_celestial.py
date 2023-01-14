@@ -13,7 +13,7 @@ class TestEarth(unittest.TestCase):
         self.assertEqual(6378.137, Earth.RADIUS)
 
     def test_flattening(self):
-        self.assertEqual(1 / 298.257223563, Earth.FLATTENING)
+        self.assertEqual(1 / 298.2572235, Earth.FLATTENING)
 
 
 class TestSun(unittest.TestCase):

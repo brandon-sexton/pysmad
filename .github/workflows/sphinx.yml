@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - name: upgrade pip
       run: |
@@ -25,6 +26,7 @@ jobs:
         cd ../
         mv ./docs/build/html/ ../docs/
         cp ./docs/.nojekyll ../docs/
+        cp ./docs/CNAME ../docs/
         git rm -rf '*'
         cp -r ../docs/ ./
     - name: deploy
@@ -36,5 +38,4 @@ jobs:
         git config --global user.email "username@users.noreply.github.com"
         git add -f docs
         git commit --allow-empty -m "${{ env.CI_COMMIT_MESSAGE }}"
-
         git push -f origin HEAD
