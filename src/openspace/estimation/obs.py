@@ -1,6 +1,6 @@
-from pyxis.astro.coordinates import GCRFstate, SphericalPosition
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.coordinates import GCRFstate, SphericalPosition
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class SpaceObservation:

@@ -1,7 +1,7 @@
 from math import floor, radians
 
-from pyxis.math.constants import SECONDS_IN_DAY
-from pyxis.math.functions import Conversions
+from openspace.math.constants import SECONDS_IN_DAY
+from openspace.math.functions import Conversions
 
 
 class Epoch:

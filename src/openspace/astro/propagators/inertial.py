@@ -1,10 +1,10 @@
 from math import ceil, e, log
 from typing import List
 
-from pyxis.astro.coordinates import GCRFstate
-from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.coordinates import GCRFstate
+from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class RK4:

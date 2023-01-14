@@ -1,16 +1,16 @@
 from math import cos, e, log10, pi, radians, sin
 from typing import List
 
-from pyxis.astro.bodies.celestial import Earth
-from pyxis.astro.coordinates import GCRFstate, HillState
-from pyxis.astro.propagators.inertial import RK4
-from pyxis.astro.propagators.relative import Hill
-from pyxis.estimation.filtering import RelativeKalman
-from pyxis.estimation.obs import SpaceObservation
-from pyxis.hardware.payloads import Camera
-from pyxis.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.bodies.celestial import Earth
+from openspace.astro.coordinates import GCRFstate, HillState
+from openspace.astro.propagators.inertial import RK4
+from openspace.astro.propagators.relative import Hill
+from openspace.estimation.filtering import RelativeKalman
+from openspace.estimation.obs import SpaceObservation
+from openspace.hardware.payloads import Camera
+from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class Spacecraft:

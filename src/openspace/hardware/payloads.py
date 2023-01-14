@@ -1,6 +1,6 @@
 from math import radians, tan
 
-from pyxis.hardware.constraints import OpticalConstraints
+from openspace.hardware.constraints import OpticalConstraints
 
 
 class Camera:

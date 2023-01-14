@@ -1,9 +1,9 @@
 from math import cos, radians, sin, sqrt
 from typing import List
 
-from pyxis.math.functions import Conversions
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.math.functions import Conversions
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class Earth:

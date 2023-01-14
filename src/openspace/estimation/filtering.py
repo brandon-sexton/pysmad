@@ -1,9 +1,9 @@
-from pyxis.astro.coordinates import GCRFstate, HillState, SphericalPosition
-from pyxis.astro.propagators.relative import Hill
-from pyxis.estimation.obs import SpaceObservation
-from pyxis.math.constants import SECONDS_IN_DAY
-from pyxis.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
-from pyxis.time import Epoch
+from openspace.astro.coordinates import GCRFstate, HillState, SphericalPosition
+from openspace.astro.propagators.relative import Hill
+from openspace.estimation.obs import SpaceObservation
+from openspace.math.constants import SECONDS_IN_DAY
+from openspace.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
+from openspace.time import Epoch
 
 
 class RelativeKalman:

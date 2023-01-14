@@ -1,8 +1,8 @@
 from math import cos, sin, sqrt
 
-from pyxis.astro.bodies.celestial import Earth
-from pyxis.astro.coordinates import HillState
-from pyxis.math.linalg import Matrix6D, Vector6D
+from openspace.astro.bodies.celestial import Earth
+from openspace.astro.coordinates import HillState
+from openspace.math.linalg import Matrix6D, Vector6D
 
 
 class Hill:
