@@ -1,7 +1,7 @@
-pyxis.estimation.filtering
+openspace.hardware.constraints
 ==========================
 
-.. automodule:: pyxis.estimation.filtering
+.. automodule:: openspace.hardware.constraints
    :members:
    :undoc-members:
    :show-inheritance:

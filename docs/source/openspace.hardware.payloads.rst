@@ -1,7 +1,7 @@
-pyxis.hardware.payloads
+openspace.hardware.payloads
 =======================
 
-.. automodule:: pyxis.hardware.payloads
+.. automodule:: openspace.hardware.payloads
    :members:
    :undoc-members:
    :show-inheritance:

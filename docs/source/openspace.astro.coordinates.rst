@@ -1,7 +1,7 @@
-pyxis.astro.coordinates
+openspace.astro.coordinates
 =======================
 
-.. automodule:: pyxis.astro.coordinates
+.. automodule:: openspace.astro.coordinates
    :members:
    :undoc-members:
    :show-inheritance:

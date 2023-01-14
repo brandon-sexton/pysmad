@@ -1,7 +1,7 @@
-pyxis.astro.bodies.celestial
+openspace.astro.bodies.celestial
 ============================
 
-.. automodule:: pyxis.astro.bodies.celestial
+.. automodule:: openspace.astro.bodies.celestial
    :members:
    :undoc-members:
    :show-inheritance:

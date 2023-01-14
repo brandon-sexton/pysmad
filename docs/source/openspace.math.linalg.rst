@@ -1,7 +1,7 @@
-pyxis.math.linalg
+openspace.math.linalg
 =================
 
-.. automodule:: pyxis.math.linalg
+.. automodule:: openspace.math.linalg
    :members:
    :undoc-members:
    :show-inheritance:

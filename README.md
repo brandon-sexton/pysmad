@@ -1,4 +1,4 @@
-# PYXIS
+# OPENSPACE
 This package is a public astrodynamics analysis and simulation sandbox not intended for commercial use.  Further details
 on functionality can be found on the [documentation page](https://www.pyxis-docs.com).
 

@@ -1,7 +1,7 @@
-pyxis.astro.bodies.terrestrial
+openspace.astro.bodies.terrestrial
 ==============================
 
-.. automodule:: pyxis.astro.bodies.terrestrial
+.. automodule:: openspace.astro.bodies.terrestrial
    :members:
    :undoc-members:
    :show-inheritance:

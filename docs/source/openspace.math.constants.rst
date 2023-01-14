@@ -1,7 +1,7 @@
-pyxis.math.functions
+openspace.math.constants
 ====================
 
-.. automodule:: pyxis.math.functions
+.. automodule:: openspace.math.constants
    :members:
    :undoc-members:
    :show-inheritance:

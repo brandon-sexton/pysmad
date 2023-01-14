@@ -1,7 +1,7 @@
-pyxis.math.constants
+openspace.estimation.obs
 ====================
 
-.. automodule:: pyxis.math.constants
+.. automodule:: openspace.estimation.obs
    :members:
    :undoc-members:
    :show-inheritance:

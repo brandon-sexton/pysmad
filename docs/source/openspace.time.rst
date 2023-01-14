@@ -1,7 +1,7 @@
-pyxis.time
+openspace.time
 ==========
 
-.. automodule:: pyxis.time
+.. automodule:: openspace.time
    :members:
    :undoc-members:
    :show-inheritance:
