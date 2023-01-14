@@ -1,7 +1,7 @@
 import unittest
 from math import degrees
 
-from pyxis.time import Epoch
+from openspace.time import Epoch
 
 
 class TestEpoch(unittest.TestCase):

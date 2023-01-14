@@ -1,9 +1,9 @@
 import unittest
 
-from pyxis.astro.coordinates import GCRFstate
-from pyxis.astro.propagators.inertial import RK4
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.coordinates import GCRFstate
+from openspace.astro.propagators.inertial import RK4
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class TestRK4(unittest.TestCase):

@@ -1,8 +1,8 @@
 import unittest
 
-from pyxis.astro.coordinates import GCRFstate, ITRFstate, Nutation, Precession
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.coordinates import GCRFstate, ITRFstate, Nutation, Precession
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class TestGCRFstate(unittest.TestCase):

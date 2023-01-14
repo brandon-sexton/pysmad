@@ -1,8 +1,8 @@
 import unittest
 
-from pyxis.astro.bodies.celestial import Earth, Moon, Sun
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.astro.bodies.celestial import Earth, Moon, Sun
+from openspace.math.linalg import Vector3D
+from openspace.time import Epoch
 
 
 class TestEarth(unittest.TestCase):
