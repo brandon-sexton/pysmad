@@ -758,3 +758,14 @@ class ClassicalElements:
         :rtype: Vector3D
         """
         return r.cross(v)
+
+    @staticmethod
+    def semilatus_rectum_from_h(h: float) -> float:
+        """calculate the semi-latus rectum
+
+        :param h: areal velocity magnitude
+        :type h: float
+        :return: semi-latus rectum in km
+        :rtype: float
+        """
+        return h * h / Earth.MU

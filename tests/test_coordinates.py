@@ -30,6 +30,10 @@ class TestClassicalElements(unittest.TestCase):
         self.assertAlmostEqual(h.y, 8500)
         self.assertAlmostEqual(h.z, 70000)
 
+    def test_semilatus_rectum_from_h(self):
+        h: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY)
+        self.assertAlmostEqual(ClassicalElements.semilatus_rectum_from_h(h.magnitude()), 12476.779949218813)
+
 
 class TestGCRFstate(unittest.TestCase):
 
