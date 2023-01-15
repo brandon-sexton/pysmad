@@ -1,6 +1,6 @@
 import unittest
 
-from openspace.astro.bodies.celestial import Earth, Moon, Sun
+from openspace.bodies.celestial import Earth, Moon, Sun
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 
