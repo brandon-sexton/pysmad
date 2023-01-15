@@ -4,17 +4,19 @@ modules
 .. toctree::
    :maxdepth: 2
 
-   pyxis.astro
-   pyxis.estimation
-   pyxis.hardware
-   pyxis.math
+   openspace.bodies
+   openspace.estimation
+   openspace.hardware
+   openspace.math
+   openspace.propagators
 
 .. toctree::
    :maxdepth: 2
 
-   pyxis.time
+   openspace.coordinates
+   openspace.time
 
-.. automodule:: pyxis
+.. automodule:: openspace
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 
-from pyxis.astro.bodies.artificial import Spacecraft
-from pyxis.astro.coordinates import GCRFstate, HillState
-from pyxis.astro.propagators.relative import Hill
-from pyxis.math.linalg import Vector3D
-from pyxis.time import Epoch
+from openspace.bodies.artificial import Spacecraft
+from openspace.coordinates import GCRFstate, HillState
+from openspace.math.linalg import Vector3D
+from openspace.propagators.relative import Hill
+from openspace.time import Epoch
 
 # Create initial scenario epoch
 start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
