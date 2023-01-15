@@ -34,6 +34,14 @@ class TestClassicalElements(unittest.TestCase):
         h: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY)
         self.assertAlmostEqual(ClassicalElements.semilatus_rectum_from_h(h.magnitude()), 12476.779949218813)
 
+    def test_inclination_from_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        self.assertAlmostEqual(ClassicalElements.inclination_from_w(w), 0.12166217595729033)
+
+    def test_raan_from_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        self.assertAlmostEqual(ClassicalElements.raan_from_w(w), 3.024483909022929)
+
 
 class TestGCRFstate(unittest.TestCase):
 

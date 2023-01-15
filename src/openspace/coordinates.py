@@ -769,3 +769,25 @@ class ClassicalElements:
         :rtype: float
         """
         return h * h / Earth.MU
+
+    @staticmethod
+    def inclination_from_w(w: Vector3D) -> float:
+        """calculate the inclination
+
+        :param w: normalized momentum vector
+        :type w: Vector3D
+        :return: inclination in radians
+        :rtype: float
+        """
+        return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
+
+    @staticmethod
+    def raan_from_w(w: Vector3D) -> float:
+        """calculate the right ascension of the ascending node
+
+        :param w: normalized momentum vector
+        :type w: Vector3D
+        :return: right ascension of the ascending node in radians
+        :rtype: float
+        """
+        return atan2(w.x, -w.y)
