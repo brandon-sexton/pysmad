@@ -23,6 +23,13 @@ class TestClassicalElements(unittest.TestCase):
         m: float = ClassicalElements.mean_motion_from_sma(self.GEO_SMA)
         self.assertAlmostEqual(m, 7.292159861796045e-05)
 
+    def test_areal_velocity_from_r_and_v(self):
+        h: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY)
+        self.assertAlmostEqual(h.magnitude(), 70521.27338612087)
+        self.assertAlmostEqual(h.x, 1000)
+        self.assertAlmostEqual(h.y, 8500)
+        self.assertAlmostEqual(h.z, 70000)
+
 
 class TestGCRFstate(unittest.TestCase):
 

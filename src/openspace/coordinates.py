@@ -745,3 +745,16 @@ class ClassicalElements:
         :rtype: float
         """
         return 2 * pi * sqrt((a * a * a) / Earth.MU)
+
+    @staticmethod
+    def areal_velocity_from_r_and_v(r: Vector3D, v: Vector3D) -> Vector3D:
+        """calculate the momentum vector
+
+        :param r: position vector in km
+        :type r: Vector3D
+        :param v: velocity vector in km/s
+        :type v: Vector3D
+        :return: areal velocity vector in km^2/s
+        :rtype: Vector3D
+        """
+        return r.cross(v)
