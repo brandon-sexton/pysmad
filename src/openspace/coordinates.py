@@ -880,3 +880,19 @@ class ClassicalElements:
         if ta < 0:
             ta += 2 * pi
         return ta
+
+    @staticmethod
+    def argument_of_perigee_from_u_and_ta(u: float, ta: float) -> float:
+        """calculate the argument of perigee
+
+        :param u: argument of latitude in radians
+        :type u: float
+        :param ta: true anomaly in radians
+        :type ta: float
+        :return: argument of perigee in radians
+        :rtype: float
+        """
+        aop: float = u - ta
+        if aop < 0:
+            aop += 2 * pi
+        return aop

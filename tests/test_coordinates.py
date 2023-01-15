@@ -70,6 +70,12 @@ class TestClassicalElements(unittest.TestCase):
             ClassicalElements.true_anomaly_from_e_and_ea(0.707977170873199, 2.7725707195349645), 2.9875547591835923
         )
 
+    def test_argument_of_perigee_from_u_and_ta(self):
+        self.assertAlmostEqual(
+            ClassicalElements.argument_of_perigee_from_u_and_ta(4.585454083103215, 2.9875547591835923),
+            1.597899323919623,
+        )
+
 
 class TestGCRFstate(unittest.TestCase):
 
