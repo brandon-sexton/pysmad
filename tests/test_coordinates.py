@@ -42,6 +42,11 @@ class TestClassicalElements(unittest.TestCase):
         w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
         self.assertAlmostEqual(ClassicalElements.raan_from_w(w), 3.024483909022929)
 
+    def test_eccentricity_from_p_and_a(self):
+        self.assertAlmostEqual(
+            ClassicalElements.eccentricity_from_p_and_a(12476.779949218813, 25015.18101846454), 0.707977170873199
+        )
+
 
 class TestGCRFstate(unittest.TestCase):
 

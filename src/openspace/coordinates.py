@@ -782,6 +782,19 @@ class ClassicalElements:
         return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
 
     @staticmethod
+    def eccentricity_from_p_and_a(p: float, a: float) -> float:
+        """calculate the eccentricity of an orbit
+
+        :param p: semi-latus rectum in km
+        :type p: float
+        :param a: semi-major axis in km
+        :type a: float
+        :return: eccentricity
+        :rtype: float
+        """
+        return sqrt(1 - p / a)
+
+    @staticmethod
     def raan_from_w(w: Vector3D) -> float:
         """calculate the right ascension of the ascending node
 
