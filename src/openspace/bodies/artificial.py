@@ -1,15 +1,15 @@
 from math import cos, e, log10, pi, radians, sin
 from typing import List
 
-from openspace.astro.bodies.celestial import Earth
-from openspace.astro.coordinates import GCRFstate, HillState
-from openspace.astro.propagators.inertial import RK4
-from openspace.astro.propagators.relative import Hill
+from openspace.bodies.celestial import Earth
+from openspace.coordinates import GCRFstate, HillState
 from openspace.estimation.filtering import RelativeKalman
 from openspace.estimation.obs import SpaceObservation
 from openspace.hardware.payloads import Camera
 from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from openspace.math.linalg import Vector3D
+from openspace.propagators.inertial import RK4
+from openspace.propagators.relative import Hill
 from openspace.time import Epoch
 
 

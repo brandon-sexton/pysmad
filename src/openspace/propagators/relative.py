@@ -1,7 +1,7 @@
 from math import cos, sin, sqrt
 
-from openspace.astro.bodies.celestial import Earth
-from openspace.astro.coordinates import HillState
+from openspace.bodies.celestial import Earth
+from openspace.coordinates import HillState
 from openspace.math.linalg import Matrix6D, Vector6D
 
 

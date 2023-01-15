@@ -1,6 +1,6 @@
 import unittest
 
-from openspace.astro.coordinates import GCRFstate, ITRFstate, Nutation, Precession
+from openspace.coordinates import GCRFstate, ITRFstate, Nutation, Precession
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 

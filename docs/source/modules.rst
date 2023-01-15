@@ -4,14 +4,16 @@ modules
 .. toctree::
    :maxdepth: 2
 
-   openspace.astro
+   openspace.bodies
    openspace.estimation
    openspace.hardware
    openspace.math
+   openspace.propagators
 
 .. toctree::
    :maxdepth: 2
 
+   openspace.coordinates
    openspace.time
 
 .. automodule:: openspace

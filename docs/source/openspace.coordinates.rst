@@ -1,7 +1,7 @@
-openspace.astro.coordinates
+openspace.coordinates
 =======================
 
-.. automodule:: openspace.astro.coordinates
+.. automodule:: openspace.coordinates
    :members:
    :undoc-members:
    :show-inheritance:

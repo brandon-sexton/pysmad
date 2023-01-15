@@ -1,8 +1,8 @@
-from openspace.astro.coordinates import GCRFstate, HillState, SphericalPosition
-from openspace.astro.propagators.relative import Hill
+from openspace.coordinates import GCRFstate, HillState, SphericalPosition
 from openspace.estimation.obs import SpaceObservation
 from openspace.math.constants import SECONDS_IN_DAY
 from openspace.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
+from openspace.propagators.relative import Hill
 from openspace.time import Epoch
 
 

@@ -1,7 +1,7 @@
 from math import cos, sin
 
-from openspace.astro.bodies.artificial import Spacecraft
-from openspace.astro.coordinates import AzElRange, ITRFstate, LLAstate
+from openspace.bodies.artificial import Spacecraft
+from openspace.coordinates import AzElRange, ITRFstate, LLAstate
 from openspace.math.linalg import Matrix3D, Vector3D
 from openspace.time import Epoch
 

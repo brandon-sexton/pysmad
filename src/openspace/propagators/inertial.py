@@ -1,7 +1,7 @@
 from math import ceil, e, log
 from typing import List
 
-from openspace.astro.coordinates import GCRFstate
+from openspace.coordinates import GCRFstate
 from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch

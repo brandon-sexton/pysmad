@@ -1,8 +1,8 @@
 import unittest
 
-from openspace.astro.coordinates import GCRFstate
-from openspace.astro.propagators.inertial import RK4
+from openspace.coordinates import GCRFstate
 from openspace.math.linalg import Vector3D
+from openspace.propagators.inertial import RK4
 from openspace.time import Epoch
 
 

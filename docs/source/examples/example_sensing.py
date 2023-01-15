@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-from openspace.astro.bodies.artificial import Spacecraft
-from openspace.astro.coordinates import GCRFstate, HillState
+from openspace.bodies.artificial import Spacecraft
+from openspace.coordinates import GCRFstate, HillState
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 
