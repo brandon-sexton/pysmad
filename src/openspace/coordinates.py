@@ -710,3 +710,16 @@ class ClassicalElements:
 
         #: true anomaly in radians
         self.true_anomaly: float = ta
+
+    @staticmethod
+    def sma_from_r_and_v(r: float, v: float) -> float:
+        """calculate the semi-major axis in km
+
+        :param r: magnitude of the position vector in km
+        :type r: float
+        :param v: magnitude of the velocity vector in km/s
+        :type v: float
+        :return: semi-major axis in km
+        :rtype: float
+        """
+        return 1 / (2 / r - v * v / Earth.MU)
