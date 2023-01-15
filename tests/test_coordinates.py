@@ -47,6 +47,14 @@ class TestClassicalElements(unittest.TestCase):
             ClassicalElements.eccentricity_from_p_and_a(12476.779949218813, 25015.18101846454), 0.707977170873199
         )
 
+    def test_eccentric_anomaly(self):
+        rdv: float = self.POSITION.dot(self.VELOCITY)
+        a: float = 25015.18101846454
+        n: float = 7.292159861796045e-05
+        self.assertAlmostEqual(
+            ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 1.570796327362374
+        )
+
 
 class TestGCRFstate(unittest.TestCase):
 

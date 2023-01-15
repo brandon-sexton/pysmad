@@ -804,3 +804,20 @@ class ClassicalElements:
         :rtype: float
         """
         return atan2(w.x, -w.y)
+
+    @staticmethod
+    def eccentric_anomaly(r_dot_v: float, r: float, a: float, n: float) -> float:
+        """calculate eccentric anomaly
+
+        :param r_dot_v: dot product of position and velocity
+        :type r_dot_v: float
+        :param r: magnitude of position in km
+        :type r: float
+        :param a: semi-major axis in km
+        :type a: float
+        :param n: mean motion in radians per second
+        :type n: float
+        :return: eccentric anomaly in radians
+        :rtype: float
+        """
+        return atan2(r_dot_v * (a * a * n), 1 - r / a)
