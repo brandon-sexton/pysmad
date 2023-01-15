@@ -50,18 +50,25 @@ class TestClassicalElements(unittest.TestCase):
     def test_eccentric_anomaly(self):
         rdv: float = self.POSITION.dot(self.VELOCITY)
         a: float = 25015.18101846454
-        n: float = 7.292159861796045e-05
+        n: float = ClassicalElements.mean_motion_from_sma(a)
         self.assertAlmostEqual(
-            ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 1.570796327362374
+            ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 2.7725707195349645
         )
 
     def test_mean_anomaly(self):
-        self.assertAlmostEqual(ClassicalElements.mean_anomaly(1.570796327362374, 0.707977170873199), 0.862819156489175)
+        self.assertAlmostEqual(
+            ClassicalElements.mean_anomaly(2.7725707195349645, 0.707977170873199), 2.5172009599614285
+        )
 
     def test_argument_of_latitude_from_r_and_w(self):
         w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
         u: float = ClassicalElements.argument_of_latitude_from_r_and_w(self.POSITION, w)
-        self.assertAlmostEqual(u, -1.6977312240763704)
+        self.assertAlmostEqual(u, 4.585454083103215)
+
+    def test_true_anomaly_from_e_and_ea(self):
+        self.assertAlmostEqual(
+            ClassicalElements.true_anomaly_from_e_and_ea(0.707977170873199, 2.7725707195349645), 2.9875547591835923
+        )
 
 
 class TestGCRFstate(unittest.TestCase):

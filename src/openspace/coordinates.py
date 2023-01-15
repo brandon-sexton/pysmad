@@ -779,6 +779,9 @@ class ClassicalElements:
         :return: inclination in radians
         :rtype: float
         """
+        i: float = atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
+        if i < 0:
+            i += 2 * pi
         return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
 
     @staticmethod
@@ -803,7 +806,10 @@ class ClassicalElements:
         :return: right ascension of the ascending node in radians
         :rtype: float
         """
-        return atan2(w.x, -w.y)
+        raan: float = atan2(w.x, -w.y)
+        if raan < 0:
+            raan += 2 * pi
+        return raan
 
     @staticmethod
     def eccentric_anomaly(r_dot_v: float, r: float, a: float, n: float) -> float:
@@ -820,7 +826,10 @@ class ClassicalElements:
         :return: eccentric anomaly in radians
         :rtype: float
         """
-        return atan2(r_dot_v * (a * a * n), 1 - r / a)
+        ea: float = atan2(r_dot_v / (a * a * n), 1 - r / a)
+        if ea < 0:
+            ea += 2 * pi
+        return ea
 
     @staticmethod
     def mean_anomaly(ea: float, e: float) -> float:
@@ -833,7 +842,12 @@ class ClassicalElements:
         :return: mean anomaly in radians
         :rtype: float
         """
-        return ea - e * sin(ea)
+        ma: float = ea - e * sin(ea)
+        if ma < 0:
+            ma += 2 * pi
+        elif ma > 2 * pi:
+            ma -= 2 * pi
+        return ma
 
     @staticmethod
     def argument_of_latitude_from_r_and_w(r: Vector3D, w: Vector3D) -> float:
@@ -846,4 +860,23 @@ class ClassicalElements:
         :return: argument of latitude in radians
         :rtype: float
         """
-        return atan2(r.z, -r.x * w.y + r.y * w.x)
+        u: float = atan2(r.z, -r.x * w.y + r.y * w.x)
+        if u < 0:
+            u += 2 * pi
+        return u
+
+    @staticmethod
+    def true_anomaly_from_e_and_ea(e: float, ea: float) -> float:
+        """calculate true anomaly
+
+        :param e: eccentricity
+        :type e: float
+        :param ea: eccentric anomaly in radians
+        :type ea: float
+        :return: true anomaly in radians
+        :rtype: float
+        """
+        ta: float = atan2(sqrt(1 - e * e) * sin(ea), cos(ea) - e)
+        if ta < 0:
+            ta += 2 * pi
+        return ta
