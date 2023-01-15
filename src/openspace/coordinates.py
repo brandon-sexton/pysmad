@@ -674,3 +674,39 @@ class AzElRange:
             az += pi * 2.0
         el: float = atan2(enz.z, sqrt(enz.x * enz.x + enz.y * enz.y))
         return cls(az, el, enz.magnitude())
+
+
+class ClassicalElements:
+    def __init__(self, a: float, e: float, i: float, raan: float, arg_per: float, ta: float) -> None:
+        """used to perform calculations with the classical orbital elements
+
+        :param a: semi-major axis in km
+        :type a: float
+        :param e: eccentricity
+        :type e: float
+        :param i: inclination in radians
+        :type i: float
+        :param raan: right ascension of the ascending node in radians
+        :type raan: float
+        :param arg_per: argument of perigee in radians
+        :type arg_per: float
+        :param ta: true anomaly in radians
+        :type ta: float
+        """
+        #: semi-major axis in km
+        self.semimajor_axis: float = a
+
+        #: eccentricity
+        self.eccentricity: float = e
+
+        #: inclination in radians
+        self.inclination: float = i
+
+        #: right ascension of the ascending node in radians
+        self.raan: float = raan
+
+        #: argument of perigee in radians
+        self.argument_of_perigee: float = arg_per
+
+        #: true anomaly in radians
+        self.true_anomaly: float = ta
