@@ -8,10 +8,20 @@ from openspace.time import Epoch
 class TestClassicalElements(unittest.TestCase):
     POSITION: Vector3D = Vector3D(10000, 40000, -5000)
     VELOCITY: Vector3D = Vector3D(-1.5, 1, -0.1)
+    GEO_SMA: float = 42164
+    GEO_PERIOD: float = 86163.57055057827
 
     def test_sma_from_r_and_v(self):
         sma: float = ClassicalElements.sma_from_r_and_v(self.POSITION.magnitude(), self.VELOCITY.magnitude())
         self.assertAlmostEqual(sma, 25015.18101846454)
+
+    def test_period_from_sma(self):
+        period: float = ClassicalElements.period_from_sma(self.GEO_SMA)
+        self.assertAlmostEqual(period, 86163.57055057827)
+
+    def test_mean_motion_from_sma(self):
+        m: float = ClassicalElements.mean_motion_from_sma(self.GEO_SMA)
+        self.assertAlmostEqual(m, 7.292159861796045e-05)
 
 
 class TestGCRFstate(unittest.TestCase):

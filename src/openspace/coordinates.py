@@ -730,7 +730,18 @@ class ClassicalElements:
 
         :param a: semi-major axis in km
         :type a: float
-        :return: mean motion
+        :return: mean motion in radians per second
         :rtype: float
         """
         return sqrt(Earth.MU / (a * a * a))
+
+    @staticmethod
+    def period_from_sma(a: float) -> float:
+        """calculate the period
+
+        :param a: semi-major axis in km
+        :type a: float
+        :return: period in seconds
+        :rtype: float
+        """
+        return 2 * pi * sqrt((a * a * a) / Earth.MU)
