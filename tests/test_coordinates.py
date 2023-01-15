@@ -58,6 +58,11 @@ class TestClassicalElements(unittest.TestCase):
     def test_mean_anomaly(self):
         self.assertAlmostEqual(ClassicalElements.mean_anomaly(1.570796327362374, 0.707977170873199), 0.862819156489175)
 
+    def test_argument_of_latitude_from_r_and_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        u: float = ClassicalElements.argument_of_latitude_from_r_and_w(self.POSITION, w)
+        self.assertAlmostEqual(u, -1.6977312240763704)
+
 
 class TestGCRFstate(unittest.TestCase):
 

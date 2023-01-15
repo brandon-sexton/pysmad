@@ -834,3 +834,16 @@ class ClassicalElements:
         :rtype: float
         """
         return ea - e * sin(ea)
+
+    @staticmethod
+    def argument_of_latitude_from_r_and_w(r: Vector3D, w: Vector3D) -> float:
+        """calculate the argument of latitude
+
+        :param r: position vector
+        :type r: Vector3D
+        :param w: normalized areal velocity vector
+        :type w: Vector3D
+        :return: argument of latitude in radians
+        :rtype: float
+        """
+        return atan2(r.z, -r.x * w.y + r.y * w.x)
