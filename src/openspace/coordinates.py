@@ -1,7 +1,7 @@
 from math import asin, atan2, cos, pi, radians, sin, sqrt, tan
 from typing import List
 
-from openspace.astro.bodies.celestial import Earth, Moon, Sun
+from openspace.bodies.celestial import Earth, Moon, Sun
 from openspace.math.functions import Conversions, LegendrePolynomial, sign
 from openspace.math.linalg import Matrix3D, Vector3D, Vector6D
 from openspace.time import Epoch
