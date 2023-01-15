@@ -1,8 +1,74 @@
 import unittest
 
-from openspace.coordinates import GCRFstate, ITRFstate, Nutation, Precession
+from openspace.coordinates import ClassicalElements, GCRFstate, ITRFstate, Nutation, Precession
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
+
+
+class TestClassicalElements(unittest.TestCase):
+    POSITION: Vector3D = Vector3D(10000, 40000, -5000)
+    VELOCITY: Vector3D = Vector3D(-1.5, 1, -0.1)
+    GEO_SMA: float = 42164
+    GEO_PERIOD: float = 86163.57055057827
+
+    def test_sma_from_r_and_v(self):
+        sma: float = ClassicalElements.sma_from_r_and_v(self.POSITION.magnitude(), self.VELOCITY.magnitude())
+        self.assertAlmostEqual(sma, 25015.18101846454)
+
+    def test_period_from_sma(self):
+        period: float = ClassicalElements.period_from_sma(self.GEO_SMA)
+        self.assertAlmostEqual(period, 86163.57055057827)
+
+    def test_mean_motion_from_sma(self):
+        m: float = ClassicalElements.mean_motion_from_sma(self.GEO_SMA)
+        self.assertAlmostEqual(m, 7.292159861796045e-05)
+
+    def test_areal_velocity_from_r_and_v(self):
+        h: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY)
+        self.assertAlmostEqual(h.magnitude(), 70521.27338612087)
+        self.assertAlmostEqual(h.x, 1000)
+        self.assertAlmostEqual(h.y, 8500)
+        self.assertAlmostEqual(h.z, 70000)
+
+    def test_semilatus_rectum_from_h(self):
+        h: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY)
+        self.assertAlmostEqual(ClassicalElements.semilatus_rectum_from_h(h.magnitude()), 12476.779949218813)
+
+    def test_inclination_from_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        self.assertAlmostEqual(ClassicalElements.inclination_from_w(w), 0.12166217595729033)
+
+    def test_raan_from_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        self.assertAlmostEqual(ClassicalElements.raan_from_w(w), 3.024483909022929)
+
+    def test_eccentricity_from_p_and_a(self):
+        self.assertAlmostEqual(
+            ClassicalElements.eccentricity_from_p_and_a(12476.779949218813, 25015.18101846454), 0.707977170873199
+        )
+
+    def test_eccentric_anomaly(self):
+        rdv: float = self.POSITION.dot(self.VELOCITY)
+        a: float = 25015.18101846454
+        n: float = ClassicalElements.mean_motion_from_sma(a)
+        self.assertAlmostEqual(
+            ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 2.7725707195349645
+        )
+
+    def test_mean_anomaly(self):
+        self.assertAlmostEqual(
+            ClassicalElements.mean_anomaly(2.7725707195349645, 0.707977170873199), 2.5172009599614285
+        )
+
+    def test_argument_of_latitude_from_r_and_w(self):
+        w: Vector3D = ClassicalElements.areal_velocity_from_r_and_v(self.POSITION, self.VELOCITY).normalized()
+        u: float = ClassicalElements.argument_of_latitude_from_r_and_w(self.POSITION, w)
+        self.assertAlmostEqual(u, 4.585454083103215)
+
+    def test_true_anomaly_from_e_and_ea(self):
+        self.assertAlmostEqual(
+            ClassicalElements.true_anomaly_from_e_and_ea(0.707977170873199, 2.7725707195349645), 2.9875547591835923
+        )
 
 
 class TestGCRFstate(unittest.TestCase):

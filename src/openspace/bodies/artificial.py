@@ -1,8 +1,7 @@
 from math import cos, e, log10, pi, radians, sin
 from typing import List
 
-from openspace.bodies.celestial import Earth
-from openspace.coordinates import GCRFstate, HillState
+from openspace.coordinates import ClassicalElements, GCRFstate, HillState
 from openspace.estimation.filtering import RelativeKalman
 from openspace.estimation.obs import SpaceObservation
 from openspace.hardware.payloads import Camera
@@ -143,9 +142,7 @@ class Spacecraft:
         :return: the spacecraft's semi-major axis in km
         :rtype: float
         """
-        r = self.position().magnitude()
-        v = self.velocity().magnitude()
-        return 1 / (2 / r - v * v / Earth.MU)
+        return ClassicalElements.sma_from_r_and_v(self.position().magnitude(), self.velocity().magnitude())
 
     def acquire(self, seed: "Spacecraft") -> None:
         """initialize the kalman filter and begin tracking the argument satellite

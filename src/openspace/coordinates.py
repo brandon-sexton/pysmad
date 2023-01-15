@@ -674,3 +674,209 @@ class AzElRange:
             az += pi * 2.0
         el: float = atan2(enz.z, sqrt(enz.x * enz.x + enz.y * enz.y))
         return cls(az, el, enz.magnitude())
+
+
+class ClassicalElements:
+    def __init__(self, a: float, e: float, i: float, raan: float, arg_per: float, ta: float) -> None:
+        """used to perform calculations with the classical orbital elements
+
+        :param a: semi-major axis in km
+        :type a: float
+        :param e: eccentricity
+        :type e: float
+        :param i: inclination in radians
+        :type i: float
+        :param raan: right ascension of the ascending node in radians
+        :type raan: float
+        :param arg_per: argument of perigee in radians
+        :type arg_per: float
+        :param ta: true anomaly in radians
+        :type ta: float
+        """
+        #: semi-major axis in km
+        self.semimajor_axis: float = a
+
+        #: eccentricity
+        self.eccentricity: float = e
+
+        #: inclination in radians
+        self.inclination: float = i
+
+        #: right ascension of the ascending node in radians
+        self.raan: float = raan
+
+        #: argument of perigee in radians
+        self.argument_of_perigee: float = arg_per
+
+        #: true anomaly in radians
+        self.true_anomaly: float = ta
+
+    @staticmethod
+    def sma_from_r_and_v(r: float, v: float) -> float:
+        """calculate the semi-major axis in km
+
+        :param r: magnitude of the position vector in km
+        :type r: float
+        :param v: magnitude of the velocity vector in km/s
+        :type v: float
+        :return: semi-major axis in km
+        :rtype: float
+        """
+        return 1 / (2 / r - v * v / Earth.MU)
+
+    @staticmethod
+    def mean_motion_from_sma(a: float) -> float:
+        """calculate the mean motion
+
+        :param a: semi-major axis in km
+        :type a: float
+        :return: mean motion in radians per second
+        :rtype: float
+        """
+        return sqrt(Earth.MU / (a * a * a))
+
+    @staticmethod
+    def period_from_sma(a: float) -> float:
+        """calculate the period
+
+        :param a: semi-major axis in km
+        :type a: float
+        :return: period in seconds
+        :rtype: float
+        """
+        return 2 * pi * sqrt((a * a * a) / Earth.MU)
+
+    @staticmethod
+    def areal_velocity_from_r_and_v(r: Vector3D, v: Vector3D) -> Vector3D:
+        """calculate the momentum vector
+
+        :param r: position vector in km
+        :type r: Vector3D
+        :param v: velocity vector in km/s
+        :type v: Vector3D
+        :return: areal velocity vector in km^2/s
+        :rtype: Vector3D
+        """
+        return r.cross(v)
+
+    @staticmethod
+    def semilatus_rectum_from_h(h: float) -> float:
+        """calculate the semi-latus rectum
+
+        :param h: areal velocity magnitude
+        :type h: float
+        :return: semi-latus rectum in km
+        :rtype: float
+        """
+        return h * h / Earth.MU
+
+    @staticmethod
+    def inclination_from_w(w: Vector3D) -> float:
+        """calculate the inclination
+
+        :param w: normalized momentum vector
+        :type w: Vector3D
+        :return: inclination in radians
+        :rtype: float
+        """
+        i: float = atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
+        if i < 0:
+            i += 2 * pi
+        return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
+
+    @staticmethod
+    def eccentricity_from_p_and_a(p: float, a: float) -> float:
+        """calculate the eccentricity of an orbit
+
+        :param p: semi-latus rectum in km
+        :type p: float
+        :param a: semi-major axis in km
+        :type a: float
+        :return: eccentricity
+        :rtype: float
+        """
+        return sqrt(1 - p / a)
+
+    @staticmethod
+    def raan_from_w(w: Vector3D) -> float:
+        """calculate the right ascension of the ascending node
+
+        :param w: normalized momentum vector
+        :type w: Vector3D
+        :return: right ascension of the ascending node in radians
+        :rtype: float
+        """
+        raan: float = atan2(w.x, -w.y)
+        if raan < 0:
+            raan += 2 * pi
+        return raan
+
+    @staticmethod
+    def eccentric_anomaly(r_dot_v: float, r: float, a: float, n: float) -> float:
+        """calculate eccentric anomaly
+
+        :param r_dot_v: dot product of position and velocity
+        :type r_dot_v: float
+        :param r: magnitude of position in km
+        :type r: float
+        :param a: semi-major axis in km
+        :type a: float
+        :param n: mean motion in radians per second
+        :type n: float
+        :return: eccentric anomaly in radians
+        :rtype: float
+        """
+        ea: float = atan2(r_dot_v / (a * a * n), 1 - r / a)
+        if ea < 0:
+            ea += 2 * pi
+        return ea
+
+    @staticmethod
+    def mean_anomaly(ea: float, e: float) -> float:
+        """calculate mean anomaly
+
+        :param ea: eccentric anomaly in radians
+        :type ea: float
+        :param e: eccentricity
+        :type e: float
+        :return: mean anomaly in radians
+        :rtype: float
+        """
+        ma: float = ea - e * sin(ea)
+        if ma < 0:
+            ma += 2 * pi
+        elif ma > 2 * pi:
+            ma -= 2 * pi
+        return ma
+
+    @staticmethod
+    def argument_of_latitude_from_r_and_w(r: Vector3D, w: Vector3D) -> float:
+        """calculate the argument of latitude
+
+        :param r: position vector
+        :type r: Vector3D
+        :param w: normalized areal velocity vector
+        :type w: Vector3D
+        :return: argument of latitude in radians
+        :rtype: float
+        """
+        u: float = atan2(r.z, -r.x * w.y + r.y * w.x)
+        if u < 0:
+            u += 2 * pi
+        return u
+
+    @staticmethod
+    def true_anomaly_from_e_and_ea(e: float, ea: float) -> float:
+        """calculate true anomaly
+
+        :param e: eccentricity
+        :type e: float
+        :param ea: eccentric anomaly in radians
+        :type ea: float
+        :return: true anomaly in radians
+        :rtype: float
+        """
+        ta: float = atan2(sqrt(1 - e * e) * sin(ea), cos(ea) - e)
+        if ta < 0:
+            ta += 2 * pi
+        return ta
