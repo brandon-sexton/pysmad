@@ -10,7 +10,7 @@ authors = [
 ]
 
 [project.urls]
-"Homepage" = "https://www.pyxis-docs.com/"
+"Homepage" = "https://www.openspace-docs.com/"
 
 [build-system]
 requires = ["setuptools>=43.0.0", "wheel"]
