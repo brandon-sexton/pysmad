@@ -1,8 +1,17 @@
 import unittest
 
-from openspace.coordinates import GCRFstate, ITRFstate, Nutation, Precession
+from openspace.coordinates import ClassicalElements, GCRFstate, ITRFstate, Nutation, Precession
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
+
+
+class TestClassicalElements(unittest.TestCase):
+    POSITION: Vector3D = Vector3D(10000, 40000, -5000)
+    VELOCITY: Vector3D = Vector3D(-1.5, 1, -0.1)
+
+    def test_sma_from_r_and_v(self):
+        sma: float = ClassicalElements.sma_from_r_and_v(self.POSITION.magnitude(), self.VELOCITY.magnitude())
+        self.assertAlmostEqual(sma, 25015.18101846454)
 
 
 class TestGCRFstate(unittest.TestCase):

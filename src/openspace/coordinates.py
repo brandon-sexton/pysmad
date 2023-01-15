@@ -723,3 +723,14 @@ class ClassicalElements:
         :rtype: float
         """
         return 1 / (2 / r - v * v / Earth.MU)
+
+    @staticmethod
+    def mean_motion_from_sma(a: float) -> float:
+        """calculate the mean motion
+
+        :param a: semi-major axis in km
+        :type a: float
+        :return: mean motion
+        :rtype: float
+        """
+        return sqrt(Earth.MU / (a * a * a))
