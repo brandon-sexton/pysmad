@@ -55,6 +55,9 @@ class TestClassicalElements(unittest.TestCase):
             ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 1.570796327362374
         )
 
+    def test_mean_anomaly(self):
+        self.assertAlmostEqual(ClassicalElements.mean_anomaly(1.570796327362374, 0.707977170873199), 0.862819156489175)
+
 
 class TestGCRFstate(unittest.TestCase):
 

@@ -821,3 +821,16 @@ class ClassicalElements:
         :rtype: float
         """
         return atan2(r_dot_v * (a * a * n), 1 - r / a)
+
+    @staticmethod
+    def mean_anomaly(ea: float, e: float) -> float:
+        """calculate mean anomaly
+
+        :param ea: eccentric anomaly in radians
+        :type ea: float
+        :param e: eccentricity
+        :type e: float
+        :return: mean anomaly in radians
+        :rtype: float
+        """
+        return ea - e * sin(ea)
