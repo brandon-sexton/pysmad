@@ -2,9 +2,23 @@ from math import cos, sin
 
 from openspace.coordinates import GCRFstate, ITRFstate, LLAstate, SphericalPosition
 from openspace.math.linalg import Matrix3D, Vector3D
+from openspace.time import Epoch
 
 
-class SpaceObservation:
+class Observation:
+    """super class used for space-based and ground-based observations"""
+
+    def __init__(self) -> None:
+        pass
+
+    def eci_position(self) -> Vector3D:
+        pass
+
+    def epoch(self) -> Epoch:
+        pass
+
+
+class SpaceObservation(Observation):
     def __init__(
         self, observer_state: GCRFstate, observed_direction: Vector3D, r_error: float, ang_error: float
     ) -> None:
@@ -42,8 +56,28 @@ class SpaceObservation:
         #: one-sigma angular error of the observation in radians
         self.angular_error: float = ang_error
 
+    def epoch(self) -> Epoch:
+        """get the time the observation was taken
 
-class GroundObservation:
+        :return: valid epoch of the observation
+        :rtype: Epoch
+        """
+        return self.observer_state.epoch
+
+    def eci_position(self) -> Vector3D:
+        """calculate the inertial position of the observation
+
+        :return: inertial position of the observation in the CIS frame
+        :rtype: Vector3D
+        """
+        gmst: float = self.observer_state.epoch.greenwich_hour_angle()
+        itrf_ob: Vector3D = GCRFstate(
+            self.epoch(), self.observer_state.position.plus(self.observed_direction), Vector3D(0, 0, 0)
+        ).itrf_position()
+        return itrf_ob.rotation_about_axis(Vector3D(0, 0, 1), gmst)
+
+
+class GroundObservation(Observation):
     def __init__(
         self, observer_state: ITRFstate, observed_direction: Vector3D, r_error: float, ang_error: float
     ) -> None:
@@ -107,6 +141,14 @@ class GroundObservation:
         nez: Vector3D = SphericalPosition(r, az, el).to_cartesian()
         enz: Vector3D = Vector3D(nez.y, nez.x, nez.z)
         return cls(observer_state, enz, r_error, ang_error)
+
+    def epoch(self) -> Epoch:
+        """get the time the observation was taken
+
+        :return: valid epoch of the observation
+        :rtype: Epoch
+        """
+        return self.observer_state.epoch
 
     def eci_position(self) -> Vector3D:
         """calculate the inertial position of the observation
