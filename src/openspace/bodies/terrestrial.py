@@ -1,7 +1,8 @@
 from math import cos, sin
 
 from openspace.bodies.artificial import Spacecraft
-from openspace.coordinates import AzElRange, ITRFstate, LLAstate
+from openspace.bodies.celestial import Earth
+from openspace.coordinates import AzElRange, ITRFstate, LLAstate, SphericalPosition
 from openspace.math.linalg import Matrix3D, Vector3D
 from openspace.time import Epoch
 
@@ -35,6 +36,19 @@ class GroundSite:
         :rtype: GroundSite
         """
         return cls(ITRFstate(Epoch(0), itrf, Vector3D(0, 0, 0)).lla_state())
+
+    @classmethod
+    def from_geocentric_angles(cls, latitude: float, longitude: float) -> "GroundSite":
+        """create a groundsite from geocentric latitude and longitude
+
+        :param latitude: latitude in radian for a perfect sphere
+        :type latitude: float
+        :param longitude: longitude in radians
+        :type longitude: float
+        :return: groundsite corresponding to the geocentric latitude and longitude
+        :rtype: GroundSite
+        """
+        return cls.from_itrf_position(SphericalPosition(Earth.RADIUS, longitude, latitude).to_cartesian())
 
     def enz_position(self, obj_itrf: Vector3D) -> Vector3D:
         """calculates the east-north-zenith coordinates of the argument position

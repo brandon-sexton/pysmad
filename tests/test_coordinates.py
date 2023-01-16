@@ -47,17 +47,17 @@ class TestClassicalElements(unittest.TestCase):
             ClassicalElements.eccentricity_from_p_and_a(12476.779949218813, 25015.18101846454), 0.707977170873199
         )
 
-    def test_eccentric_anomaly(self):
+    def test_eccentric_anomaly_from_rdv_r_a_n(self):
         rdv: float = self.POSITION.dot(self.VELOCITY)
         a: float = 25015.18101846454
         n: float = ClassicalElements.mean_motion_from_sma(a)
         self.assertAlmostEqual(
-            ClassicalElements.eccentric_anomaly(rdv, self.POSITION.magnitude(), a, n), 2.7725707195349645
+            ClassicalElements.eccentric_anomaly_from_rdv_r_a_n(rdv, self.POSITION.magnitude(), a, n), 2.7725707195349645
         )
 
-    def test_mean_anomaly(self):
+    def test_mean_anomaly_from_ea_and_e(self):
         self.assertAlmostEqual(
-            ClassicalElements.mean_anomaly(2.7725707195349645, 0.707977170873199), 2.5172009599614285
+            ClassicalElements.mean_anomaly_from_ea_and_e(2.7725707195349645, 0.707977170873199), 2.5172009599614285
         )
 
     def test_argument_of_latitude_from_r_and_w(self):
