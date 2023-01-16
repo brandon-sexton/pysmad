@@ -87,7 +87,7 @@ class Gauss:
         e_anom: float = atan2(sqrt(1 - e * e) * sin(ta), cos(ta) + e)
         ma: float = e_anom - e * sin(e_anom)
 
-        return ClassicalElements(ob2.epoch(), sma, e, inc, raan, aop, ma)
+        return ClassicalElements(ob1.epoch(), sma, e, inc, raan, aop, ma)
 
     @staticmethod
     def solve_nu(m: float, l: float, n0: float, n1: float) -> float:
