@@ -6,6 +6,7 @@ openspace.estimation
 
    openspace.estimation.filtering
    openspace.estimation.obs
+   openspace.estimation.iod
 
 .. automodule:: openspace.estimation
    :members:
