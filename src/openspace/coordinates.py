@@ -483,6 +483,14 @@ class ITRFstate:
         #: velocity of the state in km/s
         self.velocity: Vector3D = velocity.copy()
 
+    def copy(self) -> "ITRFstate":
+        """create a duplicate state
+
+        :return: copy of calling state
+        :rtype: ITRFstate
+        """
+        return ITRFstate(self.epoch, self.position, self.velocity)
+
     def gcrf_state(self) -> GCRFstate:
         """calculate the inertial equivalent of the calling earth-fixed state
 
@@ -657,37 +665,6 @@ class LLAstate:
         return Vector3D(
             (n + alt) * clat * cos(longitude), (n + alt) * clat * sin(longitude), (n * (1.0 - e * e) + alt) * slat
         )
-
-
-class AzElRange:
-    def __init__(self, az: float, el: float, r: float) -> None:
-        """used to perform operations related to ground site measurements
-
-        :param az: clock-wise angle from the north vector
-        :type az: float
-        :param el: angle measured from the horizon plane
-        :type el: float
-        :param r: distance to the observed object
-        :type r: float
-        """
-        self.azimuth: float = az
-        self.elevation: float = el
-        self.range: float = r
-
-    @classmethod
-    def from_enz(cls, enz: Vector3D) -> "AzElRange":
-        """calculate the azimuth, elevation, and range given a vector in the enz frame
-
-        :param enz: vector in the east-north-zenith frame
-        :type enz: Vector3D
-        :return: topo-centric azimuth, elevation, and range
-        :rtype: AzElRange
-        """
-        az: float = atan2(enz.x, enz.y)
-        if az < 0:
-            az += pi * 2.0
-        el: float = atan2(enz.z, sqrt(enz.x * enz.x + enz.y * enz.y))
-        return cls(az, el, enz.magnitude())
 
 
 class ClassicalElements:

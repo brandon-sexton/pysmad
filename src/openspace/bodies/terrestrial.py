@@ -2,7 +2,8 @@ from math import cos, sin
 
 from openspace.bodies.artificial import Spacecraft
 from openspace.bodies.celestial import Earth
-from openspace.coordinates import AzElRange, ITRFstate, LLAstate, SphericalPosition
+from openspace.coordinates import ITRFstate, LLAstate, SphericalPosition
+from openspace.estimation.obs import GroundObservation
 from openspace.math.linalg import Matrix3D, Vector3D
 from openspace.time import Epoch
 
@@ -60,12 +61,18 @@ class GroundSite:
         """
         return self.enz_matrix.multiply_vector(obj_itrf.minus(self.itrf_position))
 
-    def angles_and_range(self, target: Spacecraft) -> AzElRange:
+    def angles_and_range(self, target: Spacecraft) -> GroundObservation:
         """calculate the topo-centric angles and range to the argument spacecraft
 
         :param target: spacecraft being observed
         :type target: Spacecraft
         :return: azimuth, elevation, and range to the spacecraft from the ground site
-        :rtype: AzElRange
+        :rtype: GroundObservation
         """
-        return AzElRange.from_enz(self.enz_position(target.current_state().itrf_position()))
+
+        return GroundObservation(
+            ITRFstate(target.current_epoch(), self.itrf_position, Vector3D(0, 0, 0)),
+            self.enz_position(target.current_state().itrf_position()),
+            0,
+            0,
+        )

@@ -4,7 +4,8 @@ from math import radians
 from openspace.bodies.artificial import Spacecraft
 from openspace.bodies.celestial import Earth
 from openspace.bodies.terrestrial import GroundSite
-from openspace.coordinates import AzElRange, ClassicalElements
+from openspace.coordinates import ClassicalElements
+from openspace.estimation.obs import GroundObservation
 from openspace.math.constants import SECONDS_IN_DAY
 from openspace.time import Epoch
 
@@ -17,7 +18,7 @@ class TestGroundSite(unittest.TestCase):
 
     def test_angles_and_range(self):
         self.SAT.step_to_epoch(self.SAT.current_epoch().plus_days(600 / SECONDS_IN_DAY))
-        az_el_range: AzElRange = self.SITE.angles_and_range(self.SAT)
+        az_el_range: GroundObservation = self.SITE.angles_and_range(self.SAT)
         self.assertAlmostEqual(az_el_range.azimuth, 2.4886474543987496)
         self.assertAlmostEqual(az_el_range.elevation, 0.3048706186328065)
         self.assertAlmostEqual(az_el_range.range, 2176.971017537993)
