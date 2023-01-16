@@ -1,5 +1,5 @@
 openspace.time
-==========
+==============
 
 .. automodule:: openspace.time
    :members:

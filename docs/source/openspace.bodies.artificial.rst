@@ -1,5 +1,5 @@
 openspace.bodies.artificial
-=============================
+===========================
 
 .. automodule:: openspace.bodies.artificial
    :members:

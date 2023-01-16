@@ -1,5 +1,5 @@
 openspace.math.linalg
-=================
+=====================
 
 .. automodule:: openspace.math.linalg
    :members:

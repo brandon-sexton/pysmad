@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 openspace astrodynamics toolkit
-==============================
+===============================
 
 .. toctree::
     :maxdepth: 2

@@ -1,5 +1,5 @@
 openspace.math.constants
-====================
+========================
 
 .. automodule:: openspace.math.constants
    :members:

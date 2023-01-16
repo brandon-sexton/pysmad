@@ -1,5 +1,5 @@
 openspace.propagators
-=======================
+=====================
 
 .. toctree::
    :maxdepth: 2

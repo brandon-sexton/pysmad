@@ -1,5 +1,5 @@
 openspace.bodies.celestial
-============================
+==========================
 
 .. automodule:: openspace.bodies.celestial
    :members:

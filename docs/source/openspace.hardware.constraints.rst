@@ -1,5 +1,5 @@
 openspace.hardware.constraints
-==========================
+==============================
 
 .. automodule:: openspace.hardware.constraints
    :members:

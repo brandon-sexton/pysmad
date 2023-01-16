@@ -1,5 +1,5 @@
 openspace.math.functions
-====================
+========================
 
 .. automodule:: openspace.math.functions
    :members:

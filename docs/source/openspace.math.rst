@@ -1,5 +1,5 @@
 openspace.math
-==========
+==============
 
 .. toctree::
    :maxdepth: 2

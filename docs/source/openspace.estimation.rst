@@ -1,5 +1,5 @@
 openspace.estimation
-================
+====================
 
 .. toctree::
    :maxdepth: 2
