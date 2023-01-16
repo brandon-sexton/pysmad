@@ -4,7 +4,7 @@ from math import radians
 from openspace.bodies.artificial import Spacecraft
 from openspace.bodies.celestial import Earth
 from openspace.bodies.terrestrial import GroundSite
-from openspace.coordinates import ClassicalElements
+from openspace.coordinates import ClassicalElements, SphericalPosition
 from openspace.estimation.obs import GroundObservation
 from openspace.math.constants import SECONDS_IN_DAY
 from openspace.time import Epoch
@@ -12,7 +12,8 @@ from openspace.time import Epoch
 
 class TestGroundSite(unittest.TestCase):
 
-    SITE: GroundSite = GroundSite.from_geocentric_angles(radians(48), radians(11))
+    spherical: SphericalPosition = SphericalPosition(Earth.RADIUS, radians(11), radians(48))
+    SITE: GroundSite = GroundSite.from_itrf_position(spherical.to_cartesian())
     COES: ClassicalElements = ClassicalElements(Epoch(50449), Earth.RADIUS + 960, 0, radians(97), radians(130.7), 0, 0)
     SAT: Spacecraft = Spacecraft(COES.to_gcrf_state())
 

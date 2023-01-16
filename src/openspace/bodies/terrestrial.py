@@ -1,8 +1,7 @@
 from math import cos, sin
 
 from openspace.bodies.artificial import Spacecraft
-from openspace.bodies.celestial import Earth
-from openspace.coordinates import ITRFstate, LLAstate, SphericalPosition
+from openspace.coordinates import ITRFstate, LLAstate
 from openspace.estimation.obs import GroundObservation
 from openspace.math.linalg import Matrix3D, Vector3D
 from openspace.time import Epoch
@@ -11,16 +10,24 @@ from openspace.time import Epoch
 class GroundSite:
     def __init__(self, lla: LLAstate) -> None:
         """used for operations that require modeling of a terrestrial location
-
         :param lla: state that holds the latitude, longitude, and altitude of the ground station
         :type lla: LLAstate
         """
-        self.lla: LLAstate = lla.copy()
-        self.itrf_position: Vector3D = self.lla.itrf_position()
-        slamb: float = sin(self.lla.longitude)
-        clamb: float = cos(self.lla.longitude)
-        spsi: float = sin(self.lla.latitude)
-        cpsi: float = cos(self.lla.latitude)
+        #: geodetic cartesian coordinates of the ground station in km
+        self.itrf_position: Vector3D = lla.itrf_position()
+
+        #: geodetic latitude in radians
+        self.latitude: float = lla.latitude
+
+        #: longitude in radians
+        self.longitude: float = lla.longitude
+
+        slamb: float = sin(lla.longitude)
+        clamb: float = cos(lla.longitude)
+        spsi: float = sin(lla.latitude)
+        cpsi: float = cos(lla.latitude)
+
+        #: matrix used to perform transformations to and from enz/itrf
         self.enz_matrix: Matrix3D = Matrix3D(
             Vector3D(-slamb, clamb, 0.0),
             Vector3D(-spsi * clamb, -spsi * slamb, cpsi),
@@ -37,19 +44,6 @@ class GroundSite:
         :rtype: GroundSite
         """
         return cls(ITRFstate(Epoch(0), itrf, Vector3D(0, 0, 0)).lla_state())
-
-    @classmethod
-    def from_geocentric_angles(cls, latitude: float, longitude: float) -> "GroundSite":
-        """create a groundsite from geocentric latitude and longitude
-
-        :param latitude: latitude in radian for a perfect sphere
-        :type latitude: float
-        :param longitude: longitude in radians
-        :type longitude: float
-        :return: groundsite corresponding to the geocentric latitude and longitude
-        :rtype: GroundSite
-        """
-        return cls.from_itrf_position(SphericalPosition(Earth.RADIUS, longitude, latitude).to_cartesian())
 
     def enz_position(self, obj_itrf: Vector3D) -> Vector3D:
         """calculates the east-north-zenith coordinates of the argument position
