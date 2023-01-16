@@ -1,5 +1,5 @@
 openspace.propagators.inertial
-================================
+==============================
 
 .. automodule:: openspace.propagators.inertial
    :members:

@@ -1,7 +1,7 @@
-openspace.bodies.terrestrial
+openspace.planning.maneuvers
 ============================
 
-.. automodule:: openspace.bodies.terrestrial
+.. automodule:: openspace.planning.maneuvers
    :members:
    :undoc-members:
    :show-inheritance:

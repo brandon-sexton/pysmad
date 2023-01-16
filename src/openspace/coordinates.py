@@ -483,6 +483,26 @@ class ITRFstate:
         #: velocity of the state in km/s
         self.velocity: Vector3D = velocity.copy()
 
+    def copy(self) -> "ITRFstate":
+        """create a duplicate state
+
+        :return: copy of calling state
+        :rtype: ITRFstate
+        """
+        return ITRFstate(self.epoch, self.position, self.velocity)
+
+    def gcrf_state(self) -> GCRFstate:
+        """calculate the inertial equivalent of the calling earth-fixed state
+
+        :return: inertial representation of the calling state
+        :rtype: GCRFstate
+        """
+        pos: Vector3D = self.gcrf_position()
+        tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.velocity)
+        mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
+        vel: Vector3D = Precession.matrix(self.epoch).transpose().multiply_vector(mod)
+        return GCRFstate(self.epoch, pos, vel)
+
     def gcrf_position(self) -> Vector3D:
         """create a vector that represents the position of the calling state in the inertial frame
 
@@ -581,6 +601,8 @@ class SphericalPosition:
         :rtype: SphericalPosition
         """
         ra: float = atan2(pos.y, pos.x)
+        if ra < 0:
+            ra += 2 * pi
         dec: float = atan2(pos.z, sqrt(pos.x * pos.x + pos.y * pos.y))
         return cls(pos.magnitude(), ra, dec)
 
@@ -645,41 +667,15 @@ class LLAstate:
         )
 
 
-class AzElRange:
-    def __init__(self, az: float, el: float, r: float) -> None:
-        """used to perform operations related to ground site measurements
-
-        :param az: clock-wise angle from the north vector
-        :type az: float
-        :param el: angle measured from the horizon plane
-        :type el: float
-        :param r: distance to the observed object
-        :type r: float
-        """
-        self.azimuth: float = az
-        self.elevation: float = el
-        self.range: float = r
-
-    @classmethod
-    def from_enz(cls, enz: Vector3D) -> "AzElRange":
-        """calculate the azimuth, elevation, and range given a vector in the enz frame
-
-        :param enz: vector in the east-north-zenith frame
-        :type enz: Vector3D
-        :return: topo-centric azimuth, elevation, and range
-        :rtype: AzElRange
-        """
-        az: float = atan2(enz.x, enz.y)
-        if az < 0:
-            az += pi * 2.0
-        el: float = atan2(enz.z, sqrt(enz.x * enz.x + enz.y * enz.y))
-        return cls(az, el, enz.magnitude())
-
-
 class ClassicalElements:
-    def __init__(self, a: float, e: float, i: float, raan: float, arg_per: float, ta: float) -> None:
+
+    ECCENTRIC_ANOMALY_TOLERANCE: float = 1e-12
+
+    def __init__(self, epoch: Epoch, a: float, e: float, i: float, raan: float, arg_per: float, ma: float) -> None:
         """used to perform calculations with the classical orbital elements
 
+        :param epoch: epoch for which the elements are valid
+        :type epoch: Epoch
         :param a: semi-major axis in km
         :type a: float
         :param e: eccentricity
@@ -690,9 +686,12 @@ class ClassicalElements:
         :type raan: float
         :param arg_per: argument of perigee in radians
         :type arg_per: float
-        :param ta: true anomaly in radians
-        :type ta: float
+        :param ma: mean anomaly in radians
+        :type ma: float
         """
+        #: epoch for which the element set is valid
+        self.epoch: Epoch = epoch.copy()
+
         #: semi-major axis in km
         self.semimajor_axis: float = a
 
@@ -708,8 +707,39 @@ class ClassicalElements:
         #: argument of perigee in radians
         self.argument_of_perigee: float = arg_per
 
-        #: true anomaly in radians
-        self.true_anomaly: float = ta
+        #: mean anomaly in radians
+        self.mean_anomaly: float = ma
+
+    @staticmethod
+    def mean_anomaly_to_eccentric_anomaly(ma: float, e: float) -> float:
+        """calculate the eccentric anomaly
+
+        :param ma: mean anomaly in radians
+        :type ma: float
+        :param e: eccentricity
+        :type e: float
+        :return: eccentric anomaly in radians
+        :rtype: float
+        """
+        converged: bool = False
+        ea0: float = ma
+        num: float
+        den: float
+        if e > 0.8:
+            ea0 = pi
+        while not converged:
+            num = ma - ea0 + e * sin(ea0)
+            den = 1 - e * cos(ea0)
+            ean = ea0 + num / den
+            if abs(ean - ea0) < ClassicalElements.ECCENTRIC_ANOMALY_TOLERANCE:
+                converged = True
+            else:
+                ea0 = ean
+
+        if ean < 0:
+            ean += 2 * pi
+
+        return ean
 
     @staticmethod
     def sma_from_r_and_v(r: float, v: float) -> float:
@@ -812,7 +842,7 @@ class ClassicalElements:
         return raan
 
     @staticmethod
-    def eccentric_anomaly(r_dot_v: float, r: float, a: float, n: float) -> float:
+    def eccentric_anomaly_from_rdv_r_a_n(r_dot_v: float, r: float, a: float, n: float) -> float:
         """calculate eccentric anomaly
 
         :param r_dot_v: dot product of position and velocity
@@ -832,7 +862,7 @@ class ClassicalElements:
         return ea
 
     @staticmethod
-    def mean_anomaly(ea: float, e: float) -> float:
+    def mean_anomaly_from_ea_and_e(ea: float, e: float) -> float:
         """calculate mean anomaly
 
         :param ea: eccentric anomaly in radians
@@ -880,3 +910,86 @@ class ClassicalElements:
         if ta < 0:
             ta += 2 * pi
         return ta
+
+    @staticmethod
+    def argument_of_perigee_from_u_and_ta(u: float, ta: float) -> float:
+        """calculate the argument of perigee
+
+        :param u: argument of latitude in radians
+        :type u: float
+        :param ta: true anomaly in radians
+        :type ta: float
+        :return: argument of perigee in radians
+        :rtype: float
+        """
+        aop: float = u - ta
+        if aop < 0:
+            aop += 2 * pi
+        return aop
+
+    def eccentric_anomaly(self) -> float:
+        """calculate the eccentric anomaly
+
+        :return: eccentric anomaly in radians
+        :rtype: float
+        """
+        return ClassicalElements.mean_anomaly_to_eccentric_anomaly(self.mean_anomaly, self.eccentricity)
+
+    def perigee_vector(self) -> Vector3D:
+        """calculate the vector pointing from the focus to the lowest point in the orbit
+
+        :return: vector from origin to perigee
+        :rtype: Vector3D
+        """
+        cw: float = cos(self.argument_of_perigee)
+        c0: float = cos(self.raan)
+        sw: float = sin(self.argument_of_perigee)
+        s0: float = sin(self.raan)
+        ci: float = cos(self.inclination)
+        return Vector3D(cw * c0 - sw * ci * s0, cw * s0 + sw * ci * c0, sw * sin(self.inclination)).normalized()
+
+    def semilatus_rectum_vector(self) -> Vector3D:
+        """calculate the vector from the focus to the point 90 degrees off of the perigee vector
+
+        :param epoch: _description_
+        :type epoch: Epoch
+        :return: semi-latus rectum vector
+        :rtype: Vector3D
+        """
+        cw: float = cos(self.argument_of_perigee)
+        c0: float = cos(self.raan)
+        sw: float = sin(self.argument_of_perigee)
+        s0: float = sin(self.raan)
+        ci: float = cos(self.inclination)
+        return Vector3D(-sw * c0 - cw * ci * s0, -sw * s0 + cw * ci * c0, cw * sin(self.inclination))
+
+    def to_gcrf_state(self) -> GCRFstate:
+        """calculates the cartesian representation of the element set
+
+        :return: inertial state of the element set
+        :rtype: GCRFstate
+        """
+        p: Vector3D = self.perigee_vector()
+        q: Vector3D = self.semilatus_rectum_vector()
+
+        ea: float = self.eccentric_anomaly()
+        cea: float = cos(ea)
+        sea: float = sin(ea)
+
+        r: float = self.semimajor_axis * (1 - self.eccentricity * cea)
+
+        ea_dot: float = (1 / r) * sqrt(Earth.MU / self.semimajor_axis)
+
+        b: float = self.semimajor_axis * sqrt(1 - self.eccentricity * self.eccentricity)
+        x_bar: float = self.semimajor_axis * (cea - self.eccentricity)
+        y_bar: float = b * sea
+        x_bar_dot: float = -self.semimajor_axis * ea_dot * sea
+        y_bar_dot: float = b * ea_dot * cea
+
+        pos: Vector3D = p.scaled(x_bar).plus(q.scaled(y_bar))
+        vel: Vector3D = p.scaled(x_bar_dot).plus(q.scaled(y_bar_dot))
+
+        gmst: float = self.epoch.greenwich_hour_angle()
+        itrf_pos: Vector3D = pos.rotation_about_axis(Vector3D(0, 0, 1), -gmst)
+        itrf_vel: Vector3D = vel.rotation_about_axis(Vector3D(0, 0, 1), -gmst)
+        return ITRFstate(self.epoch, itrf_pos, itrf_vel).gcrf_state()

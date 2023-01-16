@@ -1,5 +1,5 @@
 openspace.coordinates
-=======================
+=====================
 
 .. automodule:: openspace.coordinates
    :members:

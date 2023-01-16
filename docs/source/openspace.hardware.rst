@@ -1,5 +1,5 @@
 openspace.hardware
-==============
+==================
 
 .. toctree::
    :maxdepth: 2

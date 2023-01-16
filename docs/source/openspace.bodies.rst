@@ -1,5 +1,5 @@
 openspace.bodies
-==================
+================
 
 .. toctree::
    :maxdepth: 2

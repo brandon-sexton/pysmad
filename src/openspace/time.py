@@ -109,4 +109,5 @@ class Epoch:
 
         # solve for gmst using equation 2.8
         total_deg = theta0 + 360.98564724 * dec_day
+
         return radians(total_deg % 360)

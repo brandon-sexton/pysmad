@@ -1,7 +1,7 @@
-openspace.math.constants
+openspace.estimation.iod
 ========================
 
-.. automodule:: openspace.math.constants
+.. automodule:: openspace.estimation.iod
    :members:
    :undoc-members:
    :show-inheritance:
