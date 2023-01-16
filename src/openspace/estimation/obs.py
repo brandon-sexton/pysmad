@@ -17,6 +17,9 @@ class Observation:
     def epoch(self) -> Epoch:
         pass
 
+    def observer_eci(self) -> Vector3D:
+        pass
+
 
 class SpaceObservation(Observation):
     def __init__(
@@ -75,6 +78,9 @@ class SpaceObservation(Observation):
             self.epoch(), self.observer_state.position.plus(self.observed_direction), Vector3D(0, 0, 0)
         ).itrf_position()
         return itrf_ob.rotation_about_axis(Vector3D(0, 0, 1), gmst)
+
+    def observer_eci(self) -> Vector3D:
+        """"""
 
 
 class GroundObservation(Observation):

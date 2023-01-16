@@ -5,7 +5,7 @@ from openspace.coordinates import ClassicalElements, GCRFstate, HillState
 from openspace.estimation.filtering import RelativeKalman
 from openspace.estimation.obs import SpaceObservation
 from openspace.hardware.payloads import Camera
-from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
+from openspace.math.constants import BASE_IN_KILO, SEA_LEVEL_G, SECONDS_IN_DAY
 from openspace.math.linalg import Vector3D
 from openspace.propagators.inertial import RK4
 from openspace.propagators.relative import Hill
@@ -50,9 +50,6 @@ class Spacecraft:
 
         #: Used to retain knowledge of the state when the satellite was first created
         self.initial_state: GCRFstate = state.copy()
-
-        #: Used to solve the state of the spacecraft at various times in the orbit
-        self.propagator: RK4 = RK4(self.initial_state)
 
         #: Used for optical modeling of the satellite
         self.albedo: float = Spacecraft.DEFAULT_ALBEDO
@@ -99,7 +96,28 @@ class Spacecraft:
         #: Mass of the propellant on the spacecraft
         self.propellant_mass = Spacecraft.DEFAULT_PROP_MASS
 
+        self.initial_state.srp_scalar = self.srp_scalar()
+
+        #: Used to solve the state of the spacecraft at various times in the orbit
+        self.propagator: RK4 = RK4(self.initial_state)
+
         self.update_attitude()
+
+    def area(self) -> float:
+        """calculate the spherical area of the satellite using the body radius
+
+        :return: area in km^2
+        :rtype: float
+        """
+        return pi * self.body_radius * self.body_radius
+
+    def srp_scalar(self) -> float:
+        """calculate the scalar used for srp accelerations
+
+        :return: srp coefficient * area / mass (m^2/kg)
+        :rtype: float
+        """
+        return (self.albedo + 1) * self.area() * BASE_IN_KILO * BASE_IN_KILO / self.total_mass()
 
     def total_mass(self) -> float:
         """calculates the mass of the bus plus propellant

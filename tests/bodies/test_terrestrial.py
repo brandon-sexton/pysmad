@@ -22,4 +22,4 @@ class TestGroundSite(unittest.TestCase):
         az_el_range: GroundObservation = self.SITE.angles_and_range(self.SAT)
         self.assertAlmostEqual(az_el_range.azimuth, 2.4886474543987496)
         self.assertAlmostEqual(az_el_range.elevation, 0.3048706186328065)
-        self.assertAlmostEqual(az_el_range.range, 2176.971017537993)
+        self.assertAlmostEqual(az_el_range.range, 2176.971002481251)
