@@ -8,6 +8,7 @@ modules
    openspace.estimation
    openspace.hardware
    openspace.math
+   openspace.planning
    openspace.propagators
 
 .. toctree::
