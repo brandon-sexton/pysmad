@@ -483,6 +483,18 @@ class ITRFstate:
         #: velocity of the state in km/s
         self.velocity: Vector3D = velocity.copy()
 
+    def gcrf_state(self) -> GCRFstate:
+        """calculate the inertial equivalent of the calling earth-fixed state
+
+        :return: inertial representation of the calling state
+        :rtype: GCRFstate
+        """
+        pos: Vector3D = self.gcrf_position()
+        tod: Vector3D = Rotation.matrix(self.epoch).transpose().multiply_vector(self.velocity)
+        mod: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(tod)
+        vel: Vector3D = Precession.matrix(self.epoch).transpose().multiply_vector(mod)
+        return GCRFstate(self.epoch, pos, vel)
+
     def gcrf_position(self) -> Vector3D:
         """create a vector that represents the position of the calling state in the inertial frame
 
@@ -1000,11 +1012,7 @@ class ClassicalElements:
         pos: Vector3D = p.scaled(x_bar).plus(q.scaled(y_bar))
         vel: Vector3D = p.scaled(x_bar_dot).plus(q.scaled(y_bar_dot))
 
-        mod_pos: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(pos)
-        mod_vel: Vector3D = Nutation.matrix(self.epoch).transpose().multiply_vector(vel)
-
-        return GCRFstate(
-            self.epoch,
-            Precession.matrix(self.epoch).transpose().multiply_vector(mod_pos),
-            Precession.matrix(self.epoch).transpose().multiply_vector(mod_vel),
-        )
+        gmst: float = self.epoch.greenwich_hour_angle()
+        itrf_pos: Vector3D = pos.rotation_about_axis(Vector3D(0, 0, 1), -gmst)
+        itrf_vel: Vector3D = vel.rotation_about_axis(Vector3D(0, 0, 1), -gmst)
+        return ITRFstate(self.epoch, itrf_pos, itrf_vel).gcrf_state()

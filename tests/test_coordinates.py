@@ -1,4 +1,5 @@
 import unittest
+from math import radians
 
 from openspace.coordinates import ClassicalElements, GCRFstate, ITRFstate, Nutation, Precession
 from openspace.math.linalg import Vector3D
@@ -75,6 +76,10 @@ class TestClassicalElements(unittest.TestCase):
             ClassicalElements.argument_of_perigee_from_u_and_ta(4.585454083103215, 2.9875547591835923),
             1.597899323919623,
         )
+
+    def test_mean_anomaly_to_eccentric_anomaly(self):
+        ea: float = ClassicalElements.mean_anomaly_to_eccentric_anomaly(radians(4), 0.72)
+        self.assertAlmostEqual(ea, 0.24318719638)
 
 
 class TestGCRFstate(unittest.TestCase):
