@@ -24,3 +24,6 @@ SEA_LEVEL_G: float = 0.00981
 
 #:
 BASE_IN_KILO: float = 1000
+
+#:
+SECONDS_IN_SIDEREAL_DAY: float = 86164.090518
