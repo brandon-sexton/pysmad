@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
-  {name = "Brandon Sexton", email = "brandon.sexton@roguesolutions.us" }
+  {name = "Brandon Sexton", email = "brandon.sexton.1@outlook.com" }
 ]
 
 [project.urls]
