@@ -78,7 +78,16 @@ class TestVisVivaVelocity(unittest.TestCase):
     def test_from_a_mu_r(self):
         self.assertAlmostEqual(EquationsOfMotion.V.from_a_mu_r(GEO_RADIUS, MU, GEO_RADIUS), 3.07466009930248)
 
+    def test_from_mu_r_e_nu(self):
+        self.assertAlmostEqual(EquationsOfMotion.V.from_mu_r_e_nu(MU, GEO_RADIUS, 0, 0), 3.07466009930248)
+
+    def test_from_mu_r_xi(self):
+        self.assertAlmostEqual(EquationsOfMotion.V.from_mu_r_xi(MU, R, -4.72956519499274), V)
+
 
 class TestSpecificMechanicalEnergy(unittest.TestCase):
-    def test_(self):
-        self.assertAlmostEqual(EquationsOfMotion.XI.from_mu_r_v_r(MU, R, V, 6378), 57.76658435031927)
+    def test_from_mu_r_v(self):
+        self.assertAlmostEqual(EquationsOfMotion.XI.from_mu_r_v(MU, R, V), -4.72956519499274)
+
+    def test_from_mu_a(self):
+        self.assertAlmostEqual(EquationsOfMotion.XI.from_mu_a(MU, A), -99650.11045)
