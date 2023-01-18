@@ -1,7 +1,8 @@
 from math import cos, radians, sin, sqrt
 from typing import List
 
-from openspace.math.functions import Conversions
+from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
+from openspace.math.functions import Conversions, EquationsOfMotion
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 
@@ -86,6 +87,15 @@ class Earth:
 
         # Equation 5.42
         return Earth.OBLIQUITY_OF_ECLIPTIC - a * t - b * t * t + c * t * t * t
+
+    @staticmethod
+    def geo_radius() -> float:
+        """calculate the radius of an orbit with a period equal to that of Earth's rotation
+
+        :return: geosynchronous radius in km
+        :rtype: float
+        """
+        return EquationsOfMotion.A.from_mu_tau(Earth.MU, SECONDS_IN_SIDEREAL_DAY)
 
 
 class Sun:

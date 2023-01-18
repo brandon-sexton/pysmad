@@ -2,6 +2,7 @@ from math import asin, atan2, cos, pi, radians, sin, sqrt, tan
 from typing import List
 
 from openspace.bodies.celestial import Earth, Moon, Sun
+from openspace.math.constants import BASE_IN_KILO
 from openspace.math.functions import Conversions, LegendrePolynomial, sign
 from openspace.math.linalg import Matrix3D, Vector3D, Vector6D
 from openspace.time import Epoch
@@ -172,6 +173,9 @@ class GCRFstate:
         #: acceleration due to thrust
         self.thrust: Vector3D = Vector3D(0, 0, 0)
 
+        #: scalar used for srp acceleration calculations
+        self.srp_scalar: float = 0
+
     @classmethod
     def from_hill(cls, origin: "GCRFstate", state: HillState) -> "GCRFstate":
         """create an inertial state from a relative state
@@ -302,7 +306,8 @@ class GCRFstate:
         :rtype: Vector3D
         """
         sun_vec: Vector3D = self.sun_vector().normalized()
-        return sun_vec.scaled(-Sun.P * 3.6e-5)
+        s_mag: float = sun_vec.magnitude()
+        return sun_vec.scaled(-Sun.P * self.srp_scalar / (s_mag * s_mag * BASE_IN_KILO))
 
     def acceleration_from_thrust(self) -> Vector3D:
         """retrieve the stored acceleration to be applied from thrusters
