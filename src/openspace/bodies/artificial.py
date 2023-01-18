@@ -7,7 +7,7 @@ from openspace.estimation.filtering import RelativeKalman
 from openspace.estimation.obs import SpaceObservation
 from openspace.hardware.payloads import Camera
 from openspace.math.constants import BASE_IN_KILO, SEA_LEVEL_G, SECONDS_IN_DAY
-from openspace.math.functions import EOM
+from openspace.math.functions import EquationsOfMotion
 from openspace.math.linalg import Vector3D
 from openspace.propagators.inertial import RK4
 from openspace.propagators.relative import Hill
@@ -162,7 +162,7 @@ class Spacecraft:
         :return: the spacecraft's semi-major axis in km
         :rtype: float
         """
-        return EOM.A.from_mu_r_v(Earth.MU, self.position().magnitude(), self.velocity().magnitude())
+        return EquationsOfMotion.A.from_mu_r_v(Earth.MU, self.position().magnitude(), self.velocity().magnitude())
 
     def acquire(self, seed: "Spacecraft") -> None:
         """initialize the kalman filter and begin tracking the argument satellite

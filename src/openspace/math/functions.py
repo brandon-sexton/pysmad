@@ -368,7 +368,7 @@ class MeanMotion:
         return 2 * pi / tau
 
 
-class EOM:
+class EquationsOfMotion:
     """class used to solve equations of motion"""
 
     #: used to solve semi-major axis

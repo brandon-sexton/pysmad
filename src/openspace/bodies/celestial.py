@@ -2,7 +2,7 @@ from math import cos, radians, sin, sqrt
 from typing import List
 
 from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
-from openspace.math.functions import EOM, Conversions
+from openspace.math.functions import Conversions, EquationsOfMotion
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 
@@ -95,7 +95,7 @@ class Earth:
         :return: geosynchronous radius in km
         :rtype: float
         """
-        return EOM.A.from_mu_tau(Earth.MU, SECONDS_IN_SIDEREAL_DAY)
+        return EquationsOfMotion.A.from_mu_tau(Earth.MU, SECONDS_IN_SIDEREAL_DAY)
 
 
 class Sun:

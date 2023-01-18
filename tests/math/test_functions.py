@@ -1,7 +1,7 @@
 import unittest
 
 from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
-from openspace.math.functions import EOM
+from openspace.math.functions import EquationsOfMotion
 
 MU: float = 398600.4418
 GEO_RADIUS: float = 42164.16962995827
@@ -18,67 +18,67 @@ H: float = 129602.11640001943
 
 class TestSemiMajorAxis(unittest.TestCase):
     def test_from_mu_n(self):
-        self.assertAlmostEqual(EOM.A.from_mu_n(MU, GEO_NU), GEO_RADIUS)
+        self.assertAlmostEqual(EquationsOfMotion.A.from_mu_n(MU, GEO_NU), GEO_RADIUS)
 
     def test_from_mu_tau(self):
-        self.assertAlmostEqual(EOM.A.from_mu_tau(MU, SECONDS_IN_SIDEREAL_DAY), GEO_RADIUS)
+        self.assertAlmostEqual(EquationsOfMotion.A.from_mu_tau(MU, SECONDS_IN_SIDEREAL_DAY), GEO_RADIUS)
 
     def test_from_mu_r_v(self):
-        self.assertAlmostEqual(EOM.A.from_mu_r_v(MU, R, V), 42139.22690208438)
+        self.assertAlmostEqual(EquationsOfMotion.A.from_mu_r_v(MU, R, V), 42139.22690208438)
 
 
 class TestMeanMotion(unittest.TestCase):
     def test_from_a_mu(self):
-        self.assertAlmostEqual(EOM.N.from_a_mu(GEO_RADIUS, MU), GEO_NU)
+        self.assertAlmostEqual(EquationsOfMotion.N.from_a_mu(GEO_RADIUS, MU), GEO_NU)
 
     def test_from_tau(self):
-        self.assertAlmostEqual(EOM.N.from_tau(SECONDS_IN_SIDEREAL_DAY), GEO_NU)
+        self.assertAlmostEqual(EquationsOfMotion.N.from_tau(SECONDS_IN_SIDEREAL_DAY), GEO_NU)
 
 
 class TestSemiMinorAxis(unittest.TestCase):
     def test_from_a_e(self):
-        self.assertAlmostEqual(EOM.B.from_a_e(A, E), B)
+        self.assertAlmostEqual(EquationsOfMotion.B.from_a_e(A, E), B)
 
 
 class TestEccentricity(unittest.TestCase):
     def test_from_a_b(self):
-        self.assertAlmostEqual(EOM.E.from_a_b(A, B), E)
+        self.assertAlmostEqual(EquationsOfMotion.E.from_a_b(A, B), E)
 
     def test_from_a_c(self):
-        self.assertAlmostEqual(EOM.E.from_a_c(A, 1), E)
+        self.assertAlmostEqual(EquationsOfMotion.E.from_a_c(A, 1), E)
 
 
 class TestFlattening(unittest.TestCase):
     def test_from_a_b(self):
-        self.assertAlmostEqual(EOM.F.from_a_b(A, B), 0.1339745962155614)
+        self.assertAlmostEqual(EquationsOfMotion.F.from_a_b(A, B), 0.1339745962155614)
 
 
 class TestSemiParameter(unittest.TestCase):
     def test_from_mu_h(self):
-        self.assertAlmostEqual(EOM.P.from_mu_h(MU, H), P)
+        self.assertAlmostEqual(EquationsOfMotion.P.from_mu_h(MU, H), P)
 
     def test_from_a_b(self):
-        self.assertAlmostEqual(EOM.P.from_a_b(A, B), 1.5)
+        self.assertAlmostEqual(EquationsOfMotion.P.from_a_b(A, B), 1.5)
 
 
 class TestArealVelocity(unittest.TestCase):
     def test_from_mu_p(self):
-        self.assertAlmostEqual(EOM.H.from_mu_p(MU, P), H)
+        self.assertAlmostEqual(EquationsOfMotion.H.from_mu_p(MU, P), H)
 
     def test_from_r_v_phi(self):
-        self.assertAlmostEqual(EOM.H.from_r_v_phi(R, V, PHI), H)
+        self.assertAlmostEqual(EquationsOfMotion.H.from_r_v_phi(R, V, PHI), H)
 
 
 class TestPeriod(unittest.TestCase):
     def test_from_a_mu(self):
-        self.assertAlmostEqual(EOM.TAU.from_a_mu(GEO_RADIUS, MU), SECONDS_IN_SIDEREAL_DAY)
+        self.assertAlmostEqual(EquationsOfMotion.TAU.from_a_mu(GEO_RADIUS, MU), SECONDS_IN_SIDEREAL_DAY)
 
 
 class TestVisVivaVelocity(unittest.TestCase):
     def test_from_a_mu_r(self):
-        self.assertAlmostEqual(EOM.V.from_a_mu_r(GEO_RADIUS, MU, GEO_RADIUS), 3.07466009930248)
+        self.assertAlmostEqual(EquationsOfMotion.V.from_a_mu_r(GEO_RADIUS, MU, GEO_RADIUS), 3.07466009930248)
 
 
 class TestSpecificMechanicalEnergy(unittest.TestCase):
     def test_(self):
-        self.assertAlmostEqual(EOM.XI.from_mu_r_v_r(MU, R, V, 6378), 57.76658435031927)
+        self.assertAlmostEqual(EquationsOfMotion.XI.from_mu_r_v_r(MU, R, V, 6378), 57.76658435031927)
