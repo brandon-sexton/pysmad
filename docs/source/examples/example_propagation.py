@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
 from openspace.bodies.artificial import Spacecraft
-from openspace.coordinates import GCRFstate, HillState
-from openspace.math.linalg import Vector3D
+from openspace.coordinates.states import GCRF, HCW, StateConvert
+from openspace.math.linalg import Vector3D, Vector6D
 from openspace.propagators.relative import Hill
 from openspace.time import Epoch
 
@@ -10,13 +10,13 @@ from openspace.time import Epoch
 start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
 
 # Create a desired relative state for the chase vehicle
-rel_chase_state = HillState(Vector3D(-11, 0, 0), Vector3D(0, 0.0016, 0))
+rel_chase_state = HCW.from_state_vector(Vector6D(-11, 0, 0, 0, 0.0016, 0))
 
 # Create an ECI state for the target to act as the origin
-target_state: GCRFstate = GCRFstate(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
+target_state: GCRF = GCRF(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
 
 # Create an ECI state for the chase vehicle using the target ECI state as the origin
-chase_state: GCRFstate = GCRFstate.from_hill(target_state, rel_chase_state)
+chase_state: GCRF = StateConvert.hcw.to_gcrf(rel_chase_state, target_state)
 
 # Create a propagation end epoch after 5 days
 end_epoch = start_epoch.plus_days(5)
