@@ -1,7 +1,7 @@
 from math import cos, sin, sqrt
 
 from openspace.bodies.celestial import Earth
-from openspace.coordinates import HillState
+from openspace.coordinates.states import HCW
 from openspace.math.linalg import Matrix6D, Vector6D
 
 
@@ -10,16 +10,16 @@ class Hill:
     #: Nominal time to advance the propagator in seconds when no dt is given
     DEFAULT_STEP_SIZE: float = 600
 
-    def __init__(self, state: HillState, sma: float) -> None:
+    def __init__(self, state: HCW, sma: float) -> None:
         """class used to calculate the relative position of a spacecraft using Hill's equations
 
         :param state: relative state of the satellite to be propagated
-        :type state: HillState
+        :type state: HCW
         :param sma: semi-major axis of the origin vehicle in km
         :type sma: float
         """
         #: current state of the propagator
-        self.state: HillState = state.copy()
+        self.state: HCW = state.copy()
 
         #: semi-major axis of the origin spacecraft
         self.sma: float = sma
@@ -68,7 +68,7 @@ class Hill:
         :param t: number of seconds to advance the propagator
         :type t: float
         """
-        self.state = HillState.from_state_vector(self.system_matrix(t).multiply_vector(self.state.vector))
+        self.state = HCW.from_state_vector(self.system_matrix(t).multiply_vector(self.state.vector))
 
     def step(self) -> None:
         """advance the propagator by one time step"""

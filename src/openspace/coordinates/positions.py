@@ -1,6 +1,9 @@
-from math import atan2, cos, pi, sin, sqrt
+from math import asin, atan2, cos, pi, sin, sqrt
 
-from openspace.math.linalg import Vector3D
+from openspace.bodies.celestial import Earth
+from openspace.math.functions import sign
+from openspace.math.linalg import Matrix3D, Vector3D
+from openspace.time import Epoch
 
 
 class SphericalPosition:
@@ -50,6 +53,30 @@ class SphericalPosition:
         )
 
 
+class ENZ:
+    @staticmethod
+    def matrix(lamb: float, psi: float) -> Matrix3D:
+        """calculate the transformation matrix required for ENZ/ITRF transformations
+
+        :param lamb: geodetic longitude
+        :type lamb: float
+        :param psi: geodetic latitude
+        :type psi: float
+        :return: matrix used to go from ITRF to ENZ
+        :rtype: Matrix3D
+        """
+        slamb: float = sin(lamb)
+        clamb: float = cos(lamb)
+        spsi: float = sin(psi)
+        cpsi: float = cos(psi)
+
+        return Matrix3D(
+            Vector3D(-slamb, clamb, 0.0),
+            Vector3D(-spsi * clamb, -spsi * slamb, cpsi),
+            Vector3D(cpsi * clamb, cpsi * slamb, spsi),
+        )
+
+
 class LLA:
     def __init__(self, lat: float, longit: float, alt: float) -> None:
         """used to perform operations for a state in an oblate earth frame
@@ -77,3 +104,123 @@ class LLA:
         :rtype: LLA
         """
         return LLA(self.latitude, self.longitude, self.altitude)
+
+
+class _PositionConvertGCRF:
+    @staticmethod
+    def to_itrf(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.rotation(epoch).multiply_vector(_PositionConvertGCRF.to_tod(pos, epoch))
+
+    @staticmethod
+    def to_tod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.nutation(epoch).multiply_vector(_PositionConvertGCRF.to_mod(pos, epoch))
+
+    @staticmethod
+    def to_mod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.precession(epoch).multiply_vector(pos)
+
+    @staticmethod
+    def to_ijk(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return _PositionConvertITRF.to_ijk(_PositionConvertGCRF.to_itrf(pos, epoch), epoch)
+
+
+class _PositionConvertITRF:
+    @staticmethod
+    def to_gcrf(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.precession(epoch).transpose().multiply_vector(_PositionConvertITRF.to_mod(pos, epoch))
+
+    @staticmethod
+    def to_tod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.rotation(epoch).transpose().multiply_vector(pos)
+
+    @staticmethod
+    def to_mod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return Earth.nutation(epoch).transpose().multiply_vector(_PositionConvertITRF.to_tod(pos, epoch))
+
+    @staticmethod
+    def to_lla(pos: Vector3D) -> LLA:
+        x: float = pos.x
+        y: float = pos.y
+        z: float = pos.z
+
+        # Equation 2.77a
+        a: float = Earth.RADIUS
+        a2: float = a * a
+        f: float = Earth.FLATTENING
+        b: float = a - f * a
+        b2: float = b * b
+        e2: float = 1 - b2 / a2
+        eps2: float = a2 / b2 - 1.0
+        rho: float = sqrt(x * x + y * y)
+
+        # Equation 2.77b
+        p: float = abs(z) / eps2
+        s: float = rho * rho / (e2 * eps2)
+        q: float = p * p - b2 + s
+
+        # Equation 2.77c
+        u: float = p / sqrt(q)
+        v: float = b2 * u * u / q
+        cap_p: float = 27.0 * v * s / q
+        cap_q: float = (sqrt(cap_p + 1) + sqrt(cap_p)) ** (2.0 / 3.0)
+
+        # Equation 2.77d
+        t: float = (1.0 + cap_q + 1.0 / cap_q) / 6.0
+        c: float = sqrt(u * u - 1.0 + 2.0 * t)
+        w: float = (c - u) / 2.0
+
+        # Equation 2.77e
+        base: float = sqrt(t * t + v) - u * w - t / 2.0 - 0.25
+        if base < 0:
+            base = 0
+        arg: float = w + sqrt(base)
+        d: float = sign(z) * sqrt(q) * arg
+
+        # Equation 2.77f
+        n: float = a * sqrt(1.0 + eps2 * d * d / b2)
+        arg = (eps2 + 1.0) * (d / n)
+        lamb: float = asin(arg)
+
+        # Equation 2.77g
+        h: float = rho * cos(lamb) + z * sin(lamb) - a2 / n
+        phi: float = atan2(y, x)
+        if phi < 0:
+            phi += pi * 2.0
+
+        return LLA(lamb, phi, h)
+
+    @staticmethod
+    def to_ijk(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        return pos.rotation_about_axis(Vector3D(0, 0, 1), epoch.greenwich_hour_angle())
+
+
+class _PositionConvertLLA:
+    @staticmethod
+    def to_itrf(lla: LLA):
+        lat: float = lla.latitude
+        longitude: float = lla.longitude
+        alt: float = lla.altitude
+
+        f: float = Earth.FLATTENING
+        e: float = sqrt(f * (2 - f))
+        slat: float = sin(lat)
+        clat: float = cos(lat)
+        n: float = Earth.RADIUS / sqrt(1 - e * e * slat * slat)
+
+        return Vector3D(
+            (n + alt) * clat * cos(longitude), (n + alt) * clat * sin(longitude), (n * (1.0 - e * e) + alt) * slat
+        )
+
+
+class _PositionConvertENZ:
+    @staticmethod
+    def to_itrf(lla: LLA, enz: Vector3D) -> Vector3D:
+        return ENZ.matrix(lla.longitude, lla.latitude).transpose().multiply_vector(enz)
+
+
+class PositionConvert:
+
+    gcrf = _PositionConvertGCRF
+    itrf = _PositionConvertITRF
+    lla = _PositionConvertLLA
+    enz = _PositionConvertENZ

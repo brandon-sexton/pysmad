@@ -128,6 +128,19 @@ class Eccentricity:
         """
         return sqrt(a * a - b * b) / a
 
+    @staticmethod
+    def from_a_p(a: float, p: float) -> float:
+        """calculate eccentricity using equation 2.62 in Satellite Orbits
+
+        :param a: semi-major axis in km
+        :type a: float
+        :param p: semi-parameter
+        :type p: float
+        :return: eccentricity
+        :rtype: float
+        """
+        return sqrt(1 - p / a)
+
 
 class Flattening:
     """class used to solve flattening of an ellipse (f)"""
@@ -561,17 +574,17 @@ class ArgumentOfPerigee:
     """static class used to solve argument of perigee"""
 
     @staticmethod
-    def argument_of_perigee_from_u_and_ta(u: float, ta: float) -> float:
+    def from_u_nu(u: float, nu: float) -> float:
         """calculate the argument of perigee
 
         :param u: argument of latitude in radians
         :type u: float
-        :param ta: true anomaly in radians
-        :type ta: float
+        :param nu: true anomaly in radians
+        :type nu: float
         :return: argument of perigee in radians
         :rtype: float
         """
-        aop: float = u - ta
+        aop: float = u - nu
         if aop < 0:
             aop += 2 * pi
         return aop

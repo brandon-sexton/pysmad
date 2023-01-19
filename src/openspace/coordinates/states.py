@@ -1,9 +1,8 @@
-from math import cos, sin, sqrt, tan
+from math import asin, atan2, cos, sin, sqrt, tan
 from typing import List
 
 from openspace.bodies.celestial import Earth, Moon, Sun
-from openspace.coordinates.positions import SphericalPosition
-from openspace.coordinates.transforms import PositionConvert
+from openspace.coordinates.positions import PositionConvert, SphericalPosition
 from openspace.math.constants import BASE_IN_KILO
 from openspace.math.functions import LegendrePolynomial
 from openspace.math.linalg import Matrix3D, Vector3D, Vector6D
@@ -33,10 +32,16 @@ class State:
         #: state vector whose elements are equal to that of the position and velocity unpacked
         self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
 
+    def copy(self):
+        return type(self)(self.epoch, self.position, self.velocity)
 
-class Hill(State):
+    def vector_list(self) -> List[Vector3D]:
+        return [self.position, self.velocity]
+
+
+class ITRF(State):
     def __init__(self, epoch: Epoch, r: Vector3D, v: Vector3D) -> None:
-        """class used to perform operations and modeling in the Hill Frame
+        """class used to perform operations and modeling in the International Terrestrial Reference Frame
 
         :param epoch: time for which the position and velocity are valid
         :type epoch: Epoch
@@ -46,6 +51,41 @@ class Hill(State):
         :type v: Vector3D
         """
         super().__init__(epoch, r, v)
+
+    @classmethod
+    def from_fixed(cls, epoch: Epoch, r: Vector3D) -> "ITRF":
+        """create an ITRF state from a position fixed to the Earth surface
+
+        :param epoch: time for which the position and velocity are valid
+        :type epoch: Epoch
+        :param r: position of the state
+        :type r: Vector3D
+        :return: ITRF state with velocity vector == 0
+        :rtype: ITRF
+        """
+        return cls(epoch, r, Vector3D(0, 0, 0))
+
+
+class HCW(State):
+    def __init__(self, epoch: Epoch, r: Vector3D, v: Vector3D) -> None:
+        """class used to perform operations and modeling in the HCW Frame
+
+        :param epoch: time for which the position and velocity are valid
+        :type epoch: Epoch
+        :param r: position of the state
+        :type r: Vector3D
+        :param v: velocity of the state
+        :type v: Vector3D
+        """
+        super().__init__(epoch, r, v)
+
+    @classmethod
+    def from_state_vector(cls, state_vec: Vector6D) -> "HCW":
+        return cls(
+            Epoch(0),
+            Vector3D(state_vec.x, state_vec.y, state_vec.z),
+            Vector3D(state_vec.vx, state_vec.vy, state_vec.vz),
+        )
 
     @staticmethod
     def frame_matrix(origin: "GCRF") -> Matrix3D:
@@ -80,6 +120,9 @@ class GCRF(State):
 
         #: scalar used for srp acceleration calculations
         self.srp_scalar: float = 0
+
+        #: boolean to determine if perturbations are modeled during propagation
+        self.use_perturbations: bool = True
 
     def copy(self) -> "GCRF":
         """create a replica of the calling state
@@ -216,12 +259,13 @@ class GCRF(State):
         :return: list of velocity and acceleration
         :rtype: List[Vector3D]
         """
-        net_0: Vector3D = self.acceleration_from_thrust()
-        net_1: Vector3D = net_0.plus(self.acceleration_from_moon())
-        net_2: Vector3D = net_1.plus(self.acceleration_from_sun())
-        net_3: Vector3D = net_2.plus(self.acceleration_from_srp())
-        net_4: Vector3D = net_3.plus(self.acceleration_from_gravity())
-        net_a: Vector3D = net_4.plus(self.acceleration_from_earth())
+        net_a: Vector3D = self.acceleration_from_thrust()
+        net_a = net_a.plus(self.acceleration_from_earth())
+        if self.use_perturbations:
+            net_a = net_a.plus(self.acceleration_from_moon())
+            net_a = net_a.plus(self.acceleration_from_sun())
+            net_a = net_a.plus(self.acceleration_from_srp())
+            net_a = net_a.plus(self.acceleration_from_gravity())
         return [self.velocity.copy(), net_a]
 
     def sun_vector(self) -> Vector3D:
@@ -253,3 +297,94 @@ class IJK(State):
         :type v: Vector3D
         """
         super().__init__(epoch, r, v)
+
+
+class _StateConvertGCRF:
+    @staticmethod
+    def to_hcw(origin: GCRF, state: GCRF) -> HCW:
+        magrtgt: float = origin.position.magnitude()
+        magrint: float = state.position.magnitude()
+        rot_eci_rsw: Matrix3D = HCW.frame_matrix(origin)
+        vtgtrsw: Vector3D = rot_eci_rsw.multiply_vector(origin.velocity)
+        rintrsw: Vector3D = rot_eci_rsw.multiply_vector(state.position)
+        vintrsw: Vector3D = rot_eci_rsw.multiply_vector(state.velocity)
+
+        sinphiint: float = rintrsw.z / magrint
+        phiint: float = asin(sinphiint)
+        cosphiint: float = cos(phiint)
+        lambdaint: float = atan2(rintrsw.y, rintrsw.x)
+        sinlambdaint: float = sin(lambdaint)
+        coslambdaint: float = cos(lambdaint)
+        lambdadottgt: float = vtgtrsw.y / magrtgt
+
+        r_hcw: Vector3D = Vector3D(magrint - magrtgt, lambdaint * magrtgt, phiint * magrtgt)
+
+        rot_rsw_sez: Matrix3D = Matrix3D(
+            Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
+            Vector3D(-sinlambdaint, coslambdaint, 0),
+            Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
+        )
+
+        vintsez: Vector3D = rot_rsw_sez.multiply_vector(vintrsw)
+        phidotint: float = -vintsez.x / magrint
+        lambdadotint: float = vintsez.y / (magrint * cosphiint)
+
+        v_hcw: Vector3D = Vector3D(
+            vintsez.z - vtgtrsw.x,
+            magrtgt * (lambdadotint - lambdadottgt),
+            magrtgt * phidotint,
+        )
+
+        return HCW(origin.epoch, r_hcw, v_hcw)
+
+
+class _StateConvertHCW:
+    @staticmethod
+    def to_gcrf(state: HCW, origin: GCRF) -> GCRF:
+        """create an inertial state for the calling state
+
+        :param origin: inertial state that acts as the origin for the relative state
+        :type origin: GCRFstate
+        :return: inertial state of the relative spacecraft
+        :rtype: GCRFstate
+        """
+        magrtgt: float = origin.position.magnitude()
+        magrint: float = magrtgt + state.position.x
+        rot_eci_rsw: Matrix3D = HCW.frame_matrix(origin)
+        vtgtrsw: Vector3D = rot_eci_rsw.multiply_vector(origin.velocity)
+
+        lambdadottgt: float = vtgtrsw.y / magrtgt
+        lambdaint: float = state.position.y / magrtgt
+        phiint: float = state.position.z / magrtgt
+        sinphiint: float = sin(phiint)
+        cosphiint: float = cos(phiint)
+        sinlambdaint: float = sin(lambdaint)
+        coslambdaint: float = cos(lambdaint)
+
+        rot_rsw_sez: Matrix3D = Matrix3D(
+            Vector3D(sinphiint * coslambdaint, sinphiint * sinlambdaint, -cosphiint),
+            Vector3D(-sinlambdaint, coslambdaint, 0),
+            Vector3D(cosphiint * coslambdaint, cosphiint * sinlambdaint, sinphiint),
+        )
+
+        rdotint: float = state.velocity.x + vtgtrsw.x
+        lambdadotint: float = state.velocity.y / magrtgt + lambdadottgt
+        phidotint: float = state.velocity.z / magrtgt
+        vintsez: Vector3D = Vector3D(-magrint * phidotint, magrint * lambdadotint * cosphiint, rdotint)
+        vintrsw: Vector3D = rot_rsw_sez.transpose().multiply_vector(vintsez)
+        vinteci: Vector3D = rot_eci_rsw.transpose().multiply_vector(vintrsw)
+
+        rintrsw: Vector3D = Vector3D(
+            cosphiint * magrint * coslambdaint,
+            cosphiint * magrint * sinlambdaint,
+            sinphiint * magrint,
+        )
+
+        rinteci: Vector3D = rot_eci_rsw.transpose().multiply_vector(rintrsw)
+
+        return GCRF(origin.epoch, rinteci, vinteci)
+
+
+class StateConvert:
+    hcw = _StateConvertHCW
+    gcrf = _StateConvertGCRF

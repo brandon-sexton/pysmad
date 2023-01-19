@@ -1,7 +1,7 @@
 from math import asin, atan2, cos, pi, sin, sqrt
 
 from openspace.bodies.celestial import Earth
-from openspace.coordinates import ClassicalElements
+from openspace.coordinates.elements import ClassicalElements
 from openspace.estimation.obs import Observation
 from openspace.math.constants import SECONDS_IN_DAY
 from openspace.math.linalg import Vector3D
@@ -24,8 +24,8 @@ class Gauss:
         """
 
         # method is found in Chapter 2 of Satellite Orbits
-        ra: Vector3D = ob1.eci_position()
-        rb: Vector3D = ob2.eci_position()
+        ra: Vector3D = ob1.ijk_position()
+        rb: Vector3D = ob2.ijk_position()
         ra_mag: float = ra.magnitude()
         rb_mag: float = rb.magnitude()
 
