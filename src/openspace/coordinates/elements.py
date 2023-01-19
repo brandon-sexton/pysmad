@@ -62,9 +62,9 @@ class ClassicalElements:
         e: float = EquationsOfMotion.E.from_a_p(a, p)
         n: float = EquationsOfMotion.N.from_a_mu(a, Earth.MU)
         ea: float = EquationsOfMotion.EA.from_rdv_r_a_n(rdv, r, a, n)
-        ma: float = EquationsOfMotion.MA.from_ea_and_e(ea, e)
-        u: float = EquationsOfMotion.U.from_r_and_w(state.position, w)
-        nu: float = EquationsOfMotion.NU.from_e_and_ea(e, ea)
+        ma: float = EquationsOfMotion.MA.from_ea_e(ea, e)
+        u: float = EquationsOfMotion.U.from_r_w(state.position, w)
+        nu: float = EquationsOfMotion.NU.from_e_ea(e, ea)
         aop: float = EquationsOfMotion.W.from_u_nu(u, nu)
         return cls(state.epoch, a, e, i, raan, aop, ma)
 

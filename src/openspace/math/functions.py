@@ -554,7 +554,7 @@ class TrueAnomaly:
     """static class used to solve true anomaly"""
 
     @staticmethod
-    def from_e_and_ea(e: float, ea: float) -> float:
+    def from_e_ea(e: float, ea: float) -> float:
         """calculate true anomaly
 
         :param e: eccentricity
@@ -594,7 +594,7 @@ class ArgumentOfLatitude:
     """static class used to solve argument of latitude"""
 
     @staticmethod
-    def from_r_and_w(r: Vector3D, w: Vector3D) -> float:
+    def from_r_w(r: Vector3D, w: Vector3D) -> float:
         """calculate the argument of latitude
 
         :param r: position vector
@@ -614,7 +614,7 @@ class MeanAnomaly:
     """static class used to solve mean anomaly"""
 
     @staticmethod
-    def from_ea_and_e(ea: float, e: float) -> float:
+    def from_ea_e(ea: float, e: float) -> float:
         """calculate mean anomaly
 
         :param ea: eccentric anomaly in radians
