@@ -8,9 +8,6 @@ from openspace.time import Epoch
 
 
 class ClassicalElements:
-
-    ECCENTRIC_ANOMALY_TOLERANCE: float = 1e-12
-
     def __init__(self, epoch: Epoch, a: float, e: float, i: float, raan: float, arg_per: float, ma: float) -> None:
         """used to perform calculations with the classical orbital elements
 
