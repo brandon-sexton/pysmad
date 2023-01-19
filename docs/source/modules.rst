@@ -10,11 +10,11 @@ modules
    openspace.math
    openspace.planning
    openspace.propagators
+   openspace.coordinates
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.coordinates
    openspace.time
 
 .. automodule:: openspace

@@ -1,4 +1,5 @@
-from openspace.coordinates import GCRFstate, HillState, SphericalPosition
+from openspace.coordinates.positions import SphericalPosition
+from openspace.coordinates.states import GCRF, HCW, StateConvert
 from openspace.estimation.obs import SpaceObservation
 from openspace.math.constants import SECONDS_IN_DAY
 from openspace.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
@@ -109,7 +110,7 @@ class RelativeKalman:
     def update_state(self) -> None:
         """correct predicted state and store as current state"""
         self.x00 = self.x10.plus(self.k.multiply_vector(self.z.minus(self.H.multiply_vector(self.x10))))
-        self.propagator.state = HillState.from_state_vector(self.x00)
+        self.propagator.state = HCW.from_state_vector(self.x00)
 
     def update_covariance(self) -> None:
         """correct predicted covariance and store as current covariance"""
@@ -136,19 +137,18 @@ class RelativeKalman:
         """
         dt: float = (ob.observer_state.epoch.value - self.epoch.value) * SECONDS_IN_DAY
         self.epoch = ob.observer_state.epoch.copy()
-        gcrf_ob: GCRFstate = GCRFstate(
+        gcrf_ob: GCRF = GCRF(
             self.epoch, ob.observer_state.position.plus(ob.observed_direction), ob.observer_state.velocity
         )
-        self.z = HillState.from_gcrf(gcrf_ob, ob.observer_state).position
+        self.z = StateConvert.gcrf.to_hcw(ob.observer_state, gcrf_ob).position
 
         spherical_ob = SphericalPosition(
             ob.range + ob.range_error, ob.right_ascension + ob.angular_error, ob.declination + ob.angular_error
         )
         errors: Vector3D = spherical_ob.to_cartesian().minus(ob.observed_direction)
-        gcrf_errors: GCRFstate = GCRFstate(
-            self.epoch, ob.observer_state.position.plus(errors), ob.observer_state.velocity
-        )
-        hill_errors: Vector3D = HillState.from_gcrf(gcrf_errors, ob.observer_state).position
+        gcrf_errors: GCRF = GCRF(self.epoch, ob.observer_state.position.plus(errors), ob.observer_state.velocity)
+        hill_errors: Vector3D = StateConvert.gcrf.to_hcw(ob.observer_state, gcrf_errors).position
+
         self.r = Matrix3D(
             Vector3D(
                 hill_errors.x * hill_errors.x,

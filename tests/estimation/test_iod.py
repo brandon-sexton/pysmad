@@ -2,7 +2,8 @@ import unittest
 from math import radians
 
 from openspace.bodies.terrestrial import GroundSite
-from openspace.coordinates import ClassicalElements, ITRFstate
+from openspace.coordinates.elements import ClassicalElements
+from openspace.coordinates.states import ITRF
 from openspace.estimation.iod import Gauss
 from openspace.estimation.obs import GroundObservation
 from openspace.math.linalg import Vector3D
@@ -13,15 +14,11 @@ class TestGauss(unittest.TestCase):
     SITE: GroundSite = GroundSite.from_itrf_position(Vector3D(1344.143, 6068.601, 1429.311))
 
     def test_coes_from_positions(self):
-        state_1: ITRFstate = ITRFstate(
-            Epoch.from_gregorian(1999, 4, 2, 0, 31, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0)
-        )
+        state_1: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 0, 31, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0))
         ob_1: GroundObservation = GroundObservation.from_angles_and_range(
             state_1, radians(132.67), radians(32.44), 16945.45, 0, 0
         )
-        state_2: ITRFstate = ITRFstate(
-            Epoch.from_gregorian(1999, 4, 2, 3, 1, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0)
-        )
+        state_2: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 3, 1, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0))
         ob_2: GroundObservation = GroundObservation.from_angles_and_range(
             state_2, radians(123.08), radians(50.06), 37350.34, 0, 0
         )

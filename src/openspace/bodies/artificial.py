@@ -2,7 +2,7 @@ from math import cos, e, log10, pi, radians, sin
 from typing import List
 
 from openspace.bodies.celestial import Earth
-from openspace.coordinates import GCRFstate, HillState
+from openspace.coordinates.states import GCRF, HCW, StateConvert
 from openspace.estimation.filtering import RelativeKalman
 from openspace.estimation.obs import SpaceObservation
 from openspace.hardware.payloads import Camera
@@ -43,15 +43,15 @@ class Spacecraft:
     #: Default specific impulse of the propellant used to calculate thrust
     DEFAULT_ISP: float = 350
 
-    def __init__(self, state: GCRFstate) -> None:
+    def __init__(self, state: GCRF) -> None:
         """class used to model the behaviors of man-made satellites
 
         :param state: starting inertial state of the satellite
-        :type state: GCRFstate
+        :type state: GCRF
         """
 
         #: Used to retain knowledge of the state when the satellite was first created
-        self.initial_state: GCRFstate = state.copy()
+        self.initial_state: GCRF = state.copy()
 
         #: Used for optical modeling of the satellite
         self.albedo: float = Spacecraft.DEFAULT_ALBEDO
@@ -135,7 +135,9 @@ class Spacecraft:
         :param ric_burn: burn vector with components of radial, in-track, and cross-track (km/s)
         :type ric_burn: Vector3D
         """
-        self.propagator = RK4(GCRFstate.from_hill(self.current_state(), HillState(Vector3D(0, 0, 0), ric_burn)))
+        self.propagator = RK4(
+            StateConvert.hcw.to_gcrf(HCW(self.current_epoch(), Vector3D(0, 0, 0), ric_burn), self.current_state())
+        )
 
     def finite_maneuver(self, ric_dv: Vector3D) -> None:
         """perform a maneuver using ric acceleration accross a specified time
@@ -145,7 +147,7 @@ class Spacecraft:
         :param dt: duration of the maneuver in days
         :type dt: float
         """
-        gcrf_thrust: Vector3D = HillState.frame_matrix(self.current_state()).multiply_vector(ric_dv)
+        gcrf_thrust: Vector3D = HCW.frame_matrix(self.current_state()).multiply_vector(ric_dv)
         self.propagator.maneuver(
             gcrf_thrust,
             self.m_dot,
@@ -172,11 +174,7 @@ class Spacecraft:
         """
 
         self.filter = RelativeKalman(
-            self.current_epoch(),
-            Hill(
-                HillState.from_gcrf(seed.current_state(), self.current_state()),
-                self.sma(),
-            ),
+            self.current_epoch(), Hill(StateConvert.gcrf.to_hcw(self.current_state(), seed.current_state()), self.sma())
         )
         self.track_state(seed)
 
@@ -469,13 +467,13 @@ class Spacecraft:
         :return: vector originating at self and terminating at the target's position in the hill frame
         :rtype: Vector3D
         """
-        return HillState.from_gcrf(target.current_state(), self.current_state()).position
+        return StateConvert.gcrf.to_hcw(self.current_state(), target.current_state()).position
 
-    def current_state(self) -> "GCRFstate":
+    def current_state(self) -> "GCRF":
         """retrieve the vehicle's current ECI state
 
         :return: current ECI state as determined by the propagator
-        :rtype: GCRFstate
+        :rtype: GCRF
         """
         return self.propagator.state.copy()
 

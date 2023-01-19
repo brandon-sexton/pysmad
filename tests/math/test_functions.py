@@ -2,6 +2,7 @@ import unittest
 
 from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
 from openspace.math.functions import EquationsOfMotion
+from openspace.math.linalg import Vector3D
 
 MU: float = 398600.4418
 GEO_RADIUS: float = 42164.16962995827
@@ -47,6 +48,9 @@ class TestEccentricity(unittest.TestCase):
     def test_from_a_c(self):
         self.assertAlmostEqual(EquationsOfMotion.E.from_a_c(A, 1), E)
 
+    def test_from_a_p(self):
+        self.assertAlmostEqual(EquationsOfMotion.E.from_a_p(GEO_RADIUS, P), 0.024329248415869805)
+
 
 class TestFlattening(unittest.TestCase):
     def test_from_a_b(self):
@@ -60,6 +64,9 @@ class TestSemiParameter(unittest.TestCase):
     def test_from_a_b(self):
         self.assertAlmostEqual(EquationsOfMotion.P.from_a_b(A, B), 1.5)
 
+    def test_from_a_e(self):
+        self.assertAlmostEqual(EquationsOfMotion.P.from_a_e(GEO_RADIUS, 0.024329248415869805), P)
+
 
 class TestArealVelocity(unittest.TestCase):
     def test_from_mu_p(self):
@@ -67,6 +74,12 @@ class TestArealVelocity(unittest.TestCase):
 
     def test_from_r_v_phi(self):
         self.assertAlmostEqual(EquationsOfMotion.H.from_r_v_phi(R, V, PHI), H)
+
+    def test_from_r_v(self):
+        h = EquationsOfMotion.H.from_r_v(Vector3D(1, 2, 3), Vector3D(4, 2, 42))
+        self.assertAlmostEqual(h.x, 78)
+        self.assertAlmostEqual(h.y, -30)
+        self.assertAlmostEqual(h.z, -6)
 
 
 class TestPeriod(unittest.TestCase):
@@ -91,3 +104,41 @@ class TestSpecificMechanicalEnergy(unittest.TestCase):
 
     def test_from_mu_a(self):
         self.assertAlmostEqual(EquationsOfMotion.XI.from_mu_a(MU, A), -99650.11045)
+
+
+class TestTrueAnomaly(unittest.TestCase):
+    def test_from_e_ea(self):
+        self.assertAlmostEqual(EquationsOfMotion.NU.from_e_ea(0.025, 0.1), 0.10252766708805071)
+
+
+class TestEccentricAnomaly(unittest.TestCase):
+    def test_from_ma_e(self):
+        self.assertAlmostEqual(EquationsOfMotion.EA.from_ma_e(1, 0.2), 1.1853242038613385)
+
+    def test_from_rdv_r_a_n(self):
+        self.assertAlmostEqual(EquationsOfMotion.EA.from_rdv_r_a_n(0, GEO_RADIUS, GEO_RADIUS, GEO_NU), 0)
+
+
+class TestInclination(unittest.TestCase):
+    def test_from_w(self):
+        self.assertAlmostEqual(EquationsOfMotion.I.from_w(Vector3D(1, 1, 1)), 0.9553166181245093)
+
+
+class TestMeanAnomaly(unittest.TestCase):
+    def test_from_ea_e(self):
+        self.assertAlmostEqual(EquationsOfMotion.MA.from_ea_e(1, 0.2), 0.8317058030384207)
+
+
+class TestArgumentOfPerigee(unittest.TestCase):
+    def test_from_u_nu(self):
+        self.assertAlmostEqual(EquationsOfMotion.W.from_u_nu(1, 2), 5.283185307179586)
+
+
+class TestArgumentOfLatitude(unittest.TestCase):
+    def test_from_r_w(self):
+        self.assertAlmostEqual(EquationsOfMotion.U.from_r_w(Vector3D(1, 2, 3), Vector3D(4, 2, 42)), 0.4636476090008061)
+
+
+class TestRAAN(unittest.TestCase):
+    def test_from_w(self):
+        self.assertAlmostEqual(EquationsOfMotion.RAAN.from_w(Vector3D(1, 1, 1)), 2.356194490192345)

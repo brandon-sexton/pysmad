@@ -1,7 +1,6 @@
-from math import cos, sin
-
-from openspace.coordinates import GCRFstate, ITRFstate, LLAstate, SphericalPosition
-from openspace.math.linalg import Matrix3D, Vector3D
+from openspace.coordinates.positions import LLA, PositionConvert, SphericalPosition
+from openspace.coordinates.states import GCRF, ITRF
+from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
 
 
@@ -11,24 +10,22 @@ class Observation:
     def __init__(self) -> None:
         pass
 
-    def eci_position(self) -> Vector3D:
+    def ijk_position(self) -> Vector3D:
         pass
 
     def epoch(self) -> Epoch:
         pass
 
-    def observer_eci(self) -> Vector3D:
+    def observer_ijk(self) -> Vector3D:
         pass
 
 
 class SpaceObservation(Observation):
-    def __init__(
-        self, observer_state: GCRFstate, observed_direction: Vector3D, r_error: float, ang_error: float
-    ) -> None:
+    def __init__(self, observer_state: GCRF, observed_direction: Vector3D, r_error: float, ang_error: float) -> None:
         """object used for state estimation when the observer is a space asset
 
         :param observer_state: inertial state of the observer at the time of the observation
-        :type observer_state: GCRFstate
+        :type observer_state: GCRF
         :param observed_direction: GCRF direction of the object from the observer
         :type observed_direction: Vector3D
         :param r_error: one-sigma error of the observed range in km
@@ -37,7 +34,7 @@ class SpaceObservation(Observation):
         :type ang_error: float
         """
         #: inertial state of the observer at the time of the observation
-        self.observer_state: GCRFstate = observer_state.copy()
+        self.observer_state: GCRF = observer_state.copy()
 
         #: vector from observer to target in the GCRF frame
         self.observed_direction: Vector3D = observed_direction.copy()
@@ -67,30 +64,21 @@ class SpaceObservation(Observation):
         """
         return self.observer_state.epoch
 
-    def eci_position(self) -> Vector3D:
+    def ijk_position(self) -> Vector3D:
         """calculate the inertial position of the observation
 
-        :return: inertial position of the observation in the CIS frame
+        :return: inertial position of the observation in the IJK frame
         :rtype: Vector3D
         """
-        gmst: float = self.observer_state.epoch.greenwich_hour_angle()
-        itrf_ob: Vector3D = GCRFstate(
-            self.epoch(), self.observer_state.position.plus(self.observed_direction), Vector3D(0, 0, 0)
-        ).itrf_position()
-        return itrf_ob.rotation_about_axis(Vector3D(0, 0, 1), gmst)
-
-    def observer_eci(self) -> Vector3D:
-        """"""
+        return PositionConvert.gcrf.to_ijk(self.observer_state.position.plus(self.observed_direction), self.epoch())
 
 
 class GroundObservation(Observation):
-    def __init__(
-        self, observer_state: ITRFstate, observed_direction: Vector3D, r_error: float, ang_error: float
-    ) -> None:
+    def __init__(self, observer_state: ITRF, observed_direction: Vector3D, r_error: float, ang_error: float) -> None:
         """used to perform operations related to ground site measurements
 
         :param observer_state: geocentric coordinates of the observer
-        :type observer_state: ITRFstate
+        :type observer_state: ITRF
         :param observed_direction: ENZ direction of object from observer
         :type observed_direction: Vector3D
         :param r_error: one-sigma error of the observed range in km
@@ -99,7 +87,7 @@ class GroundObservation(Observation):
         :type ang_error: float
         """
         #: geocentric state of the observer at the time of the observation
-        self.observer_state: ITRFstate = observer_state.copy()
+        self.observer_state: ITRF = observer_state.copy()
 
         #: vector from observer to target in the ENZ frame
         self.observed_direction: Vector3D = observed_direction.copy()
@@ -125,12 +113,12 @@ class GroundObservation(Observation):
 
     @classmethod
     def from_angles_and_range(
-        cls, observer_state: ITRFstate, az: float, el: float, r: float, r_error: float, ang_error: float
+        cls, observer_state: ITRF, az: float, el: float, r: float, r_error: float, ang_error: float
     ) -> "GroundObservation":
         """create an observation from azimuth, elevation, and range
 
         :param observer_state: geocentric coordinates of the observer
-        :type observer_state: ITRFstate
+        :type observer_state: ITRF
         :param az: azimuth of the observation in radians
         :type az: float
         :param el: elevation of the observation in radians
@@ -156,29 +144,17 @@ class GroundObservation(Observation):
         """
         return self.observer_state.epoch
 
-    def eci_position(self) -> Vector3D:
+    def ijk_position(self) -> Vector3D:
         """calculate the inertial position of the observation
 
-        :return: inertial position of the observation in the CIS frame
+        :return: inertial position of the observation in the IJK frame
         :rtype: Vector3D
         """
-        lla_site: LLAstate = self.observer_state.lla_state()
-        slamb: float = sin(lla_site.longitude)
-        clamb: float = cos(lla_site.longitude)
-        spsi: float = sin(lla_site.latitude)
-        cpsi: float = cos(lla_site.latitude)
-
-        enz_matrix: Matrix3D = Matrix3D(
-            Vector3D(-slamb, clamb, 0.0),
-            Vector3D(-spsi * clamb, -spsi * slamb, cpsi),
-            Vector3D(cpsi * clamb, cpsi * slamb, spsi),
+        lla_site: LLA = PositionConvert.itrf.to_lla(self.observer_state.position)
+        itrf_ob: Vector3D = PositionConvert.enz.to_itrf(lla_site, self.observed_direction).plus(
+            self.observer_state.position
         )
-
-        gmst: float = self.observer_state.epoch.greenwich_hour_angle()
-        itrf_ob: Vector3D = (
-            enz_matrix.transpose().multiply_vector(self.observed_direction).plus(self.observer_state.position)
-        )
-        return itrf_ob.rotation_about_axis(Vector3D(0, 0, 1), gmst)
+        return PositionConvert.itrf.to_ijk(itrf_ob, self.epoch())
 
     def gcrf_position(self) -> Vector3D:
         """calculate the inertial position of the observation
@@ -186,20 +162,8 @@ class GroundObservation(Observation):
         :return: inertial position of the observation in the GCRF frame
         :rtype: Vector3D
         """
-
-        lla_site: LLAstate = self.observer_state.lla_state()
-        slamb: float = sin(lla_site.longitude)
-        clamb: float = cos(lla_site.longitude)
-        spsi: float = sin(lla_site.latitude)
-        cpsi: float = cos(lla_site.latitude)
-
-        enz_matrix: Matrix3D = Matrix3D(
-            Vector3D(-slamb, clamb, 0.0),
-            Vector3D(-spsi * clamb, -spsi * slamb, cpsi),
-            Vector3D(cpsi * clamb, cpsi * slamb, spsi),
+        lla_site: LLA = PositionConvert.itrf.to_lla(self.observer_state.position)
+        itrf_ob: Vector3D = PositionConvert.enz.to_itrf(lla_site, self.observed_direction).plus(
+            self.observer_state.position
         )
-
-        itrf_ob: Vector3D = (
-            enz_matrix.transpose().multiply_vector(self.observed_direction).plus(self.observer_state.position)
-        )
-        return ITRFstate(self.observer_state.epoch, itrf_ob, Vector3D(0, 0, 0)).gcrf_position()
+        return PositionConvert.itrf.to_gcrf(itrf_ob, self.epoch())

@@ -1,6 +1,6 @@
 import unittest
 
-from openspace.coordinates import GCRFstate
+from openspace.coordinates.states import GCRF
 from openspace.math.linalg import Vector3D
 from openspace.propagators.inertial import RK4
 from openspace.time import Epoch
@@ -11,7 +11,7 @@ class TestRK4(unittest.TestCase):
     EPOCH: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 1, 9.184)
     POSITION: Vector3D = Vector3D(42164, 0, 0)
     VELOCITY: Vector3D = Vector3D(0, 3.07375, 0)
-    STATE: GCRFstate = GCRFstate(EPOCH, POSITION, VELOCITY)
+    STATE: GCRF = GCRF(EPOCH, POSITION, VELOCITY)
     PROPAGATOR: RK4 = RK4(STATE)
 
     def test_step_to_epoch(self):

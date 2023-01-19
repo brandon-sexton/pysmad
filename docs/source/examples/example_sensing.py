@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt
 
 from openspace.bodies.artificial import Spacecraft
-from openspace.coordinates import GCRFstate, HillState
-from openspace.math.linalg import Vector3D
+from openspace.coordinates.states import GCRF, HCW, StateConvert
+from openspace.math.linalg import Vector3D, Vector6D
 from openspace.time import Epoch
 
 # Create scenario start epoch
 start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
 
 # Create ECI state for target
-target_state: GCRFstate = GCRFstate(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
+target_state: GCRF = GCRF(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
 target: Spacecraft = Spacecraft(target_state)
 
 # Step target forward 6 hours
@@ -19,8 +19,8 @@ target.step_to_epoch(start_epoch.plus_days(0.25))
 end_epoch = target.current_epoch().plus_days(1)
 
 # Create chase state relative to target
-rel_chase_state = HillState(Vector3D(-11, 0, 0), Vector3D(0, 0.0016, 0))
-chase_state: GCRFstate = GCRFstate.from_hill(target.current_state(), rel_chase_state)
+rel_chase_state = HCW.from_state_vector(Vector6D(-11, 0, 0, 0, 0.0016, 0))
+chase_state: GCRF = StateConvert.hcw.to_gcrf(rel_chase_state, target.current_state())
 chase: Spacecraft = Spacecraft(chase_state)
 
 # Create empty data lists

@@ -3,7 +3,7 @@ from typing import List
 
 from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
 from openspace.math.functions import Conversions, EquationsOfMotion
-from openspace.math.linalg import Vector3D
+from openspace.math.linalg import Matrix3D, Vector3D
 from openspace.time import Epoch
 
 
@@ -96,6 +96,92 @@ class Earth:
         :rtype: float
         """
         return EquationsOfMotion.A.from_mu_tau(Earth.MU, SECONDS_IN_SIDEREAL_DAY)
+
+    @staticmethod
+    def rotation(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform an itrf position to tod and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
+        d: float = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        arg1: float = radians(125.0 - 0.05295 * d)
+        arg2: float = radians(200.9 + 1.97129 * d)
+        a: float = radians(-0.0048)
+        b: float = radians(0.0004)
+        dpsi: float = a * sin(arg1) - b * sin(arg2)
+        eps: float = Earth.obliquity_of_ecliptic_at_epoch(epoch)
+        gmst: float = epoch.greenwich_hour_angle()
+        gast: float = dpsi * cos(eps) + gmst
+        return Vector3D.rotation_matrix(Vector3D(0, 0, 1), -gast)
+
+    @staticmethod
+    def precession(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform a tod position to mod and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
+        t: float = epoch.julian_centuries_past_j2000()
+        a: float = Conversions.dms_to_radians(0, 0, 2306.2181)
+        b: float = Conversions.dms_to_radians(0, 0, 0.30188)
+        c: float = Conversions.dms_to_radians(0, 0, 0.017998)
+        x: float = a * t + b * t * t + c * t * t * t
+
+        a = Conversions.dms_to_radians(0, 0, 2004.3109)
+        b = Conversions.dms_to_radians(0, 0, 0.42665)
+        c = Conversions.dms_to_radians(0, 0, 0.041833)
+        y: float = a * t - b * t * t - c * t * t * t
+
+        a = Conversions.dms_to_radians(0, 0, 0.7928)
+        b = Conversions.dms_to_radians(0, 0, 0.000205)
+        z: float = x + a * t * t + b * t * t * t
+
+        sz = sin(z)
+        sy = sin(y)
+        sx = sin(x)
+        cz = cos(z)
+        cy = cos(y)
+        cx = cos(x)
+
+        return Matrix3D(
+            Vector3D(-sz * sx + cz * cy * cx, -sz * cx - cz * cy * sx, -cz * sy),
+            Vector3D(cz * sx + sz * cy * cx, cz * cx - sz * cy * sx, -sz * sy),
+            Vector3D(sy * cx, -sy * sx, cy),
+        )
+
+    @staticmethod
+    def nutation(epoch: Epoch) -> Matrix3D:
+        """creates a matrix that can be used to transform a mod position to gcrf and vice versa
+
+        :param epoch: valid time of the state
+        :type epoch: Epoch
+        :return: transformation matrix
+        :rtype: Matrix3D
+        """
+        d = epoch.julian_value() - Epoch.J2000_JULIAN_DATE
+        arg1 = radians(125.0 - 0.05295 * d)
+        arg2 = radians(200.9 + 1.97129 * d)
+        a = radians(-0.0048)
+        b = radians(0.0004)
+        dpsi = a * sin(arg1) - b * sin(arg2)
+        a = radians(0.0026)
+        b = radians(0.0002)
+        deps = a * cos(arg1) + b * cos(arg2)
+        eps = Earth.obliquity_of_ecliptic_at_epoch(epoch)
+
+        ce = cos(eps)
+        se = sin(eps)
+
+        return Matrix3D(
+            Vector3D(1.0, -dpsi * ce, -dpsi * se),
+            Vector3D(dpsi * ce, 1.0, -deps),
+            Vector3D(dpsi * se, deps, 1.0),
+        )
 
 
 class Sun:
