@@ -33,9 +33,15 @@ class State:
         self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
 
     def copy(self):
+        """create a duplicate of the calling state"""
         return type(self)(self.epoch, self.position, self.velocity)
 
     def vector_list(self) -> List[Vector3D]:
+        """create a list of the position and velocity vectors
+
+        :return: list of indices 0 == position and 1 == velocity
+        :rtype: List[Vector3D]
+        """
         return [self.position, self.velocity]
 
 
@@ -81,6 +87,13 @@ class HCW(State):
 
     @classmethod
     def from_state_vector(cls, state_vec: Vector6D) -> "HCW":
+        """create a hill state of from a full state vector
+
+        :param state_vec: 6-dimensional vector of position and velocity
+        :type state_vec: Vector6D
+        :return: HCW state with arbitrary epoch
+        :rtype: HCW
+        """
         return cls(
             Epoch(0),
             Vector3D(state_vec.x, state_vec.y, state_vec.z),
@@ -123,22 +136,6 @@ class GCRF(State):
 
         #: boolean to determine if perturbations are modeled during propagation
         self.use_perturbations: bool = True
-
-    def copy(self) -> "GCRF":
-        """create a replica of the calling state
-
-        :return: state with attributes equal to the calling state
-        :rtype: GCRF
-        """
-        return GCRF(self.epoch, self.position, self.velocity)
-
-    def vector_list(self) -> List[Vector3D]:
-        """create a list with elements of 0 == position and 1 == velocity
-
-        :return: list of position and velocity
-        :rtype: List[Vector3D]
-        """
-        return [self.position.copy(), self.velocity.copy()]
 
     def acceleration_from_gravity(self) -> Vector3D:
         """calculates the gravity due to a nonspherical earth
@@ -300,8 +297,19 @@ class IJK(State):
 
 
 class _StateConvertGCRF:
+    """class used to perform state conversions from GCRF"""
+
     @staticmethod
     def to_hcw(origin: GCRF, state: GCRF) -> HCW:
+        """create a state in the HCW frame
+
+        :param origin: state which represents the origin of the relative frame
+        :type origin: GCRF
+        :param state: state to be modeled in the Hill frame
+        :type state: GCRF
+        :return: HCW state
+        :rtype: HCW
+        """
         magrtgt: float = origin.position.magnitude()
         magrint: float = state.position.magnitude()
         rot_eci_rsw: Matrix3D = HCW.frame_matrix(origin)
@@ -339,14 +347,16 @@ class _StateConvertGCRF:
 
 
 class _StateConvertHCW:
+    """class used to perform conversions from the Hill frame"""
+
     @staticmethod
     def to_gcrf(state: HCW, origin: GCRF) -> GCRF:
         """create an inertial state for the calling state
 
         :param origin: inertial state that acts as the origin for the relative state
-        :type origin: GCRFstate
+        :type origin: GCRF
         :return: inertial state of the relative spacecraft
-        :rtype: GCRFstate
+        :rtype: GCRF
         """
         magrtgt: float = origin.position.magnitude()
         magrint: float = magrtgt + state.position.x
@@ -386,5 +396,10 @@ class _StateConvertHCW:
 
 
 class StateConvert:
+    """class used to perform state conversions"""
+
+    #: used to convert from HCW to other frames
     hcw = _StateConvertHCW
+
+    #: used to convert from GCRF to other frames
     gcrf = _StateConvertGCRF

@@ -107,38 +107,112 @@ class LLA:
 
 
 class _PositionConvertGCRF:
+    """class used to convert GCRF positions to other frames"""
+
     @staticmethod
     def to_itrf(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the ITRF position
+
+        :param pos: GCRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: ITRF position
+        :rtype: Vector3D
+        """
         return Earth.rotation(epoch).multiply_vector(_PositionConvertGCRF.to_tod(pos, epoch))
 
     @staticmethod
     def to_tod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the TOD position
+
+        :param pos: GCRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: TOD position
+        :rtype: Vector3D
+        """
         return Earth.nutation(epoch).multiply_vector(_PositionConvertGCRF.to_mod(pos, epoch))
 
     @staticmethod
     def to_mod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the MOD position
+
+        :param pos: GCRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: MOD position
+        :rtype: Vector3D
+        """
         return Earth.precession(epoch).multiply_vector(pos)
 
     @staticmethod
     def to_ijk(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the IJK position
+
+        :param pos: GCRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: IJK position
+        :rtype: Vector3D
+        """
         return _PositionConvertITRF.to_ijk(_PositionConvertGCRF.to_itrf(pos, epoch), epoch)
 
 
 class _PositionConvertITRF:
+    """class used to convert ITRF positions to other frames"""
+
     @staticmethod
     def to_gcrf(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the GCRF position
+
+        :param pos: ITRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: GCRF position
+        :rtype: Vector3D
+        """
         return Earth.precession(epoch).transpose().multiply_vector(_PositionConvertITRF.to_mod(pos, epoch))
 
     @staticmethod
     def to_tod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the TOD position
+
+        :param pos: ITRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: TOD position
+        :rtype: Vector3D
+        """
         return Earth.rotation(epoch).transpose().multiply_vector(pos)
 
     @staticmethod
     def to_mod(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the MOD position
+
+        :param pos: ITRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: MOD position
+        :rtype: Vector3D
+        """
         return Earth.nutation(epoch).transpose().multiply_vector(_PositionConvertITRF.to_tod(pos, epoch))
 
     @staticmethod
     def to_lla(pos: Vector3D) -> LLA:
+        """calculate the LLA position
+
+        :param pos: ITRF position
+        :type pos: Vector3D
+        :return: LLA position
+        :rtype: LLA
+        """
         x: float = pos.x
         y: float = pos.y
         z: float = pos.z
@@ -191,12 +265,30 @@ class _PositionConvertITRF:
 
     @staticmethod
     def to_ijk(pos: Vector3D, epoch: Epoch) -> Vector3D:
+        """calculate the IJK position
+
+        :param pos: ITRF position
+        :type pos: Vector3D
+        :param epoch: epoch for which the position is valid
+        :type epoch: Epoch
+        :return: IJK position
+        :rtype: Vector3D
+        """
         return pos.rotation_about_axis(Vector3D(0, 0, 1), epoch.greenwich_hour_angle())
 
 
 class _PositionConvertLLA:
+    """class used to convert LLA positions to other frames"""
+
     @staticmethod
-    def to_itrf(lla: LLA):
+    def to_itrf(lla: LLA) -> Vector3D:
+        """calculate the ITRF position
+
+        :param lla: LLA position
+        :type lla: LLA
+        :return: ITRF position
+        :rtype: Vector3D
+        """
         lat: float = lla.latitude
         longitude: float = lla.longitude
         alt: float = lla.altitude
@@ -213,14 +305,32 @@ class _PositionConvertLLA:
 
 
 class _PositionConvertENZ:
+    """class used to convert ENZ positions to other frames"""
+
     @staticmethod
     def to_itrf(lla: LLA, enz: Vector3D) -> Vector3D:
+        """calculate the ITRF position
+
+        :param lla: LLA position of the ENZ origin
+        :type lla: LLA
+        :param enz: ENZ position from the lla origin
+        :type enz: Vector3D
+        :return: ITRF position
+        :rtype: Vector3D
+        """
         return ENZ.matrix(lla.longitude, lla.latitude).transpose().multiply_vector(enz)
 
 
 class PositionConvert:
 
+    #: used to perform conversions from GCRF
     gcrf = _PositionConvertGCRF
+
+    #: used to perform conversions from ITRF
     itrf = _PositionConvertITRF
+
+    #: used to perform conversions from LLA
     lla = _PositionConvertLLA
+
+    #: used to perform conversions from ENZ
     enz = _PositionConvertENZ
