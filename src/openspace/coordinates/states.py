@@ -38,3 +38,17 @@ class GCRF(State):
         :type v: Vector3D
         """
         super().__init__(epoch, r, v)
+
+
+class IJK(State):
+    def __init__(self, epoch: Epoch, r: Vector3D, v: Vector3D) -> None:
+        """class used to perform operations and modeling in the Geocentric Equatorial Coordinate System
+
+        :param epoch: time for which the position and velocity are valid
+        :type epoch: Epoch
+        :param r: position of the state
+        :type r: Vector3D
+        :param v: velocity of the state
+        :type v: Vector3D
+        """
+        super().__init__(epoch, r, v)
