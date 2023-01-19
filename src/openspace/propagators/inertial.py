@@ -1,7 +1,7 @@
 from math import ceil, e, log
 from typing import List
 
-from openspace.coordinates import GCRFstate
+from openspace.coordinates.states import GCRF
 from openspace.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
@@ -12,14 +12,14 @@ class RK4:
     #: Largest step to be taken by the integrator
     MAX_STEP = 300
 
-    def __init__(self, state: GCRFstate) -> None:
+    def __init__(self, state: GCRF) -> None:
         """class used to propagate a satellite state
 
         :param state: ECI state of the satellite to be propagated
-        :type state: GCRFstate
+        :type state: GCRF
         """
         #: the current state of the propagator
-        self.state: GCRFstate = state.copy()
+        self.state: GCRF = state.copy()
 
         #: integration step to be taken when the propagator is advanced
         self.step_size: float = RK4.MAX_STEP
@@ -50,16 +50,16 @@ class RK4:
         dsecs: float = h / 2
         ddays: float = dsecs / SECONDS_IN_DAY
         epoch_1 = epoch_0.plus_days(ddays)
-        y1: GCRFstate = GCRFstate(epoch_1, y[0].plus(k1[0].scaled(dsecs)), y[1].plus(k1[1].scaled(dsecs)))
+        y1: GCRF = GCRF(epoch_1, y[0].plus(k1[0].scaled(dsecs)), y[1].plus(k1[1].scaled(dsecs)))
         y1.thrust = self.thrust_vector(dsecs)
         k2: List[Vector3D] = y1.derivative()
 
-        y2: GCRFstate = GCRFstate(epoch_1, y[0].plus(k2[0].scaled(dsecs)), y[1].plus(k2[1].scaled(dsecs)))
+        y2: GCRF = GCRF(epoch_1, y[0].plus(k2[0].scaled(dsecs)), y[1].plus(k2[1].scaled(dsecs)))
         y2.thrust = self.thrust_vector(dsecs)
         k3: List[Vector3D] = y2.derivative()
 
         epoch_2 = epoch_1.plus_days(ddays)
-        y3: GCRFstate = GCRFstate(epoch_2, y[0].plus(k3[0].scaled(h)), y[1].plus(k3[1].scaled(h)))
+        y3: GCRF = GCRF(epoch_2, y[0].plus(k3[0].scaled(h)), y[1].plus(k3[1].scaled(h)))
         y3.thrust = self.thrust_vector(dsecs * 2)
         k4: List[Vector3D] = y3.derivative()
 
@@ -67,7 +67,7 @@ class RK4:
         dv: Vector3D = k1[0].plus(k2[0].scaled(2).plus(k3[0].scaled(2).plus(k4[0]))).scaled(coeff)
         da: Vector3D = k1[1].plus(k2[1].scaled(2).plus(k3[1].scaled(2).plus(k4[1]))).scaled(coeff)
 
-        self.state = GCRFstate(
+        self.state = GCRF(
             epoch_2,
             self.state.position.plus(dv.scaled(h)),
             self.state.velocity.plus(da.scaled(h)),
