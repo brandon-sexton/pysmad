@@ -13,11 +13,3 @@ class Position(Vector3D):
         :type z: float
         """
         Vector3D.__init__(self, x, y, z)
-
-    def copy(self) -> "Position":
-        """create duplicate of calling position
-
-        :return: copy of calling position
-        :rtype: Position
-        """
-        return Position(self.x, self.y, self.z)
