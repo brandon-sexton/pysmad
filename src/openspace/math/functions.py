@@ -379,24 +379,32 @@ class ArealVelocity:
     def from_mu_p(mu: float, p: float) -> float:
         r"""calculate the areal velocity using equation 1-19 in Vallado 4th Edition
 
-        :param mu: gravitational constant time mass of central body combined units of :math:'\frac{km^3}{s^2}'
+        .. math::
+
+           h = \sqrt{{\mu}p}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param p: semi-parameter in :math:'km'
+        :param p: semi-parameter in :math:`km`
         :type p: float
-        :return: areal velocity in :math:'\frac{km^2}{s}'
+        :return: areal velocity in :math:`\frac{km^2}{s}`
         :rtype: float
         """
         return sqrt(mu * p)
 
     @staticmethod
     def from_r_v(r: Vector3D, v: Vector3D) -> Vector3D:
-        """calculate the momentum vector using equation 1-15 in Vallado 4th Edition
+        r"""calculate the momentum vector using equation 1-15 in Vallado 4th Edition
 
-        :param r: position vector in km
+        .. math::
+
+           \vec{h} = \vec{r} \times \vec{v}
+
+        :param r: position vector in :math:`km`
         :type r: Vector3D
-        :param v: velocity vector in km/s
+        :param v: velocity vector in :math:`\frac{km}{s}
         :type v: Vector3D
-        :return: areal velocity vector in km^2/s
+        :return: areal velocity vector in :math:`\frac{km^2}{s}
         :rtype: Vector3D
         """
         return r.cross(v)
