@@ -194,7 +194,7 @@ class SemiMajorAxis:
         r"""calculate the semi-major axis in km using equation 1-31 in Vallado 4th Edition
 
         .. math::
-           a \times b
+           v = \sqrt{2 (frac{\mu}{r}+\xi)}
 
         :param mu: gravitational constant times mass of central body
         :type mu: float
