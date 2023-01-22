@@ -426,16 +426,18 @@ class RAAN:
 
            \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}}
 
+           0 \leg \Omega < 2\pi
+
         :param w: normalized momentum vector
         :type w: Vector3D
-        :return: right ascension of the ascending node in radians
+        :return: right ascension of the ascending node in :math:`rad`
         :rtype: float
 
         .. todo::
 
            document equation reference from Satellite Orbits
         """
-        return (atan2(w.x, -w.y) + 2 * pi) % 2 * pi
+        return (atan2(w.x, -w.y) + 2 * pi) % (2 * pi)
 
 
 class Inclination:
