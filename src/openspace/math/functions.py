@@ -237,7 +237,7 @@ class SemiMajorAxis:
         :type mu: float
         :param tau: period in :math:`s`
         :type tau: float
-        :return: semi-major axis in math:`km`
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         base: float = tau / (2 * pi)
@@ -426,9 +426,9 @@ class RAAN:
 
            \Omega = \arctan{(-\frac{\vec{w}_{x}}{\vec{w}_{y}})}
 
-        :param w: normalized momentum vector in :math:`\frac{km^2}{s}
+        :param w: normalized momentum vector in :math:`\frac{km^2}{s}`
         :type w: Vector3D
-        :return: right ascension of the ascending node in :math:`rad` where math:`0 \leq \Omega < 2\pi`
+        :return: right ascension of the ascending node in :math:`rad` where :math:`0 \leq \Omega < 2\pi`
         :rtype: float
 
         .. todo::
@@ -456,7 +456,7 @@ class Inclination:
 
         :param w: normalized momentum vector
         :type w: Vector3D
-        :return: inclination in :math:`rad` where math:`0 \leq i < \pi`
+        :return: inclination in :math:`rad` where :math:`0 \leq i < \pi`
         :rtype: float
 
         .. todo::
