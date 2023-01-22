@@ -107,6 +107,7 @@ class Eccentricity:
         r"""calculate eccentricity using equation 1-2 in Vallado 4th Edition
 
         .. math::
+
            e = \frac{c}{a}
 
         :param a: semi-major axis in km
@@ -123,6 +124,7 @@ class Eccentricity:
         r"""calculate eccentricity using equation 1-6 in Vallado 4th Edition
 
         .. math::
+
            e = \frac{\sqrt{a^2-b^2}}{a}
 
         :param a: semi-major axis in km
@@ -139,6 +141,7 @@ class Eccentricity:
         r"""calculate eccentricity using equation 2.62 in Satellite Orbits
 
         .. math::
+
            e = \sqrt{1 - \frac{p}{a}}
 
         :param a: semi-major axis in km
@@ -159,6 +162,7 @@ class Flattening:
         r"""calculate flattening using equation 1-3 in Vallado 4th Edition
 
         .. math::
+
            f = \frac{a-b}{a}
 
         :param a: semi-major axis in km
@@ -193,7 +197,11 @@ class SemiMajorAxis:
 
     @staticmethod
     def from_mu_tau(mu: float, tau: float) -> float:
-        """calculate semi-major axis using equation 1-27 in Vallado 4th Edition
+        r"""calculate semi-major axis using equation 1-27 in Vallado 4th Edition
+
+        .. math::
+
+           n = \frac{2\pi}{\tau} = \sqrt{\frac{\mu}{a^3}}
 
         :param mu: gravitational constant times mass of central body
         :type mu: float
@@ -210,7 +218,8 @@ class SemiMajorAxis:
         r"""calculate the semi-major axis in km using equation 1-31 in Vallado 4th Edition
 
         .. math::
-           v = \sqrt{2(\frac{\mu}{r}+\xi)}
+
+           v = \sqrt{\frac{2\mu}{r}+\frac{\mu}{a}}
 
         :param mu: gravitational constant times mass of central body
         :type mu: float
@@ -229,7 +238,11 @@ class SemiMinorAxis:
 
     @staticmethod
     def from_a_e(a: float, e: float) -> float:
-        """calculate semi-minor axis using equation 1-4 in Vallado 4th Edition
+        r"""calculate semi-minor axis using equation 1-4 in Vallado 4th Edition
+
+        .. math::
+
+           b = a\sqrt{1-e^2}
 
         :param a: semi-major axis in km
         :type a: float
@@ -246,7 +259,11 @@ class SemiParameter:
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate the semi-parameter using equation 1-9 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-9 in Vallado 4th Edition
+
+        .. math::
+
+           p = \frac{b^2}{a}
 
         :param a: semi-major axis in km
         :type a: float
@@ -259,7 +276,11 @@ class SemiParameter:
 
     @staticmethod
     def from_a_e(a: float, e: float) -> float:
-        """calculate the semi-parameter using equation 1-10 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-10 in Vallado 4th Edition
+
+        .. math::
+
+           p = a(1-e^2)
 
         :param a: semi-major axis in km
         :type a: float
@@ -436,7 +457,10 @@ class VisVivaVelocity:
 
     @staticmethod
     def from_mu_r_xi(mu: float, r: float, xi: float) -> float:
-        """calculate the magnitude of velocity using equation 1-30 in Vallado 4th Edition
+        r"""calculate the magnitude of velocity using equation 1-30 in Vallado 4th Edition
+
+        .. math::
+           v = \sqrt{2(\frac{\mu}{r}+\xi)}
 
         :param mu: gravitational constant times mass
         :type mu: float
