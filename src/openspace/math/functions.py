@@ -459,7 +459,7 @@ class Inclination:
                             \vec{w}_{x}^2 + \vec{w}_{y}^2
                         }
                     }{
-                        vec{w}_{z}
+                        \vec{w}_{z}
                     }
                 })
             }
