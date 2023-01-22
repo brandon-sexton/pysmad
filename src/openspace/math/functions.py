@@ -191,9 +191,9 @@ class Flattening:
 
            f = \frac{a-b}{a}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
         :return: flattening
         :rtype: float
@@ -202,7 +202,11 @@ class Flattening:
 
 
 class SemiMajorAxis:
-    """class used to solve semi-major axis of an ellipse (a)"""
+    """class used to solve semi-major axis of an ellipse
+
+    .. note::
+
+    the semi-major axis will commonly be referenced as :math:`a` in documentation"""
 
     @staticmethod
     def from_mu_n(mu: float, n: float) -> float:
@@ -212,11 +216,11 @@ class SemiMajorAxis:
 
            a = \sqrt[3]{\frac{\mu}{n^2}}
 
-        :param mu: gravitational constant time mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param n: mean motion in radians/s
+        :param n: mean motion in :math:`\frac{rad}{s}`
         :type n: float
-        :return: semi-major axis in km
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         return (mu / (n * n)) ** (1 / 3)
@@ -229,11 +233,11 @@ class SemiMajorAxis:
 
            n = \frac{2\pi}{\tau} = \sqrt{\frac{\mu}{a^3}}
 
-        :param mu: gravitational constant times mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param tau: period in seconds
+        :param tau: period in :math:`s`
         :type tau: float
-        :return: semi-major axis in km
+        :return: semi-major axis in math:`km`
         :rtype: float
         """
         base: float = tau / (2 * pi)
@@ -247,20 +251,24 @@ class SemiMajorAxis:
 
            v = \sqrt{\frac{2\mu}{r}+\frac{\mu}{a}}
 
-        :param mu: gravitational constant times mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: magnitude of the position vector in km
+        :param r: magnitude of the position vector in :math:`km`
         :type r: float
-        :param v: magnitude of the velocity vector in km/s
+        :param v: magnitude of the velocity vector in :math:`\frac{km}{s}`
         :type v: float
-        :return: semi-major axis in km
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         return 1 / (2 / r - v * v / mu)
 
 
 class SemiMinorAxis:
-    """class used to solve semi-minor axis of an ellipse (b)" """
+    """class used to solve semi-minor axis of an ellipse
+
+    .. note::
+
+    the semi-minor axis will commonly be referenced as :math:`b` in documentation"""
 
     @staticmethod
     def from_a_e(a: float, e: float) -> float:
@@ -270,18 +278,22 @@ class SemiMinorAxis:
 
            b = a\sqrt{1-e^2}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
         :param e: eccentricity
         :type e: float
-        :return: semi-minor axis
+        :return: semi-minor axis in :math:`km`
         :rtype: float
         """
         return a * sqrt(1 - e * e)
 
 
 class SemiParameter:
-    """class used to solve the semi-parameter of an ellipse (p)"""
+    """class used to solve the semi-parameter of an ellipse
+
+    .. note::
+
+    the semi-parameter will commonly be referenced as :math:`p` in documentation"""
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
@@ -291,11 +303,11 @@ class SemiParameter:
 
            p = \frac{b^2}{a}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return b * b / a
@@ -308,11 +320,11 @@ class SemiParameter:
 
            p = a(1-e^2)
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
         :param e: eccentricity
         :type e: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return a * (1 - e * e)
@@ -325,27 +337,28 @@ class SemiParameter:
 
            p = \frac{h^2}{\mu}
 
-        :param mu: gravitational constant time mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param h: areal velocity in km^2/s
+        :param h: areal velocity magnitude in :math:`\frac{km^2}{s}`
         :type h: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return h * h / mu
 
 
 class ArealVelocity:
-    r"""class used to calculate areal velocities of an orbit :math:`h`
+    r"""class used to calculate areal velocities of an orbit
 
     .. note::
-       The term areal velocity is used synonymously for the momentum :math:`h`
+       The term areal velocity is used synonymously for the momentum
+       and will commonly be referenced as :math:`h` in documentation
 
     """
 
     @staticmethod
     def from_r_v_phi(r: float, v: float, phi: float) -> float:
-        """calculate the areal velocity using equation 1-16 in Vallado 4th Edition
+        r"""calculate the areal velocity using equation 1-16 in Vallado 4th Edition
 
         :param r: magnitude of the position vector in km
         :type r: float
