@@ -298,7 +298,7 @@ class ArealVelocity:
 
     @staticmethod
     def from_r_v(r: Vector3D, v: Vector3D) -> Vector3D:
-        """calculate the momentum vector
+        """calculate the momentum vector using equation 1-15 in Vallado 4th Edition
 
         :param r: position vector in km
         :type r: Vector3D
