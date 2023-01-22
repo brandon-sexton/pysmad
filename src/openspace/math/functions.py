@@ -351,7 +351,7 @@ class ArealVelocity:
     r"""class used to calculate areal velocities of an orbit
 
     .. note::
-       The term areal velocity is used synonymously for the momentum
+       The term areal velocity is used synonymously for the momentum of an orbit
        and will commonly be referenced as :math:`h` in documentation
 
     """
@@ -359,6 +359,10 @@ class ArealVelocity:
     @staticmethod
     def from_r_v_phi(r: float, v: float, phi: float) -> float:
         r"""calculate the areal velocity using equation 1-16 in Vallado 4th Edition
+
+        .. math::
+
+           h = rv\cos{\phi_fpa}
 
         :param r: magnitude of the position vector in km
         :type r: float
