@@ -424,11 +424,9 @@ class RAAN:
 
         .. math::
 
-           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}}
+           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}} , 0 \leq \Omega < 2\pi
 
-           0 \leg \Omega < 2\pi
-
-        :param w: normalized momentum vector
+        :param w: normalized momentum vector in :math:`\frac{km^2}{s}
         :type w: Vector3D
         :return: right ascension of the ascending node in :math:`rad`
         :rtype: float
@@ -441,7 +439,12 @@ class RAAN:
 
 
 class Inclination:
-    """static class used to solve inclination"""
+    r"""static class used to solve inclination
+
+    .. note::
+
+       RAAN will commonly be referenced as :math:`\Omega` in documentation
+    """
 
     @staticmethod
     def from_w(w: Vector3D) -> float:
