@@ -66,3 +66,4 @@ napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
 add_module_names = False
+todo_include_todos = True
