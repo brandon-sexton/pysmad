@@ -104,7 +104,10 @@ class Eccentricity:
 
     @staticmethod
     def from_a_c(a: float, c: float) -> float:
-        """calculate eccentricity using equation 1-2 in Vallado 4th Edition
+        r"""calculate eccentricity using equation 1-2 in Vallado 4th Edition
+
+        .. math::
+           e = \frac{c}{a}
 
         :param a: semi-major axis in km
         :type a: float
@@ -117,7 +120,10 @@ class Eccentricity:
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate eccentricity using equation 1-6 in Vallado 4th Edition
+        r"""calculate eccentricity using equation 1-6 in Vallado 4th Edition
+
+        .. math::
+           e = \frac{\sqrt{a^2-b^2}}{a}
 
         :param a: semi-major axis in km
         :type a: float
