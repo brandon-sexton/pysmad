@@ -443,21 +443,26 @@ class Inclination:
 
     .. note::
 
-       RAAN will commonly be referenced as :math:`\Omega` in documentation
+       inclination will commonly be referenced as :math:`i` in documentation
     """
 
     @staticmethod
     def from_w(w: Vector3D) -> float:
-        """calculate the inclination
+        r"""calculate the inclination
+
+        .. math::
+
+           i = \arctan{\frac{\sqrt{\vec{w}_{x}^2+\vec{w}_{y}^2}{vec{w}_{z}}}
 
         :param w: normalized momentum vector
         :type w: Vector3D
-        :return: inclination in radians
+        :return: inclination in :math:`rad` where math:`0 \leq i < \pi`
         :rtype: float
+
+        .. todo::
+
+           document equation reference from Satellite Orbits
         """
-        i: float = atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
-        if i < 0:
-            i += 2 * pi
         return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
 
 
