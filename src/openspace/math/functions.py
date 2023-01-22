@@ -450,7 +450,7 @@ class VisVivaVelocity:
         :type mu: float
         :param r: distance from center of central body in km
         :type r: float
-        :return: velocity magnitude in :math:`km/s`
+        :return: velocity magnitude in :math:`\frac{km}{s}`
         :rtype: float
         """
         return sqrt(mu * (2 / r - 1 / a))
