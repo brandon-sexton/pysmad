@@ -366,24 +366,24 @@ class ArealVelocity:
 
         :param r: magnitude of the position vector in :math:`km`
         :type r: float
-        :param v: magnitude of the velocity vector in :math:`\frac{km}{s}
+        :param v: magnitude of the velocity vector in :math:`\frac{km}{s}`
         :type v: float
         :param phi: flight path angle :math:`\frac{\pi}{2} - \measuredangle\vec{r}\vec{v}`
         :type phi: float
-        :return: areal velocity in :math:`\frac{km^2}{s}
+        :return: areal velocity in :math:`\frac{km^2}{s}`
         :rtype: float
         """
         return r * v * cos(phi)
 
     @staticmethod
     def from_mu_p(mu: float, p: float) -> float:
-        """calculate the areal velocity using equation 1-19 in Vallado 4th Edition
+        r"""calculate the areal velocity using equation 1-19 in Vallado 4th Edition
 
-        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
+        :param mu: gravitational constant time mass of central body combined units of :math:'\frac{km^3}{s^2}'
         :type mu: float
-        :param p: semi-parameter in km
+        :param p: semi-parameter in :math:'km'
         :type p: float
-        :return: areal velocity in km^2/s
+        :return: areal velocity in :math:'\frac{km^2}{s}'
         :rtype: float
         """
         return sqrt(mu * p)
