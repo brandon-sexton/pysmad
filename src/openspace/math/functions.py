@@ -464,7 +464,7 @@ class Inclination:
                 )
             }
 
-        :param w: normalized momentum vector
+        :param w: normalized momentum vector :math:`\hat(h)` in :math:`\frac{km^2}{s}`
         :type w: Vector3D
         :return: inclination in :math:`rad` where :math:`0 \leq i < \pi`
         :rtype: float
@@ -477,19 +477,28 @@ class Inclination:
 
 
 class Radius:
-    """static class used to solve the radius of an orbit"""
+    r"""static class used to solve the radius of an orbit
+
+    .. note::
+
+       radius will commonly be referenced as :math:`r` or :math:`R` in documentation
+    """
 
     @staticmethod
     def from_p_e_nu(p: float, e: float, nu: float) -> float:
-        """calculate the radius of an orbit using equation 1-24 in Vallado 4th Edition
+        r"""calculate the radius of an orbit using equation 1-24 in Vallado 4th Edition
 
-        :param p: semi-parameter in km
+        .. math::
+
+           r = \frac{p}{1+e\cos{(\nu)}}
+
+        :param p: semi-parameter in :math:`km`
         :type p: float
         :param e: eccentricity
         :type e: float
-        :param nu: true anomaly in radians
+        :param nu: true anomaly in :math:`rads`
         :type nu: float
-        :return: radius in km
+        :return: radius in:math:`km`
         :rtype: float
         """
         return p / (1 + e * cos(nu))
