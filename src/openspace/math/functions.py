@@ -452,7 +452,17 @@ class Inclination:
 
         .. math::
 
-           i = \arctan{(\frac{\sqrt{\vec{w}_{x}^2+\vec{w}_{y}^2}{vec{w}_{z}})}
+           i = \arctan{
+                (
+                    \frac{
+                        \sqrt{
+                            \vec{w}_{x}^2 + \vec{w}_{y}^2
+                        }
+                    }{
+                        vec{w}_{z}
+                    }
+                )
+            }
 
         :param w: normalized momentum vector
         :type w: Vector3D
