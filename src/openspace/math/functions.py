@@ -424,7 +424,7 @@ class RAAN:
 
         .. math::
 
-           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}}
+           \Omega = \arctan{(-\frac{\vec{w}_{x}}{\vec{w}_{y}})}
 
         :param w: normalized momentum vector in :math:`\frac{km^2}{s}
         :type w: Vector3D
@@ -452,7 +452,7 @@ class Inclination:
 
         .. math::
 
-           i = \arctan{\frac{\sqrt{\vec{w}_{x}^2+\vec{w}_{y}^2}{vec{w}_{z}}}
+           i = \arctan{(\frac{\sqrt{\vec{w}_{x}^2+\vec{w}_{y}^2}{vec{w}_{z}})}
 
         :param w: normalized momentum vector
         :type w: Vector3D
