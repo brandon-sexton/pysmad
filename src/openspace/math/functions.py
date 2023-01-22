@@ -136,7 +136,10 @@ class Eccentricity:
 
     @staticmethod
     def from_a_p(a: float, p: float) -> float:
-        """calculate eccentricity using equation 2.62 in Satellite Orbits
+        r"""calculate eccentricity using equation 2.62 in Satellite Orbits
+
+        .. math::
+           e = \sqrt{1 - \frac{p}{a}}
 
         :param a: semi-major axis in km
         :type a: float
@@ -153,7 +156,10 @@ class Flattening:
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate flattening using equation 1-3 in Vallado 4th Edition
+        r"""calculate flattening using equation 1-3 in Vallado 4th Edition
+
+        .. math::
+           f = \frac{a-b}{a}
 
         :param a: semi-major axis in km
         :type a: float
@@ -170,7 +176,11 @@ class SemiMajorAxis:
 
     @staticmethod
     def from_mu_n(mu: float, n: float) -> float:
-        """calculate semi-major axis using equation 1-29 in Vallado 4th Edition
+        r"""calculate semi-major axis using equation 1-29 in Vallado 4th Edition
+
+        .. math::
+
+           a = \sqrt[3]{\frac{\mu}{n^2}}
 
         :param mu: gravitational constant time mass of central body
         :type mu: float
