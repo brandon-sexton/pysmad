@@ -100,7 +100,11 @@ class LegendrePolynomial:
 
 
 class Eccentricity:
-    """Class used to solve eccentricity of an ellipse (e)"""
+    r"""Class used to solve eccentricity of an ellipse
+
+    .. note::
+
+       eccentricity will commonly be referenced as :math:`e` in documentation"""
 
     @staticmethod
     def from_a_c(a: float, c: float) -> float:
@@ -110,12 +114,18 @@ class Eccentricity:
 
            e = \frac{c}{a}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param c: half the distance between focii in km
+        :param c: half the distance between focii in :math:`km`
         :type c: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`c` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return c / a
 
@@ -127,12 +137,18 @@ class Eccentricity:
 
            e = \frac{\sqrt{a^2-b^2}}{a}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`b` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return sqrt(a * a - b * b) / a
 
@@ -144,18 +160,28 @@ class Eccentricity:
 
            e = \sqrt{1 - \frac{p}{a}}
 
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param p: semi-parameter
+        :param p: semi-parameter in :math:`km`
         :type p: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`p` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return sqrt(1 - p / a)
 
 
 class Flattening:
-    """class used to solve flattening of an ellipse (f)"""
+    r"""class used to solve flattening of an ellipse
+
+    .. note::
+
+       flattening will commonly be referenced as :math:`f` in documentation"""
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
@@ -310,7 +336,7 @@ class SemiParameter:
 
 
 class ArealVelocity:
-    """class used to calculate areal velocities of an orbit :math:`h`
+    r"""class used to calculate areal velocities of an orbit :math:`h`
 
     .. note::
        The term areal velocity is used synonymously for the momentum :math:`h`
