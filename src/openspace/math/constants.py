@@ -19,7 +19,9 @@ SECONDS_IN_MINUTE: float = 60
 #: number of degrees equal to one hour
 DEGREES_IN_HOUR: float = 15
 
-#: gravity at sea level in km/s^
+#: gravity at sea level
+#: .. math::
+#:    km/s^
 SEA_LEVEL_G: float = 0.00981
 
 #: number of base units in a kilo
