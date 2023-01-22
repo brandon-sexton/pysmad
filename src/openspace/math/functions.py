@@ -411,21 +411,31 @@ class ArealVelocity:
 
 
 class RAAN:
-    """static class used to solve right ascension of ascending node"""
+    r"""static class used to solve right ascension of ascending node (RAAN)
+
+    .. note::
+
+    RAAN will commonly be referenced as :math:`\Omega` in documentation
+    """
 
     @staticmethod
     def from_w(w: Vector3D) -> float:
-        """calculate the right ascension of the ascending node
+        r"""calculate the right ascension of the ascending node
+
+        .. math::
+
+           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}}
 
         :param w: normalized momentum vector
         :type w: Vector3D
         :return: right ascension of the ascending node in radians
         :rtype: float
+
+        .. todo::
+
+           document equation reference from Satellite Orbits
         """
-        raan: float = atan2(w.x, -w.y)
-        if raan < 0:
-            raan += 2 * pi
-        return raan
+        return (atan2(w.x, -w.y) + 2 * pi) % 2 * pi
 
 
 class Inclination:
