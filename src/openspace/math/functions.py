@@ -362,7 +362,7 @@ class ArealVelocity:
 
         .. math::
 
-           h = rv\cos{\phi_fpa}
+           h = rv\cos{\phi_{fpa}}
 
         :param r: magnitude of the position vector in km
         :type r: float
