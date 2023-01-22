@@ -442,7 +442,7 @@ class VisVivaVelocity:
 
     @staticmethod
     def from_a_mu_r(a: float, mu: float, r: float) -> float:
-        """calculate magnitude of velocity using equation 1-22 in Vallado 4th Edition
+        r"""calculate magnitude of velocity using equation 1-22 in Vallado 4th Edition
 
         :param a: semi-major axis in km
         :type a: float
@@ -450,7 +450,7 @@ class VisVivaVelocity:
         :type mu: float
         :param r: distance from center of central body in km
         :type r: float
-        :return: velocity magnitude in km/s
+        :return: velocity magnitude in :math:`km/s`
         :rtype: float
         """
         return sqrt(mu * (2 / r - 1 / a))
