@@ -293,7 +293,11 @@ class SemiParameter:
 
     @staticmethod
     def from_mu_h(mu: float, h: float) -> float:
-        """calculate the semi-parameter using equation 1-19 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-19 in Vallado 4th Edition
+
+        .. math::
+
+           p = \frac{h^2}{\mu}
 
         :param mu: gravitational constant time mass of central body
         :type mu: float
@@ -306,7 +310,12 @@ class SemiParameter:
 
 
 class ArealVelocity:
-    """class used to calculate areal velocities of an orbit (h)"""
+    """class used to calculate areal velocities of an orbit :math:`h`
+
+    .. note::
+       The term areal velocity is used synonymously for the momentum :math:`h`
+
+    """
 
     @staticmethod
     def from_r_v_phi(r: float, v: float, phi: float) -> float:
