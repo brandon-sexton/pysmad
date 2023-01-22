@@ -154,7 +154,7 @@ class Eccentricity:
 
     @staticmethod
     def from_a_p(a: float, p: float) -> float:
-        r"""calculate eccentricity using equation 2.62 in Satellite Orbits
+        r"""calculate eccentricity using equation 2.62 in :ref:`orbits`
 
         .. math::
 
