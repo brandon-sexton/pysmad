@@ -192,8 +192,9 @@ class SemiMajorAxis:
     @staticmethod
     def from_mu_r_v(mu: float, r: float, v: float) -> float:
         r"""calculate the semi-major axis in km using equation 1-31 in Vallado 4th Edition
-        :math: 'a \times b'
-        .. math:: a \times b
+
+        .. math::
+           a \times b
 
         :param mu: gravitational constant times mass of central body
         :type mu: float
