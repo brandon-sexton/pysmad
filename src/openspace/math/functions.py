@@ -402,9 +402,9 @@ class ArealVelocity:
 
         :param r: position vector in :math:`km`
         :type r: Vector3D
-        :param v: velocity vector in :math:`\frac{km}{s}
+        :param v: velocity vector in :math:`\frac{km}{s}`
         :type v: Vector3D
-        :return: areal velocity vector in :math:`\frac{km^2}{s}
+        :return: areal velocity vector in :math:`\frac{km^2}{s}`
         :rtype: Vector3D
         """
         return r.cross(v)
