@@ -424,11 +424,11 @@ class RAAN:
 
         .. math::
 
-           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}} , 0 \leq \Omega < 2\pi
+           \Omega = \arctan{\frac{\vec{w}_{x}}{-\vec{w}_{y}}}
 
         :param w: normalized momentum vector in :math:`\frac{km^2}{s}
         :type w: Vector3D
-        :return: right ascension of the ascending node in :math:`rad`
+        :return: right ascension of the ascending node in :math:`rad` where math:`0 \leq \Omega < 2\pi`
         :rtype: float
 
         .. todo::
