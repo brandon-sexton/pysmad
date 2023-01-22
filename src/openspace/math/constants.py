@@ -20,14 +20,12 @@ SECONDS_IN_MINUTE: float = 60
 DEGREES_IN_HOUR: float = 15
 
 SEA_LEVEL_G: float = 0.00981
-"""gravity at sea level
+r"""gravity at sea level
 .. math::
-   units = km/s^2
+   units = \frac{km}{s^2}
 """
 
 #: number of base units in a kilo
-#: .. math::
-#:    km/s^2
 BASE_IN_KILO: float = 1000
 
 #: number of seconds for Earth to complete one rotation (found on page 31 of Vallado 4th Edition)
