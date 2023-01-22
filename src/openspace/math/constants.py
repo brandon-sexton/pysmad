@@ -20,10 +20,7 @@ SECONDS_IN_MINUTE: float = 60
 DEGREES_IN_HOUR: float = 15
 
 SEA_LEVEL_G: float = 0.00981
-r"""gravity at sea level
-.. math::
-   units = \frac{km}{s^2}
-"""
+r"""gravity at sea level .. math:: units = \frac{km}{s^2}"""
 
 #: number of base units in a kilo
 BASE_IN_KILO: float = 1000
