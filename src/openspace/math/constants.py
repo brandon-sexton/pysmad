@@ -24,7 +24,7 @@ r"""gravity at sea level
 
 .. math::
 
-   \\frac{km}{s^2}"""
+   \frac{km}{s^2}"""
 
 #: number of base units in a kilo
 BASE_IN_KILO: float = 1000
