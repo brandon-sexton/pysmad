@@ -22,7 +22,7 @@ DEGREES_IN_HOUR: float = 15
 #: gravity at sea level in .. math:: \\frac{km}{s^2}
 SEA_LEVEL_G: float = 0.00981
 
-#: number of base units in a kilo
+r"""number of base units in a kilo .. math:: \\frac{x}{2}"""
 BASE_IN_KILO: float = 1000
 
 #: number of seconds for Earth to complete one rotation (found on page 31 of Vallado 4th Edition)
