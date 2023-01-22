@@ -486,7 +486,7 @@ class Radius:
 
     @staticmethod
     def from_p_e_nu(p: float, e: float, nu: float) -> float:
-        r"""calculate the radius of an orbit using equation 1-24 in Vallado 4th Edition
+        r"""calculate the radius of an orbit using equation 1-24 in :ref:`vallado`
 
         .. math::
 
@@ -498,7 +498,7 @@ class Radius:
         :type e: float
         :param nu: true anomaly in :math:`rads`
         :type nu: float
-        :return: radius in:math:`km`
+        :return: radius in :math:`km`
         :rtype: float
         """
         return p / (1 + e * cos(nu))
