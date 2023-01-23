@@ -416,7 +416,7 @@ class RAAN:
 
     .. note::
 
-    RAAN will commonly be referenced as :math:`\Omega` in documentation
+       RAAN will commonly be referenced as :math:`\Omega` in documentation
     """
 
     @staticmethod
@@ -454,7 +454,7 @@ class Inclination:
         .. math::
 
            i = \arctan{
-                (
+                \left(
                     \frac{
                         \sqrt{
                             \vec{w}_{x}^2 + \vec{w}_{y}^2
@@ -462,10 +462,10 @@ class Inclination:
                     }{
                         \vec{w}_{z}
                     }
-                )
+                \right)
             }
 
-        :param w: normalized momentum vector :math:`\hat(h)` in :math:`\frac{km^2}{s}`
+        :param w: normalized momentum vector :math:`\hat{h}` in :math:`\frac{km^2}{s}`
         :type w: Vector3D
         :return: inclination in :math:`rad` where :math:`0 \leq i < \pi`
         :rtype: float
@@ -564,7 +564,7 @@ class VisVivaVelocity:
 
         .. math::
 
-           v^2 = \mu\left(\frac{2}{4} - \frac{1}{a}\right)
+           v^2 = \mu\left(\frac{2}{r} - \frac{1}{a}\right)
 
         :param a: semi-major axis in :math:`km`
         :type a: float
@@ -582,7 +582,7 @@ class VisVivaVelocity:
         r"""calculate the magnitude of velocity using equation 1-30 in :ref:`vallado`
 
         .. math::
-           v = \sqrt{2(\frac{\mu}{r}+\xi)}
+           v = \sqrt{2\left(\frac{\mu}{r}+\xi\right)}
 
         :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
@@ -698,20 +698,20 @@ class EccentricAnomaly:
 
         .. math::
 
-           E_(n+1) = E_n + \left(\frac{M-E_n+e\sin{(E_n)}}{1-e\cos{(E_n)}}\right)
+           E_{n+1} = E_n + \left(\frac{M-E_n+e\sin{(E_n)}}{1-e\cos{(E_n)}}\right)
 
         .. note::
 
            :math:`E_0 = M - e` for :math:`-\pi<M<0` or :math:`M>\pi`
            otherwise :math:`E_0 = M + e`
 
-           looping continues until :math:`\vertE_(n+1) - E_n\vert < tolerance`
+           looping continues until :math:`\vertE_{n+1} - E_n\vert < tolerance`
 
         :param ma: mean anomaly in :math:`rads`
         :type ma: float
         :param e: eccentricity
         :type e: float
-        :return: eccentric anomaly in :math:`rads
+        :return: eccentric anomaly in :math:`rads`
         :rtype: float
         """
         converged: bool = False
@@ -904,7 +904,7 @@ class EquationsOfMotion:
     #: used to solve raan :math:`\Omega`
     RAAN = RAAN
 
-    #: used to solve true anomaly :math:`nu`
+    #: used to solve true anomaly :math:`\nu`
     NU = TrueAnomaly
 
     #: used to solve argument of perigee :math:`\omega`
