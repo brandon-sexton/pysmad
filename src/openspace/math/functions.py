@@ -411,7 +411,7 @@ class ArealVelocity:
         return r.cross(v)
 
 
-class RAAN:
+class RightAscensionNode:
     r"""static class used to solve right ascension of ascending node (RAAN)
 
     .. note::
@@ -425,7 +425,7 @@ class RAAN:
 
         .. math::
 
-           \Omega = \arctan{(-\frac{\vec{w}_{x}}{\vec{w}_{y}})}
+           \Omega = \arctan{\left(-\frac{\vec{w}_{x}}{\vec{w}_{y}}\right)}
 
         :param w: normalized momentum vector in :math:`\frac{km^2}{s}`
         :type w: Vector3D
@@ -436,7 +436,10 @@ class RAAN:
 
            document equation reference from Satellite Orbits
         """
-        return (atan2(w.x, -w.y) + 2 * pi) % (2 * pi)
+        raan: float = atan2(w.x, -w.y)
+        if raan < 0:
+            raan += 2 * pi
+        return raan
 
 
 class Inclination:
@@ -705,7 +708,7 @@ class EccentricAnomaly:
            :math:`E_0 = M - e` for :math:`-\pi<M<0` or :math:`M>\pi`
            otherwise :math:`E_0 = M + e`
 
-           looping continues until :math:`\vertE_{n+1} - E_n\vert < tolerance`
+           looping continues until :math:`\vert E_{n+1} - E_n\vert < tolerance`
 
         :param ma: mean anomaly in :math:`rads`
         :type ma: float
@@ -731,7 +734,9 @@ class EccentricAnomaly:
             else:
                 ea0 = ean
 
-        return (ean + 2 * pi) % (2 * pi)
+        if ean < 0:
+            ean += 2 * pi
+        return ean
 
     @staticmethod
     def from_rdv_r_a_n(r_dot_v: float, r: float, a: float, n: float) -> float:
@@ -752,7 +757,10 @@ class EccentricAnomaly:
 
            find equation reference
         """
-        return (atan2(r_dot_v / (a * a * n), 1 - r / a) + 2 * pi) % (2 * pi)
+        ea: float = atan2(r_dot_v / (a * a * n), 1 - r / a)
+        if ea < 0:
+            ea += 2 * pi
+        return ea
 
 
 class TrueAnomaly:
@@ -807,7 +815,10 @@ class ArgumentOfPerigee:
 
            find equation reference
         """
-        return (u - nu + 2 * pi) % (2 * pi)
+        w: float = u - nu
+        if w < 0:
+            w += 2 * pi
+        return w
 
 
 class ArgumentOfLatitude:
@@ -833,7 +844,10 @@ class ArgumentOfLatitude:
 
            find equation reference
         """
-        return (atan2(r.z, -r.x * w.y + r.y * w.x) + 2 * pi) % (2 * pi)
+        u: float = atan2(r.z, -r.x * w.y + r.y * w.x)
+        if u < 0:
+            u += 2 * pi
+        return u
 
 
 class MeanAnomaly:
@@ -859,7 +873,10 @@ class MeanAnomaly:
         :return: mean anomaly in :math:`rads`
         :rtype: float
         """
-        return (ea - e * sin(ea) + 2 * pi) % (2 * pi)
+        ma: float = ea - e * sin(ea)
+        if ma < 0:
+            ma += 2 * pi
+        return ma
 
 
 class EquationsOfMotion:
@@ -902,7 +919,7 @@ class EquationsOfMotion:
     I = Inclination
 
     #: used to solve raan :math:`\Omega`
-    RAAN = RAAN
+    RAAN = RightAscensionNode
 
     #: used to solve true anomaly :math:`\nu`
     NU = TrueAnomaly
