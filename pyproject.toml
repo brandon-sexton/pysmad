@@ -9,8 +9,21 @@ authors = [
   {name = "Brandon Sexton", email = "brandon.sexton.1@outlook.com" }
 ]
 
+[project.optional-dependencies]
+dev = [
+    "poetry",
+    "black",
+    "pre-commit",
+    "isort",
+    "mypy",
+    "flake8"
+]
+
 [project.urls]
-"Homepage" = "https://www.openspace-docs.com/"
+"Documentation" = "https://www.openspace-docs.com/"
+"Application" = "https://www.openspace-app.com/"
+"App Repository" = "https://github.com/brandon-sexton/openspace-app"
+"Backend Repository" = "https://github.com/brandon-sexton/openspace"
 
 [build-system]
 requires = ["setuptools>=43.0.0", "wheel"]
