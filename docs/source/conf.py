@@ -23,7 +23,7 @@ copyright = "2022, Brandon Sexton"
 author = "Brandon Sexton"
 
 # The full version, including alpha/beta/rc tags
-release = "2.5.0"
+release = "2.5.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,7 +31,13 @@ release = "2.5.0"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.todo",
+    "sphinx.ext.autosectionlabel",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -66,3 +72,4 @@ napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
 add_module_names = False
+todo_include_todos = True

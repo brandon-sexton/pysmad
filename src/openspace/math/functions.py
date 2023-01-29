@@ -100,58 +100,100 @@ class LegendrePolynomial:
 
 
 class Eccentricity:
-    """Class used to solve eccentricity of an ellipse (e)"""
+    r"""Class used to solve eccentricity of an ellipse
+
+    .. note::
+
+       eccentricity will commonly be referenced as :math:`e` in documentation"""
 
     @staticmethod
     def from_a_c(a: float, c: float) -> float:
-        """calculate eccentricity using equation 1-2 in Vallado 4th Edition
+        r"""calculate eccentricity using equation 1-2 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           e = \frac{c}{a}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param c: half the distance between focii in km
+        :param c: half the distance between focii in :math:`km`
         :type c: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`c` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return c / a
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate eccentricity using equation 1-6 in Vallado 4th Edition
+        r"""calculate eccentricity using equation 1-6 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           e = \frac{\sqrt{a^2-b^2}}{a}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`b` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return sqrt(a * a - b * b) / a
 
     @staticmethod
     def from_a_p(a: float, p: float) -> float:
-        """calculate eccentricity using equation 2.62 in Satellite Orbits
+        r"""calculate eccentricity using equation 2.62 in :ref:`orbits`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           e = \sqrt{1 - \frac{p}{a}}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param p: semi-parameter
+        :param p: semi-parameter in :math:`km`
         :type p: float
         :return: eccentricity
         :rtype: float
+
+        .. note::
+
+           This method works any time :math:`a` and :math:`p` are input with common units,
+           but :math:`km` is the preferred unit throughout this package to ensure computational
+           consistency and accuracy.
         """
         return sqrt(1 - p / a)
 
 
 class Flattening:
-    """class used to solve flattening of an ellipse (f)"""
+    r"""class used to solve flattening of an ellipse
+
+    .. note::
+
+       flattening will commonly be referenced as :math:`f` in documentation"""
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate flattening using equation 1-3 in Vallado 4th Edition
+        r"""calculate flattening using equation 1-3 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           f = \frac{a-b}{a}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
         :return: flattening
         :rtype: float
@@ -160,30 +202,43 @@ class Flattening:
 
 
 class SemiMajorAxis:
-    """class used to solve semi-major axis of an ellipse (a)"""
+    """class used to solve semi-major axis of an ellipse
+
+    .. note::
+
+       the semi-major axis will commonly be referenced as :math:`a` in documentation
+    """
 
     @staticmethod
     def from_mu_n(mu: float, n: float) -> float:
-        """calculate semi-major axis using equation 1-29 in Vallado 4th Edition
+        r"""calculate semi-major axis using equation 1-29 in :ref:`vallado`
 
-        :param mu: gravitational constant time mass of central body
+        .. math::
+
+           a = \sqrt[3]{\frac{\mu}{n^2}}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param n: mean motion in radians/s
+        :param n: mean motion in :math:`\frac{rad}{s}`
         :type n: float
-        :return: semi-major axis in km
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         return (mu / (n * n)) ** (1 / 3)
 
     @staticmethod
     def from_mu_tau(mu: float, tau: float) -> float:
-        """calculate semi-major axis using equation 1-27 in Vallado 4th Edition
+        r"""calculate semi-major axis using equation 1-27 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass of central body
+        .. math::
+
+           n = \frac{2\pi}{\tau} = \sqrt{\frac{\mu}{a^3}}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param tau: period in seconds
+        :param tau: period in :math:`s`
         :type tau: float
-        :return: semi-major axis in km
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         base: float = tau / (2 * pi)
@@ -191,136 +246,195 @@ class SemiMajorAxis:
 
     @staticmethod
     def from_mu_r_v(mu: float, r: float, v: float) -> float:
-        """calculate the semi-major axis in km using equation 1-31 in Vallado 4th Edition
+        r"""calculate the semi-major axis in km using equation 1-31 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass of central body
+        .. math::
+
+           v = \sqrt{\frac{2\mu}{r}+\frac{\mu}{a}}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: magnitude of the position vector in km
+        :param r: magnitude of the position vector in :math:`km`
         :type r: float
-        :param v: magnitude of the velocity vector in km/s
+        :param v: magnitude of the velocity vector in :math:`\frac{km}{s}`
         :type v: float
-        :return: semi-major axis in km
+        :return: semi-major axis in :math:`km`
         :rtype: float
         """
         return 1 / (2 / r - v * v / mu)
 
 
 class SemiMinorAxis:
-    """class used to solve semi-minor axis of an ellipse (b)" """
+    """class used to solve semi-minor axis of an ellipse
+
+    .. note::
+
+    the semi-minor axis will commonly be referenced as :math:`b` in documentation"""
 
     @staticmethod
     def from_a_e(a: float, e: float) -> float:
-        """calculate semi-minor axis using equation 1-4 in Vallado 4th Edition
+        r"""calculate semi-minor axis using equation 1-4 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           b = a\sqrt{1-e^2}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
         :param e: eccentricity
         :type e: float
-        :return: semi-minor axis
+        :return: semi-minor axis in :math:`km`
         :rtype: float
         """
         return a * sqrt(1 - e * e)
 
 
 class SemiParameter:
-    """class used to solve the semi-parameter of an ellipse (p)"""
+    """class used to solve the semi-parameter of an ellipse
+
+    .. note::
+
+    the semi-parameter will commonly be referenced as :math:`p` in documentation"""
 
     @staticmethod
     def from_a_b(a: float, b: float) -> float:
-        """calculate the semi-parameter using equation 1-9 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-9 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           p = \frac{b^2}{a}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param b: semi-minor axis in km
+        :param b: semi-minor axis in :math:`km`
         :type b: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return b * b / a
 
     @staticmethod
     def from_a_e(a: float, e: float) -> float:
-        """calculate the semi-parameter using equation 1-10 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-10 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           p = a(1-e^2)
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
         :param e: eccentricity
         :type e: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return a * (1 - e * e)
 
     @staticmethod
     def from_mu_h(mu: float, h: float) -> float:
-        """calculate the semi-parameter using equation 1-19 in Vallado 4th Edition
+        r"""calculate the semi-parameter using equation 1-19 in :ref:`vallado`
 
-        :param mu: gravitational constant time mass of central body
+        .. math::
+
+           p = \frac{h^2}{\mu}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param h: areal velocity in km^2/s
+        :param h: areal velocity magnitude in :math:`\frac{km^2}{s}`
         :type h: float
-        :return: semi-parameter in km
+        :return: semi-parameter in :math:`km`
         :rtype: float
         """
         return h * h / mu
 
 
 class ArealVelocity:
-    """class used to calculate areal velocities of an orbit (h)"""
+    r"""class used to calculate areal velocities of an orbit
+
+    .. note::
+       The term areal velocity is used synonymously for the momentum of an orbit
+       and will commonly be referenced as :math:`h` in documentation
+
+    """
 
     @staticmethod
     def from_r_v_phi(r: float, v: float, phi: float) -> float:
-        """calculate the areal velocity using equation 1-16 in Vallado 4th Edition
+        r"""calculate the areal velocity using equation 1-16 in :ref:`vallado`
 
-        :param r: magnitude of the position vector in km
+        .. math::
+
+           h = rv\cos{(\phi_{fpa})}
+
+        :param r: magnitude of the position vector in :math:`km`
         :type r: float
-        :param v: magnitude of the velocity vector in km/s
+        :param v: magnitude of the velocity vector in :math:`\frac{km}{s}`
         :type v: float
-        :param phi: flight path angle (90 - angle between r and v)
+        :param phi: flight path angle :math:`\frac{\pi}{2} - \measuredangle\vec{r}\vec{v}`
         :type phi: float
-        :return: areal velocity in km^2/s
+        :return: areal velocity in :math:`\frac{km^2}{s}`
         :rtype: float
         """
         return r * v * cos(phi)
 
     @staticmethod
     def from_mu_p(mu: float, p: float) -> float:
-        """calculate the areal velocity using equation 1-19 in Vallado 4th Edition
+        r"""calculate the areal velocity using equation 1-19 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass of central body
+        .. math::
+
+           h = \sqrt{{\mu}p}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param p: semi-parameter in km
+        :param p: semi-parameter in :math:`km`
         :type p: float
-        :return: areal velocity in km^2/s
+        :return: areal velocity in :math:`\frac{km^2}{s}`
         :rtype: float
         """
         return sqrt(mu * p)
 
     @staticmethod
     def from_r_v(r: Vector3D, v: Vector3D) -> Vector3D:
-        """calculate the momentum vector
+        r"""calculate the momentum vector using equation 1-15 in :ref:`vallado`
 
-        :param r: position vector in km
+        .. math::
+
+           \vec{h} = \vec{r} \times \vec{v}
+
+        :param r: position vector in :math:`km`
         :type r: Vector3D
-        :param v: velocity vector in km/s
+        :param v: velocity vector in :math:`\frac{km}{s}`
         :type v: Vector3D
-        :return: areal velocity vector in km^2/s
+        :return: areal velocity vector in :math:`\frac{km^2}{s}`
         :rtype: Vector3D
         """
         return r.cross(v)
 
 
-class RAAN:
-    """static class used to solve right ascension of ascending node"""
+class RightAscensionNode:
+    r"""static class used to solve right ascension of ascending node (RAAN)
+
+    .. note::
+
+       RAAN will commonly be referenced as :math:`\Omega` in documentation
+    """
 
     @staticmethod
     def from_w(w: Vector3D) -> float:
-        """calculate the right ascension of the ascending node
+        r"""calculate the right ascension of the ascending node
 
-        :param w: normalized momentum vector
+        .. math::
+
+           \Omega = \arctan{\left(-\frac{\vec{w}_{x}}{\vec{w}_{y}}\right)}
+
+        :param w: normalized momentum vector in :math:`\frac{km^2}{s}`
         :type w: Vector3D
-        :return: right ascension of the ascending node in radians
+        :return: right ascension of the ascending node in :math:`rad` where :math:`0 \leq \Omega < 2\pi`
         :rtype: float
+
+        .. todo::
+
+           document equation reference from Satellite Orbits
         """
         raan: float = atan2(w.x, -w.y)
         if raan < 0:
@@ -329,196 +443,292 @@ class RAAN:
 
 
 class Inclination:
-    """static class used to solve inclination"""
+    r"""static class used to solve inclination
+
+    .. note::
+
+       inclination will commonly be referenced as :math:`i` in documentation
+    """
 
     @staticmethod
     def from_w(w: Vector3D) -> float:
-        """calculate the inclination
+        r"""calculate the inclination
 
-        :param w: normalized momentum vector
+        .. math::
+
+           i = \arctan{
+                \left(
+                    \frac{
+                        \sqrt{
+                            \vec{w}_{x}^2 + \vec{w}_{y}^2
+                        }
+                    }{
+                        \vec{w}_{z}
+                    }
+                \right)
+            }
+
+        :param w: normalized momentum vector :math:`\hat{h}` in :math:`\frac{km^2}{s}`
         :type w: Vector3D
-        :return: inclination in radians
+        :return: inclination in :math:`rad` where :math:`0 \leq i < \pi`
         :rtype: float
+
+        .. todo::
+
+           document equation reference from Satellite Orbits
         """
-        i: float = atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
-        if i < 0:
-            i += 2 * pi
         return atan2(sqrt(w.x * w.x + w.y * w.y), w.z)
 
 
 class Radius:
-    """static class used to solve the radius of an orbit"""
+    r"""static class used to solve the radius of an orbit
+
+    .. note::
+
+       radius will commonly be referenced as :math:`r` or :math:`R` in documentation
+    """
 
     @staticmethod
     def from_p_e_nu(p: float, e: float, nu: float) -> float:
-        """calculate the radius of an orbit using equation 1-24 in Vallado 4th Edition
+        r"""calculate the radius of an orbit using equation 1-24 in :ref:`vallado`
 
-        :param p: semi-parameter in km
+        .. math::
+
+           r = \frac{p}{1+e\cos{(\nu)}}
+
+        :param p: semi-parameter in :math:`km`
         :type p: float
         :param e: eccentricity
         :type e: float
-        :param nu: true anomaly in radians
+        :param nu: true anomaly in :math:`rads`
         :type nu: float
-        :return: radius in km
+        :return: radius in :math:`km`
         :rtype: float
         """
         return p / (1 + e * cos(nu))
 
 
 class SpecificMechanicalEnergy:
-    """static class used to solve specific mechanical energy (Xi)"""
+    r"""static class used to solve specific mechanical energy
+
+    .. note::
+
+       SME will commonly be referenced as :math:`\xi` in documentation
+    """
 
     @staticmethod
     def from_mu_r_v(mu: float, r: float, v: float) -> float:
-        """calculate the specific mechanical energy using equation 1-20 in Vallado 4th Edition
+        r"""calculate the specific mechanical energy using equation 1-20 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass of central body
+        .. math::
+
+           \xi = \frac{v^2}{2} - \frac{\mu}{r}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: distance from center of central body in km
+        :param r: distance from center of central body in :math:`km`
         :type r: float
-        :param v: magnitude of velocity vector in km/s
+        :param v: magnitude of velocity vector in :math:`\frac{km}{s}`
         :type v: float
-        :return: specific mechanical energy
+        :return: specific mechanical energy in :math:`\frac{km^2}{s^2}`
         :rtype: float
         """
         return v * v * 0.5 - mu / r
 
     @staticmethod
     def from_mu_a(mu: float, a: float) -> float:
-        """calculate specific mechanical energy using equation 1-21 in Vallado 4th Edition
+        r"""calculate specific mechanical energy using equation 1-21 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass of central body
+        .. math::
+
+           \xi = -\frac{\mu}{2a}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :return: specific mechanical energy
+        :return: specific mechanical energy :math:`\frac{km^2}{s^2}`
         :rtype: float
         """
         return -0.5 * mu / a
 
 
 class VisVivaVelocity:
-    """class used to calculate the velocity of an orbit (v)"""
+    r"""class used to calculate the velocity of an orbit
+
+    .. note::
+
+       velocity will commonly be referenced as :math:`v` in documentation
+    """
 
     @staticmethod
     def from_a_mu_r(a: float, mu: float, r: float) -> float:
-        """calculate magnitude of velocity using equation 1-22 in Vallado 4th Edition
+        r"""calculate magnitude of velocity using equation 1-22 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           v^2 = \mu\left(\frac{2}{r} - \frac{1}{a}\right)
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param mu: gravitational constant times mass
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: distance from center of central body in km
+        :param r: distance from center of central body in :math:`km`
         :type r: float
-        :return: velocity magnitude in km/s
+        :return: velocity magnitude in :math:`\frac{km}{s}`
         :rtype: float
         """
         return sqrt(mu * (2 / r - 1 / a))
 
     @staticmethod
     def from_mu_r_xi(mu: float, r: float, xi: float) -> float:
-        """calculate the magnitude of velocity using equation 1-30 in Vallado 4th Edition
+        r"""calculate the magnitude of velocity using equation 1-30 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass
+        .. math::
+           v = \sqrt{2\left(\frac{\mu}{r}+\xi\right)}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: distance from center of central body in km
+        :param r: distance from center of central body in :math:`km`
         :type r: float
-        :param xi: specific mechanical energy
+        :param xi: specific mechanical energy in :math:`\frac{km^2}{s^2}`
         :type xi: float
-        :return: velocity in km/s
+        :return: velocity in :math:`\frac{km}{s}`
         :rtype: float
         """
         return sqrt(2 * (mu / r + xi))
 
     @staticmethod
     def from_mu_r_e_nu(mu: float, r: float, e: float, nu: float) -> float:
-        """calculate the magnitude of velocity using equation 1-32 in Vallado 4th Edition
+        r"""calculate the magnitude of velocity using equation 1-32 in :ref:`vallado`
 
-        :param mu: gravitational constant times mass
+        .. math::
+
+           v = \sqrt{\frac{\mu}{r}\left(2 - \frac{1-e^2}{1+e\cos{\nu}}\right)}
+
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :param r: distance from center of central body in km
+        :param r: distance from center of central body in :math:`km`
         :type r: float
         :param e: eccentricity
         :type e: float
-        :param nu: true anomaly in radians
+        :param nu: true anomaly in :math:`rads`
         :type nu: float
-        :return: velocity in km/s
+        :return: velocity in :math:`\frac{km}{s}`
         :rtype: float
         """
         return sqrt((mu / r) * (2 - (1 - e * e) / (1 + e * cos(nu))))
 
 
 class Period:
-    """class used to calculate the period of an orbit (tau)"""
+    r"""class used to calculate the period of an orbit
+
+    .. note::
+
+       period will commonly be referenced as :math:`\tau` in documentation"""
 
     @staticmethod
     def from_a_mu(a: float, mu: float) -> float:
-        """calculate the period using equation 1-26 in Vallado 4th Edition
+        r"""calculate the period using equation 1-26 in :ref:`vallado`
 
-        :param a: semi-major axis in km
+        .. math::
+
+           \tau = 2\pi\sqrt{\frac{a^3}{\mu}}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param mu: gravitational constant times mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :return: period in seconds
+        :return: period in :math:`s`
         :rtype: float
         """
         return 2 * pi * sqrt(a * a * a / mu)
 
 
 class MeanMotion:
-    """class used to calculate mean motion of an orbit (n)"""
+    r"""class used to calculate mean motion of an orbit
+
+    .. note::
+
+       mean motion will commonly be referenced as :math:`n` in documentation"""
 
     @staticmethod
     def from_a_mu(a: float, mu: float) -> float:
-        """calculate the mean motion using equation 1-27 in Vallado 4th Edition
+        r"""calculate the mean motion using equation 1-27 in :ref:`vallado`
 
-        :param a: semi-major axis
+        .. math::
+
+           n = \frac{2\pi}{\tau} = \sqrt{\frac{\mu}{a^3}}
+
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param mu: gravitational constant times mass of central body
+        :param mu: gravitational constant time mass of central body combined units of :math:`\frac{km^3}{s^2}`
         :type mu: float
-        :return: mean motion in radians/s
+        :return: mean motion in :math:`\frac{rad}{s}`
         :rtype: float
         """
         return sqrt(mu / (a * a * a))
 
     @staticmethod
     def from_tau(tau: float) -> float:
-        """calculate mean motion using equation 1-27 in Vallado 4th Edition
+        r"""calculate mean motion using equation 1-27 in :ref:`vallado`
 
-        :param tau: period of orbit in seconds
+        .. math::
+
+           n = \frac{2\pi}{\tau} = \sqrt{\frac{\mu}{a^3}}
+
+        :param tau: period of orbit in :math:`s`
         :type tau: float
-        :return: mean motion in radians/s
+        :return: mean motion in :math:`\frac{rad}{s}`
         :rtype: float
         """
         return 2 * pi / tau
 
 
 class EccentricAnomaly:
-    """class used to solve eccentric anomaly"""
+    r"""class used to solve eccentric anomaly
 
+    .. note::
+
+       eccentric anomaly will commonly be referenced as :math:`E` in documentation"""
+
+    #: the tolerance used to stop the recursive solutions of Kepler's equation
     TOLERANCE: float = 1e-12
 
     @staticmethod
     def from_ma_e(ma: float, e: float) -> float:
-        """calculate the eccentric anomaly
+        r"""calculate the eccentric anomaly using algorithm 2 in :ref:`vallado`
 
-        :param ma: mean anomaly in radians
+        .. math::
+
+           E_{n+1} = E_n + \left(\frac{M-E_n+e\sin{(E_n)}}{1-e\cos{(E_n)}}\right)
+
+        .. note::
+
+           :math:`E_0 = M - e` for :math:`-\pi<M<0` or :math:`M>\pi`
+           otherwise :math:`E_0 = M + e`
+
+           looping continues until :math:`\vert E_{n+1} - E_n\vert < tolerance`
+
+        :param ma: mean anomaly in :math:`rads`
         :type ma: float
         :param e: eccentricity
         :type e: float
-        :return: eccentric anomaly in radians
+        :return: eccentric anomaly in :math:`rads`
         :rtype: float
         """
         converged: bool = False
         ea0: float = ma
         num: float
         den: float
-        if e > 0.8:
-            ea0 = pi
+
+        if (ma > -pi and ma < 0) or ma > pi:
+            ea0 -= e
+        else:
+            ea0 += e
+
         while not converged:
-            num = ma - ea0 + e * sin(ea0)
-            den = 1 - e * cos(ea0)
-            ean = ea0 + num / den
+            ean = ea0 + (ma - ea0 + e * sin(ea0)) / (1 - e * cos(ea0))
             if abs(ean - ea0) < EccentricAnomaly.TOLERANCE:
                 converged = True
             else:
@@ -526,23 +736,26 @@ class EccentricAnomaly:
 
         if ean < 0:
             ean += 2 * pi
-
         return ean
 
     @staticmethod
     def from_rdv_r_a_n(r_dot_v: float, r: float, a: float, n: float) -> float:
-        """calculate eccentric anomaly
+        r"""calculate eccentric anomaly
 
         :param r_dot_v: dot product of position and velocity
         :type r_dot_v: float
-        :param r: magnitude of position in km
+        :param r: magnitude of position in :math:`km`
         :type r: float
-        :param a: semi-major axis in km
+        :param a: semi-major axis in :math:`km`
         :type a: float
-        :param n: mean motion in radians per second
+        :param n: mean motion in :math:`\frac{rad}{s}`
         :type n: float
-        :return: eccentric anomaly in radians
+        :return: eccentric anomaly in :math:`rads`
         :rtype: float
+
+        .. todo::
+
+           find equation reference
         """
         ea: float = atan2(r_dot_v / (a * a * n), 1 - r / a)
         if ea < 0:
@@ -551,7 +764,12 @@ class EccentricAnomaly:
 
 
 class TrueAnomaly:
-    """static class used to solve true anomaly"""
+    r"""static class used to solve true anomaly
+
+    .. note::
+
+       true anomaly will commonly be referenced as :math:`\nu` in documentation
+    """
 
     @staticmethod
     def from_e_ea(e: float, ea: float) -> float:
@@ -559,10 +777,14 @@ class TrueAnomaly:
 
         :param e: eccentricity
         :type e: float
-        :param ea: eccentric anomaly in radians
+        :param ea: eccentric anomaly in :math:`rads`
         :type ea: float
-        :return: true anomaly in radians
+        :return: true anomaly in :math:`rads`
         :rtype: float
+
+        .. todo::
+
+           find equation reference
         """
         ta: float = atan2(sqrt(1 - e * e) * sin(ea), cos(ea) - e)
         if ta < 0:
@@ -571,38 +793,56 @@ class TrueAnomaly:
 
 
 class ArgumentOfPerigee:
-    """static class used to solve argument of perigee"""
+    r"""static class used to solve argument of perigee
+
+    .. note::
+
+       argument of perigee will commonly be referenced as :math:`\omega` in documentation
+    """
 
     @staticmethod
     def from_u_nu(u: float, nu: float) -> float:
-        """calculate the argument of perigee
+        r"""calculate the argument of perigee
 
-        :param u: argument of latitude in radians
+        :param u: argument of latitude in :math:`rads`
         :type u: float
-        :param nu: true anomaly in radians
+        :param nu: true anomaly in :math:`rads`
         :type nu: float
-        :return: argument of perigee in radians
+        :return: argument of perigee in :math:`rads`
         :rtype: float
+
+        .. todo::
+
+           find equation reference
         """
-        aop: float = u - nu
-        if aop < 0:
-            aop += 2 * pi
-        return aop
+        w: float = u - nu
+        if w < 0:
+            w += 2 * pi
+        return w
 
 
 class ArgumentOfLatitude:
-    """static class used to solve argument of latitude"""
+    """static class used to solve argument of latitude
+
+    .. note::
+
+       argument of latitude will commonly be referenced as :math:`u` in documentation
+    """
 
     @staticmethod
     def from_r_w(r: Vector3D, w: Vector3D) -> float:
-        """calculate the argument of latitude
+        r"""calculate the argument of latitude
 
-        :param r: position vector
+        :param r: position vector in :math:`km`
         :type r: Vector3D
-        :param w: normalized areal velocity vector
+        :param w: normalized areal velocity vector in :math:`\frac{km^2}{s}`
         :type w: Vector3D
-        :return: argument of latitude in radians
+        :return: argument of latitude in :math:`rads`
         :rtype: float
+
+        .. todo::
+
+           find equation reference
         """
         u: float = atan2(r.z, -r.x * w.y + r.y * w.x)
         if u < 0:
@@ -611,77 +851,84 @@ class ArgumentOfLatitude:
 
 
 class MeanAnomaly:
-    """static class used to solve mean anomaly"""
+    """static class used to solve mean anomaly
+
+    .. note::
+
+       mean anomaly will commonly be referenced as :math:`M` in documentation
+    """
 
     @staticmethod
     def from_ea_e(ea: float, e: float) -> float:
-        """calculate mean anomaly
+        r"""calculate mean anomaly using equation 2-4 in :ref:`vallado`
 
-        :param ea: eccentric anomaly in radians
+        .. math::
+
+           M = E - e\sin{(E)}
+
+        :param ea: eccentric anomaly in :math:`rads`
         :type ea: float
         :param e: eccentricity
         :type e: float
-        :return: mean anomaly in radians
+        :return: mean anomaly in :math:`rads`
         :rtype: float
         """
         ma: float = ea - e * sin(ea)
         if ma < 0:
             ma += 2 * pi
-        elif ma > 2 * pi:
-            ma -= 2 * pi
         return ma
 
 
 class EquationsOfMotion:
     """class used to solve equations of motion"""
 
-    #: used to solve semi-major axis
+    #: used to solve semi-major axis :math:`a`
     A = SemiMajorAxis
 
-    #: used to solve semi-minor axis
+    #: used to solve semi-minor axis :math:`b`
     B = SemiMinorAxis
 
-    #: used to solve semi-parameter
+    #: used to solve semi-parameter :math:`p`
     P = SemiParameter
 
-    #: used to solve eccentricity
+    #: used to solve eccentricity :math:`e`
     E = Eccentricity
 
-    #: used to solve period
+    #: used to solve period :math:`tau`
     TAU = Period
 
-    #: used to solve mean motion
+    #: used to solve mean motion :math:`n`
     N = MeanMotion
 
-    #: used to solve velocity
+    #: used to solve velocity :math:`v`
     V = VisVivaVelocity
 
-    #: used to solve specific mechanical energy
+    #: used to solve specific mechanical energy :math:`\xi`
     XI = SpecificMechanicalEnergy
 
-    #: used to solve areal velocity
+    #: used to solve areal velocity :math:`h`
     H = ArealVelocity
 
-    #: used to solve flattening
+    #: used to solve flattening :math:`f`
     F = Flattening
 
-    #: used to solve eccentric anomaly
+    #: used to solve eccentric anomaly :math:`E`
     EA = EccentricAnomaly
 
-    #: used to solve inclination
+    #: used to solve inclination :math:`i`
     I = Inclination
 
-    #: used to solve raan
-    RAAN = RAAN
+    #: used to solve raan :math:`\Omega`
+    RAAN = RightAscensionNode
 
-    #: used to solve true anomaly
+    #: used to solve true anomaly :math:`\nu`
     NU = TrueAnomaly
 
-    #: used to solve argument of perige
+    #: used to solve argument of perigee :math:`\omega`
     W = ArgumentOfPerigee
 
-    #: used to solve argument of latitude
+    #: used to solve argument of latitude :math:`u`
     U = ArgumentOfLatitude
 
-    #: used to solve mean anomaly
+    #: used to solve mean anomaly :math:`M`
     MA = MeanAnomaly

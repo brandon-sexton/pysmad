@@ -11,3 +11,4 @@ openspace astrodynamics toolkit
 
     modules
     examples
+    references
