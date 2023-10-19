@@ -1,10 +1,15 @@
+from datetime import datetime
 from math import cos, e, log10, pi, radians, sin
 from typing import List
 
+import matplotlib.pyplot as plt
+
 from openspace.bodies.celestial import Earth
+from openspace.coordinates.positions import LLA
 from openspace.coordinates.states import GCRF, HCW, StateConvert
+from openspace.data.live import Query
 from openspace.estimation.filtering import RelativeKalman
-from openspace.estimation.obs import SpaceObservation
+from openspace.estimation.obs import LiveOpticalObservation, LiveOpticalSet, SpaceObservation
 from openspace.hardware.payloads import Camera
 from openspace.math.constants import BASE_IN_KILO, SEA_LEVEL_G, SECONDS_IN_DAY
 from openspace.math.functions import EquationsOfMotion
@@ -43,7 +48,7 @@ class Spacecraft:
     #: Default specific impulse of the propellant used to calculate thrust
     DEFAULT_ISP: float = 350
 
-    def __init__(self, state: GCRF) -> None:
+    def __init__(self, state: GCRF, source: str = "USER", sat_id: str = None) -> None:
         """class used to model the behaviors of man-made satellites
 
         :param state: starting inertial state of the satellite
@@ -103,7 +108,84 @@ class Spacecraft:
         #: Used to solve the state of the spacecraft at various times in the orbit
         self.propagator: RK4 = RK4(self.initial_state)
 
+        #: Alphanumeric string that acts as a unique identifier for satellites
+        self.sat_id = sat_id
+
+        #: Used to inform the user of the data source for the spacecraft state
+        self.state_source: str = source
+
+        #: collection of optical observations of the calling satellite
+        self.optical_observations: LiveOpticalSet = None
+
         self.update_attitude()
+
+    @classmethod
+    def from_live(cls, sat_id: str, source: str, latest_epoch: Epoch) -> "Spacecraft":
+        """instantiate a spacecraft by loading the latest exo vector
+
+        :param sat_id: satellite identification sequence
+        :type sat_id: str
+        :return: spacecraft
+        :rtype: Spacecraft
+        """
+        udl = Query()
+        end = latest_epoch
+
+        start = latest_epoch.plus_days(-Query.DEFAULT_QUERY_DELTA)
+        state = udl.get_state_vectors(start, end, source, sat_id).get_latest(sat_id)
+        return cls(state, source, sat_id)
+
+    def store_optical_observations(self, query_start: Epoch, query_end: Epoch) -> None:
+        """retrieve the latest live observations"""
+        udl = Query()
+        self.optical_observations = udl.get_eo_observations(query_start, query_end, sat_id=self.sat_id)
+
+    def get_clos(self, ob: LiveOpticalObservation) -> float:
+        self.step_to_epoch(ob.epoch)
+        return ob.get_clos(self.current_state())
+
+    def plot_clos(self, span: List[Epoch] = None):
+        if span is not None:
+            self.store_optical_observations(span[0], span[1])
+        x, y = {}, {}
+
+        for ob in self.optical_observations.list:
+            if x.get(ob.observer_id) is None:
+                x[ob.observer_id] = []
+                y[ob.observer_id] = []
+
+            x[ob.observer_id].append(datetime.strptime(ob.epoch.to_udl_string(), "%Y-%m-%dT%H:%M:%S.%fZ"))
+            y[ob.observer_id].append(self.get_clos(ob))
+
+        for id in x.keys():
+            plt.scatter(x[id], y[id], label=id)
+
+        plt.legend()
+        plt.gcf().autofmt_xdate()
+        plt.show()
+
+    def plot_clos_pair(self, sat: "Spacecraft", span: List[Epoch] = None):
+        if span is not None:
+            self.store_optical_observations(span[0], span[1])
+            sat.store_optical_observations(span[0], span[1])
+
+        x, y = [], []
+        for ob in self.optical_observations.list:
+            x.append(datetime.strptime(ob.epoch.to_udl_string(), "%Y-%m-%dT%H:%M:%S.%fZ"))
+            y.append(self.get_clos(ob))
+
+        plt.scatter(x, y, label=self.sat_id)
+
+        x, y = [], []
+        for ob in sat.optical_observations.list:
+            x.append(datetime.strptime(ob.epoch.to_udl_string(), "%Y-%m-%dT%H:%M:%S.%fZ"))
+            y.append(sat.get_clos(ob))
+
+        plt.scatter(x, y, label=sat.sat_id)
+
+        plt.legend()
+        plt.gcf().autofmt_xdate()
+        plt.show()
 
     def area(self) -> float:
         """calculate the spherical area of the satellite using the body radius

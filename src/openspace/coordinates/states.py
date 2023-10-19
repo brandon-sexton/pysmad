@@ -44,6 +44,66 @@ class State:
         """
         return [self.position, self.velocity]
 
+    def csv_headers():
+        return ",".join(["TARGET_ID", "UTC_EPOCH", "FRAME", "X", "Y", "Z", "VX", "VY", "VZ"])
+
+
+class LiveVector(State):
+    def __init__(self, vec_dict: dict) -> None:
+        self.epoch: Epoch = Epoch.from_udl_string(vec_dict["epoch"])
+        self.position: Vector3D = Vector3D(vec_dict["xpos"], vec_dict["ypos"], vec_dict["zpos"])
+        self.velocity = Vector3D(vec_dict["xvel"], vec_dict["yvel"], vec_dict["zvel"])
+        self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
+        self.reference_frame: str = vec_dict.get("referenceFrame", "J2000")
+        self.srp_coefficient: float = vec_dict.get("solarRadPressCoeff", None)
+        self.covariance: list[float] = vec_dict.get("cov", None)
+        self.sat_id: str = vec_dict.get("origObjectId", vec_dict.get("idOnOrbit", "UNKNOWN"))
+
+    def get_gcrf_state(self) -> "GCRF":
+        return GCRF(self.epoch, self.position, self.velocity)
+
+    def to_csv_format(self) -> str:
+        return ",".join(
+            [
+                self.sat_id,
+                self.epoch.to_udl_string(),
+                self.reference_frame,
+                str(self.position.x),
+                str(self.position.y),
+                str(self.position.z),
+                str(self.velocity.x),
+                str(self.velocity.y),
+                str(self.velocity.z),
+            ]
+        )
+
+
+class LiveVectorSet:
+    def __init__(self):
+        self.list = []
+        self.sensors = {}
+        self.targets = {}
+        self.sources = {}
+        self.modes = {}
+        self.total = 0
+
+    def publish_set(self, filename: str, write_mode: str) -> None:
+
+        with open(filename, write_mode) as f:
+            for state in self.list:
+                f.write("".join([state.to_csv_format(), "\n"]))
+
+    def process_vector(self, state: LiveVector) -> None:
+        self.list.append(state)
+        self.total += 1
+        if self.targets.get(state.sat_id) is None:
+            self.targets[state.sat_id] = state
+        elif self.targets[state.sat_id].epoch.value < state.epoch.value:
+            self.targets[state.sat_id] = state
+
+    def get_latest(self, scc: str) -> LiveVector:
+        return self.targets[scc].get_gcrf_state()
+
 
 class ITRF(State):
     def __init__(self, epoch: Epoch, r: Vector3D, v: Vector3D) -> None:

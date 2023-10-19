@@ -1,4 +1,6 @@
-from openspace.coordinates.positions import LLA, PositionConvert, SphericalPosition
+from math import radians
+
+from openspace.coordinates.positions import ENZ, LLA, PositionConvert, SphericalPosition
 from openspace.coordinates.states import GCRF, ITRF
 from openspace.math.linalg import Vector3D
 from openspace.time import Epoch
@@ -167,3 +169,121 @@ class GroundObservation(Observation):
             self.observer_state.position
         )
         return PositionConvert.itrf.to_gcrf(itrf_ob, self.epoch())
+
+
+class LiveOpticalObservation:
+    def __init__(self, ob_dict: dict):
+        """interface used to access data stored in live observations
+
+        :param ob_dict: single return from a Query JSON
+        :type ob_dict: dict
+        """
+        self.epoch: Epoch = Epoch.from_udl_string(ob_dict["obTime"])
+        self.sat_id: str = ob_dict.get("origObjectId", ob_dict.get("idOnOrbit", "UNKNOWN"))
+        self.observer_id: str = ob_dict.get("origSensorId", ob_dict.get("sensorId", "NOT PROVIDED"))
+        self.azimuth: float = radians(ob_dict.get("azimuth", 0))
+        self.elevation: float = radians(ob_dict.get("elevation", 0))
+        self.observer_lla: LLA = LLA(radians(ob_dict["senlat"]), radians(ob_dict["senlon"]), ob_dict["senalt"])
+        self.observer_eci: Vector3D = Vector3D(ob_dict.get("senx", 0), ob_dict.get("seny"), ob_dict.get("senz"))
+        self.right_ascension: float = radians(ob_dict["ra"])
+        self.declination: float = radians(ob_dict["declination"])
+        self.visual_magnitude: float = ob_dict.get("mag", 0)
+        self.source: str = ob_dict["source"]
+        self.mode: str = ob_dict["dataMode"]
+        self.equatorial_phase_angle: float = ob_dict.get("solarEqPhaseAngle", 0)
+        self.solar_declination_angle: float = ob_dict.get("solarDecAngle", 0)
+
+    def get_observer_itrf(self) -> Vector3D:
+        return ITRF.from_fixed(self.epoch, PositionConvert.lla.to_itrf(self.observer_lla)).position
+
+    def get_clos(self, tgt_gcrf: GCRF) -> float:
+        observed = GroundObservation.from_angles_and_range(
+            self.get_observer_itrf(), self.azimuth, self.elevation, 1, 0, 0
+        )
+        observed.observed_direction
+        mat = ENZ.matrix(self.observer_lla.longitude, self.observer_lla.latitude)
+        tgt_itrf = PositionConvert.gcrf.to_itrf(tgt_gcrf.position, tgt_gcrf.epoch)
+        expected = mat.multiply_vector(tgt_itrf.minus(self.get_observer_itrf()))
+        return expected.magnitude() * expected.angle(observed.observed_direction)
+
+    def csv_headers() -> str:
+        return ",".join(
+            [
+                "UTC_EPOCH",
+                "SOURCE",
+                "TARGET_ID",
+                "AZ",
+                "EL",
+                "RA",
+                "DEC",
+                "SOLAR_EQ_PHASE",
+                "SOLAR_DEC_PHASE",
+                "VISMAG",
+                "SENSOR_ID",
+                "SENSOR_LAT",
+                "SENSOR_LON",
+                "SENSOR_ALT",
+            ]
+        )
+
+    def to_csv_format(self) -> str:
+        return ",".join(
+            [
+                self.epoch.to_udl_string(),
+                self.source,
+                self.sat_id,
+                str(self.azimuth),
+                str(self.elevation),
+                str(self.right_ascension),
+                str(self.declination),
+                str(self.equatorial_phase_angle),
+                str(self.solar_declination_angle),
+                str(self.visual_magnitude),
+                self.observer_id,
+                str(self.observer_lla.latitude),
+                str(self.observer_lla.longitude),
+                str(self.observer_lla.altitude),
+            ]
+        )
+
+
+class LiveOpticalSet:
+    def __init__(self):
+        self.list = []
+        self.sensors = {}
+        self.targets = {}
+        self.sources = {}
+        self.modes = {}
+        self.total = 0
+
+    def publish_set(self, filename: str, write_mode: str) -> None:
+
+        with open(filename, write_mode) as f:
+            for ob in self.list:
+                f.write("".join([ob.to_csv_format(), "\n"]))
+
+    def process_observation(self, ob: LiveOpticalObservation) -> None:
+        self.list.append(ob)
+        self.total += 1
+        if self.sensors.get(ob.observer_id) is None:
+            self.sensors[ob.observer_id] = []
+        if self.targets.get(ob.sat_id) is None:
+            self.targets[ob.sat_id] = []
+        if self.sources.get(ob.source) is None:
+            self.sources[ob.source] = []
+        if self.modes.get(ob.mode) is None:
+            self.modes[ob.mode] = []
+
+        self.sensors[ob.observer_id].append(ob)
+        self.targets[ob.sat_id].append(ob)
+        self.sources[ob.source].append(ob)
+        self.modes[ob.mode].append(ob)
+
+    def get_observers(self):
+        return self.sensors.keys()
+
+    def get_targets(self):
+        return self.targets.keys()
+
+    def get_sources(self):
+        return self.sources.keys()
