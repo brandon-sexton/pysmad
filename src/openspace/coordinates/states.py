@@ -44,7 +44,7 @@ class State:
         """
         return [self.position, self.velocity]
 
-    def csv_headers():
+    def csv_headers(self):
         return ",".join(["TARGET_ID", "UTC_EPOCH", "FRAME", "X", "Y", "Z", "VX", "VY", "VZ"])
 
 

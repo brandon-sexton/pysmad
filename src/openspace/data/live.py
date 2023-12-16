@@ -37,21 +37,14 @@ class Query:
     def _add_sat_id_filter(self, url: str, sat_id: str) -> str:
         return "&idOnOrbit=".join([url, sat_id])
 
-    def get_state_vectors(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None) -> LiveVectorSet:
+    def _add_data_mode_filter(self, url: str) -> str:
+        return "&dataMode=".join([url, "REAL"])
 
-        url = self._build_basic_query(Query.VECTOR_QUERY)
-        url = self._add_epoch_filter(url, start.to_udl_string(), end.to_udl_string())
-        if source is not None:
-            url = self._add_source_filter(url, source)
-
-        if sat_id is not None:
-            url = self._add_sat_id_filter(url, sat_id)
-
-        msgs = self.get_json(url)
+    def get_vector_set(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None) -> LiveVectorSet:
+        msg = self.get_state_vector_json(start, end, source, sat_id)
         states = LiveVectorSet()
-        for state in msgs:
+        for state in msg:
             states.process_vector(LiveVector(state))
-
         return states
 
     def _set_max_results(self, url: str) -> str:
@@ -82,33 +75,42 @@ class Query:
         print(len(sccs.keys()), "possible maneuvers reported by Kratos.")
         return [key for key in sccs.keys()]
 
-    def get_eo_observations(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None) -> LiveOpticalSet:
-        url = self._build_basic_query(Query.EO_OBS_QUERY)
+    def get_optical_set(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None) -> LiveOpticalSet:
+        msg = self.get_eo_observation_json(start, end, source, sat_id)
+        obs = LiveOpticalSet()
+        for ob in msg:
+            obs.process_observation(LiveOpticalObservation(ob))
+        return obs
+
+    def get_eo_observation_json(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None):
+        return self.get_json(Query.EO_OBS_QUERY, start, end, source, sat_id)
+
+    def get_state_vector_json(self, start: Epoch, end: Epoch, source: str = None, sat_id: str = None):
+        return self.get_json(Query.VECTOR_QUERY, start, end, source, sat_id)
+
+    def get_json(self, type: str, start: Epoch, end: Epoch, source: str = None, sat_id: str = None):
+
+        # filter by data type
+        url = self._build_basic_query(type)
+
+        # filter by date range
         url = self._add_epoch_filter(url, start.to_udl_string(), end.to_udl_string())
+
+        # filter by data source
         if source is not None:
             url = self._add_source_filter(url, source)
 
+        # filter by satellite ID
         if sat_id is not None:
             url = self._add_sat_id_filter(url, sat_id)
 
-        msg = self.get_json(url)
-        obs = LiveOpticalSet()
-
-        for ob in msg:
-            obs.process_observation(LiveOpticalObservation(ob))
-
-        return obs
-
-    def get_json(self, url: str) -> dict:
-        """get the contents of the query
-
-        :param url: query address
-        :type url: str
-        :return: dictionary of the query results
-        :rtype: dict
-        """
-
+        # filter max results
         url = self._set_max_results(url)
+
+        # filter for real data
+        url = self._add_data_mode_filter(url)
+
+        # perform query and print status
         Alerts.print_query_start(url)
         results = requests.get(url, headers={"Authorization": self.credentials}, verify=None).json()
         count = len(results)
@@ -116,4 +118,5 @@ class Query:
             Alerts.print_query_max_warning()
         if count > 0:
             Alerts.print_successful_query(count)
+
         return results

@@ -172,7 +172,7 @@ class GroundObservation(Observation):
 
 
 class LiveOpticalObservation:
-    def __init__(self, ob_dict: dict):
+    def __init__(self, ob_dict):
         """interface used to access data stored in live observations
 
         :param ob_dict: single return from a Query JSON
@@ -193,8 +193,8 @@ class LiveOpticalObservation:
         self.equatorial_phase_angle: float = ob_dict.get("solarEqPhaseAngle", 0)
         self.solar_declination_angle: float = ob_dict.get("solarDecAngle", 0)
 
-    def get_observer_itrf(self) -> Vector3D:
-        return ITRF.from_fixed(self.epoch, PositionConvert.lla.to_itrf(self.observer_lla)).position
+    def get_observer_itrf(self) -> ITRF:
+        return ITRF.from_fixed(self.epoch, PositionConvert.lla.to_itrf(self.observer_lla))
 
     def get_clos(self, tgt_gcrf: GCRF) -> float:
         observed = GroundObservation.from_angles_and_range(
@@ -203,10 +203,10 @@ class LiveOpticalObservation:
         observed.observed_direction
         mat = ENZ.matrix(self.observer_lla.longitude, self.observer_lla.latitude)
         tgt_itrf = PositionConvert.gcrf.to_itrf(tgt_gcrf.position, tgt_gcrf.epoch)
-        expected = mat.multiply_vector(tgt_itrf.minus(self.get_observer_itrf()))
+        expected = mat.multiply_vector(tgt_itrf.minus(self.get_observer_itrf().position))
         return expected.magnitude() * expected.angle(observed.observed_direction)
 
-    def csv_headers() -> str:
+    def csv_headers(self) -> str:
         return ",".join(
             [
                 "UTC_EPOCH",

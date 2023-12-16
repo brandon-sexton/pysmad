@@ -1,7 +1,7 @@
 import unittest
 
 from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
-from openspace.math.functions import EquationsOfMotion
+from openspace.math.functions import EquationsOfMotion, LegendrePolynomial
 from openspace.math.linalg import Vector3D
 
 MU: float = 398600.4418
@@ -142,3 +142,23 @@ class TestArgumentOfLatitude(unittest.TestCase):
 class TestRAAN(unittest.TestCase):
     def test_from_w(self):
         self.assertAlmostEqual(EquationsOfMotion.RAAN.from_w(Vector3D(1, 1, 1)), 2.356194490192345)
+
+
+class TestLegendrePolynomial(unittest.TestCase):
+    def test_p(self):
+        p = LegendrePolynomial(1).p
+        self.assertAlmostEqual(p[0][0], 1)
+        self.assertAlmostEqual(p[1][0], 0.8414709848078965)
+        self.assertAlmostEqual(p[1][1], 0.5403023058681398)
+        self.assertAlmostEqual(p[2][0], 0.5621101274103568)
+        self.assertAlmostEqual(p[2][1], 1.3639461402385225)
+        self.assertAlmostEqual(p[2][2], 0.8757797451792866)
+        self.assertAlmostEqual(p[3][0], 0.2273516142655441)
+        self.assertAlmostEqual(p[3][1], 2.0588492958263878)
+        self.assertAlmostEqual(p[3][2], 3.6847162232541146)
+        self.assertAlmostEqual(p[3][3], 2.365929078764902)
+        self.assertAlmostEqual(p[4][0], -0.08679046873880569)
+        self.assertAlmostEqual(p[4][1], 2.2238163502521444)
+        self.assertAlmostEqual(p[4][2], 8.66258689896924)
+        self.assertAlmostEqual(p[4][3], 13.936024703257592)
+        self.assertAlmostEqual(p[4][4], 8.948218557440123)

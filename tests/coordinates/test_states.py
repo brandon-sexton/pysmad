@@ -17,8 +17,16 @@ class TestGCRFstate(unittest.TestCase):
 
     def test_acceleration_from_gravity(self):
         a = self.EARTH_SURFACE.acceleration_from_gravity()
-        self.assertAlmostEqual(1.5990836818112354e-05, a.magnitude())
+        self.assertAlmostEqual(1.5990836818112354e-05, a.magnitude(), 15)
 
     def test_acceleration_from_earth(self):
         a = self.EARTH_SURFACE.acceleration_from_earth()
-        self.assertAlmostEqual(0.00979870641977297, a.magnitude())
+        self.assertAlmostEqual(0.00979870641977297, a.magnitude(), 15)
+
+    def test_acceleration_from_sun(self):
+        a = self.STATE.acceleration_from_sun()
+        self.assertAlmostEqual(3.00696687920662e-9, a.magnitude(), 15)
+
+    def test_acceleration_from_moon(self):
+        a = self.STATE.acceleration_from_moon()
+        self.assertAlmostEqual(3.4064259486775476e-9, a.magnitude(), 15)
