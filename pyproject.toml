@@ -5,6 +5,10 @@ description = "astrodynamics analysis and simulation package"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
+dependencies = [
+    "requests",
+    "matplotlib"
+]
 authors = [
   {name = "Brandon Sexton", email = "brandon.sexton.1@outlook.com" }
 ]
