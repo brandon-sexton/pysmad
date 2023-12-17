@@ -5,6 +5,7 @@ modules
    :maxdepth: 2
 
    openspace.bodies
+   openspace.data
    openspace.estimation
    openspace.hardware
    openspace.math
