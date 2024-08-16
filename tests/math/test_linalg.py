@@ -1,7 +1,7 @@
 import unittest
 from math import radians
 
-from openspace.math.linalg import Vector3D
+from pysmad.math.linalg import Vector3D
 
 
 class TestVector3D(unittest.TestCase):

@@ -1,8 +1,8 @@
 import unittest
 
-from openspace.coordinates.positions import PositionConvert
-from openspace.math.linalg import Vector3D
-from openspace.time import Epoch
+from pysmad.coordinates.positions import PositionConvert
+from pysmad.math.linalg import Vector3D
+from pysmad.time import Epoch
 
 
 class TestPositionConvertGCRF(unittest.TestCase):

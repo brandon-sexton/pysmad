@@ -1,7 +1,7 @@
-openspace.hardware.payloads
+pysmad.hardware.payloads
 ===========================
 
-.. automodule:: openspace.hardware.payloads
+.. automodule:: pysmad.hardware.payloads
    :members:
    :undoc-members:
    :show-inheritance:

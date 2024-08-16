@@ -1,7 +1,7 @@
-openspace.bodies.terrestrial
+pysmad.bodies.terrestrial
 ============================
 
-.. automodule:: openspace.bodies.terrestrial
+.. automodule:: pysmad.bodies.terrestrial
    :members:
    :undoc-members:
    :show-inheritance:

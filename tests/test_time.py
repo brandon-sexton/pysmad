@@ -1,7 +1,7 @@
 import unittest
 from math import degrees
 
-from openspace.time import Epoch
+from pysmad.time import Epoch
 
 
 class TestEpoch(unittest.TestCase):

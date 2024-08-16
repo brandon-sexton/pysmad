@@ -1,14 +1,14 @@
-openspace.bodies
+pysmad.bodies
 ================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.bodies.artificial
-   openspace.bodies.celestial
-   openspace.bodies.terrestrial
+   pysmad.bodies.artificial
+   pysmad.bodies.celestial
+   pysmad.bodies.terrestrial
 
-.. automodule:: openspace.bodies
+.. automodule:: pysmad.bodies
    :members:
    :undoc-members:
    :show-inheritance:

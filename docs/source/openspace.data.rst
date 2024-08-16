@@ -1,12 +1,12 @@
-openspace.data
+pysmad.data
 ==============
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.data.live
+   pysmad.data.live
 
-.. automodule:: openspace.data
+.. automodule:: pysmad.data
    :members:
    :undoc-members:
    :show-inheritance:

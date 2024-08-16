@@ -1,14 +1,14 @@
-openspace.math
+pysmad.math
 ==============
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.math.constants
-   openspace.math.functions
-   openspace.math.linalg
+   pysmad.math.constants
+   pysmad.math.functions
+   pysmad.math.linalg
 
-.. automodule:: openspace.math
+.. automodule:: pysmad.math
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,7 +1,7 @@
-openspace.coordinates.states
+pysmad.coordinates.states
 ============================
 
-.. automodule:: openspace.coordinates.states
+.. automodule:: pysmad.coordinates.states
    :members:
    :undoc-members:
    :show-inheritance:

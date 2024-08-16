@@ -1,7 +1,7 @@
-openspace.math.linalg
+pysmad.math.linalg
 =====================
 
-.. automodule:: openspace.math.linalg
+.. automodule:: pysmad.math.linalg
    :members:
    :undoc-members:
    :show-inheritance:

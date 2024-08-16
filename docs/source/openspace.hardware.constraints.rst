@@ -1,7 +1,7 @@
-openspace.hardware.constraints
+pysmad.hardware.constraints
 ==============================
 
-.. automodule:: openspace.hardware.constraints
+.. automodule:: pysmad.hardware.constraints
    :members:
    :undoc-members:
    :show-inheritance:

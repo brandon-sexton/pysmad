@@ -1,8 +1,8 @@
 import unittest
 
-from openspace.math.constants import SECONDS_IN_SIDEREAL_DAY
-from openspace.math.functions import EquationsOfMotion, LegendrePolynomial
-from openspace.math.linalg import Vector3D
+from pysmad.math.constants import SECONDS_IN_SIDEREAL_DAY
+from pysmad.math.functions import EquationsOfMotion, LegendrePolynomial
+from pysmad.math.linalg import Vector3D
 
 MU: float = 398600.4418
 GEO_RADIUS: float = 42164.16962995827

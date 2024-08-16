@@ -1,7 +1,7 @@
-openspace.data.live
+pysmad.data.live
 ===================
 
-.. automodule:: openspace.data.live
+.. automodule:: pysmad.data.live
    :members:
    :undoc-members:
    :show-inheritance:

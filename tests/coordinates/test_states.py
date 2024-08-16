@@ -1,8 +1,8 @@
 import unittest
 
-from openspace.coordinates.states import GCRF
-from openspace.math.linalg import Vector3D
-from openspace.time import Epoch
+from pysmad.coordinates.states import GCRF
+from pysmad.math.linalg import Vector3D
+from pysmad.time import Epoch
 
 
 class TestGCRFstate(unittest.TestCase):

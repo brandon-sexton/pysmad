@@ -1,13 +1,13 @@
-openspace.hardware
+pysmad.hardware
 ==================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.hardware.constraints
-   openspace.hardware.payloads
+   pysmad.hardware.constraints
+   pysmad.hardware.payloads
 
-.. automodule:: openspace.hardware
+.. automodule:: pysmad.hardware
    :members:
    :undoc-members:
    :show-inheritance:

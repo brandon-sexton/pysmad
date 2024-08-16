@@ -1,7 +1,7 @@
-openspace.math.functions
+pysmad.math.functions
 ========================
 
-.. automodule:: openspace.math.functions
+.. automodule:: pysmad.math.functions
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,7 +1,7 @@
-openspace.planning.maneuvers
+pysmad.planning.maneuvers
 ============================
 
-.. automodule:: openspace.planning.maneuvers
+.. automodule:: pysmad.planning.maneuvers
    :members:
    :undoc-members:
    :show-inheritance:

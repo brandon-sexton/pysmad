@@ -1,14 +1,14 @@
-openspace.coordinates
+pysmad.coordinates
 =====================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.coordinates.elements
-   openspace.coordinates.positions
-   openspace.coordinates.states
+   pysmad.coordinates.elements
+   pysmad.coordinates.positions
+   pysmad.coordinates.states
 
-.. automodule:: openspace.coordinates
+.. automodule:: pysmad.coordinates
    :members:
    :undoc-members:
    :show-inheritance:

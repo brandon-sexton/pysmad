@@ -1,7 +1,7 @@
-openspace.estimation.iod
+pysmad.estimation.iod
 ========================
 
-.. automodule:: openspace.estimation.iod
+.. automodule:: pysmad.estimation.iod
    :members:
    :undoc-members:
    :show-inheritance:

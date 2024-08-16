@@ -1,13 +1,13 @@
-openspace.propagators
+pysmad.propagators
 =====================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.propagators.inertial
-   openspace.propagators.relative
+   pysmad.propagators.inertial
+   pysmad.propagators.relative
 
-.. automodule:: openspace.propagators
+.. automodule:: pysmad.propagators
    :members:
    :undoc-members:
    :show-inheritance:

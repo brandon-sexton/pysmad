@@ -1,9 +1,9 @@
 import unittest
 
-from openspace.coordinates.elements import ClassicalElements
-from openspace.coordinates.states import IJK
-from openspace.math.linalg import Vector3D
-from openspace.time import Epoch
+from pysmad.coordinates.elements import ClassicalElements
+from pysmad.coordinates.states import IJK
+from pysmad.math.linalg import Vector3D
+from pysmad.time import Epoch
 
 
 class TestClassicalElements(unittest.TestCase):

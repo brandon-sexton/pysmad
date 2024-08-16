@@ -1,7 +1,7 @@
-openspace.propagators.relative
+pysmad.propagators.relative
 ==============================
 
-.. automodule:: openspace.propagators.relative
+.. automodule:: pysmad.propagators.relative
    :members:
    :undoc-members:
    :show-inheritance:

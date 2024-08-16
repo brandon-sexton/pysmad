@@ -1,15 +1,15 @@
 import unittest
 from math import radians
 
-from openspace.bodies.artificial import Spacecraft
-from openspace.bodies.celestial import Earth
-from openspace.bodies.terrestrial import GroundSite
-from openspace.coordinates.elements import ClassicalElements
-from openspace.coordinates.positions import SphericalPosition
-from openspace.coordinates.states import GCRF, IJK
-from openspace.estimation.obs import GroundObservation
-from openspace.math.constants import SECONDS_IN_DAY
-from openspace.time import Epoch
+from pysmad.bodies.artificial import Spacecraft
+from pysmad.bodies.celestial import Earth
+from pysmad.bodies.terrestrial import GroundSite
+from pysmad.coordinates.elements import ClassicalElements
+from pysmad.coordinates.positions import SphericalPosition
+from pysmad.coordinates.states import GCRF, IJK
+from pysmad.estimation.obs import GroundObservation
+from pysmad.math.constants import SECONDS_IN_DAY
+from pysmad.time import Epoch
 
 
 class TestGroundSite(unittest.TestCase):

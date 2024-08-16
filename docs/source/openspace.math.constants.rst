@@ -1,7 +1,7 @@
-openspace.math.constants
+pysmad.math.constants
 ========================
 
-.. automodule:: openspace.math.constants
+.. automodule:: pysmad.math.constants
    :members:
    :undoc-members:
    :show-inheritance:

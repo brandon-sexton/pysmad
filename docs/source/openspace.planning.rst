@@ -1,12 +1,12 @@
-openspace.planning
+pysmad.planning
 ==================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.planning.maneuvers
+   pysmad.planning.maneuvers
 
-.. automodule:: openspace.planning
+.. automodule:: pysmad.planning
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,14 +1,14 @@
-openspace.estimation
+pysmad.estimation
 ====================
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.estimation.filtering
-   openspace.estimation.obs
-   openspace.estimation.iod
+   pysmad.estimation.filtering
+   pysmad.estimation.obs
+   pysmad.estimation.iod
 
-.. automodule:: openspace.estimation
+.. automodule:: pysmad.estimation
    :members:
    :undoc-members:
    :show-inheritance:

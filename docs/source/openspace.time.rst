@@ -1,7 +1,7 @@
-openspace.time
+pysmad.time
 ==============
 
-.. automodule:: openspace.time
+.. automodule:: pysmad.time
    :members:
    :undoc-members:
    :show-inheritance:

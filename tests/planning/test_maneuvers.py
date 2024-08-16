@@ -1,6 +1,6 @@
 import unittest
 
-from openspace.planning.maneuvers import Hohmann, VisViva
+from pysmad.planning.maneuvers import Hohmann, VisViva
 
 
 class TestVisViva(unittest.TestCase):

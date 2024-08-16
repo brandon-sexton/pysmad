@@ -1,8 +1,8 @@
 import unittest
 
-from openspace.bodies.celestial import Earth, Moon, Sun
-from openspace.math.linalg import Vector3D
-from openspace.time import Epoch
+from pysmad.bodies.celestial import Earth, Moon, Sun
+from pysmad.math.linalg import Vector3D
+from pysmad.time import Epoch
 
 
 class TestEarth(unittest.TestCase):

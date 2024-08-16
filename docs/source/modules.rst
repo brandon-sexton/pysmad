@@ -4,19 +4,19 @@ modules
 .. toctree::
    :maxdepth: 2
 
-   openspace.bodies
-   openspace.data
-   openspace.estimation
-   openspace.hardware
-   openspace.math
-   openspace.planning
-   openspace.propagators
-   openspace.coordinates
+   pysmad.bodies
+   pysmad.data
+   pysmad.estimation
+   pysmad.hardware
+   pysmad.math
+   pysmad.planning
+   pysmad.propagators
+   pysmad.coordinates
 
 .. toctree::
    :maxdepth: 2
 
-   openspace.time
+   pysmad.time
 
 .. automodule:: openspace
    :members:

@@ -1,7 +1,7 @@
-openspace.estimation.filtering
+pysmad.estimation.filtering
 ==============================
 
-.. automodule:: openspace.estimation.filtering
+.. automodule:: pysmad.estimation.filtering
    :members:
    :undoc-members:
    :show-inheritance:

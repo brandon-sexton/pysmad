@@ -1,7 +1,7 @@
-openspace.estimation.obs
+pysmad.estimation.obs
 ========================
 
-.. automodule:: openspace.estimation.obs
+.. automodule:: pysmad.estimation.obs
    :members:
    :undoc-members:
    :show-inheritance:

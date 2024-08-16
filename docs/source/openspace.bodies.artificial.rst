@@ -1,7 +1,7 @@
-openspace.bodies.artificial
+pysmad.bodies.artificial
 ===========================
 
-.. automodule:: openspace.bodies.artificial
+.. automodule:: pysmad.bodies.artificial
    :members:
    :undoc-members:
    :show-inheritance:

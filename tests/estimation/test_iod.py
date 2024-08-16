@@ -1,13 +1,13 @@
 import unittest
 from math import radians
 
-from openspace.bodies.terrestrial import GroundSite
-from openspace.coordinates.elements import ClassicalElements
-from openspace.coordinates.states import ITRF
-from openspace.estimation.iod import Gauss
-from openspace.estimation.obs import GroundObservation
-from openspace.math.linalg import Vector3D
-from openspace.time import Epoch
+from pysmad.bodies.terrestrial import GroundSite
+from pysmad.coordinates.elements import ClassicalElements
+from pysmad.coordinates.states import ITRF
+from pysmad.estimation.iod import Gauss
+from pysmad.estimation.obs import GroundObservation
+from pysmad.math.linalg import Vector3D
+from pysmad.time import Epoch
 
 
 class TestGauss(unittest.TestCase):

@@ -1,9 +1,9 @@
 import unittest
 
-from openspace.coordinates.states import GCRF
-from openspace.math.linalg import Vector3D
-from openspace.propagators.inertial import RK4
-from openspace.time import Epoch
+from pysmad.coordinates.states import GCRF
+from pysmad.math.linalg import Vector3D
+from pysmad.propagators.inertial import RK4
+from pysmad.time import Epoch
 
 
 class TestRK4(unittest.TestCase):

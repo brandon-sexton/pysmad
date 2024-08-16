@@ -1,7 +1,7 @@
-openspace.propagators.inertial
+pysmad.propagators.inertial
 ==============================
 
-.. automodule:: openspace.propagators.inertial
+.. automodule:: pysmad.propagators.inertial
    :members:
    :undoc-members:
    :show-inheritance:
