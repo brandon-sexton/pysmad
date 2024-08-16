@@ -5,7 +5,6 @@ modules
    :maxdepth: 2
 
    pysmad.bodies
-   pysmad.data
    pysmad.estimation
    pysmad.hardware
    pysmad.math
@@ -18,7 +17,7 @@ modules
 
    pysmad.time
 
-.. automodule:: openspace
+.. automodule:: pysmad
    :members:
    :undoc-members:
    :show-inheritance:

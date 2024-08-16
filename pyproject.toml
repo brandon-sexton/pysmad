@@ -18,7 +18,8 @@ dev = [
   "pysmad[test]",
 ]
 test = ["pytest", "pytest-cov", "mockito"]
-build = ["build", "sphinx", "sphinx-rtd-theme"]
+build = ["build"]
+docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autodoc-typehints"]
 deploy = ["twine"]
 
 [project.urls]
