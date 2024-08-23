@@ -1,6 +1,6 @@
 import unittest
 
-from pysmad.math.constants import SECONDS_IN_SIDEREAL_DAY
+from pysmad.constants import SECONDS_IN_SIDEREAL_DAY
 from pysmad.math.functions import EquationsOfMotion, LegendrePolynomial
 from pysmad.math.linalg import Vector3D
 

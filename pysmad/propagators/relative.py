@@ -1,6 +1,6 @@
 from math import cos, sin, sqrt
 
-from pysmad.bodies.celestial import Earth
+from pysmad.bodies import Earth
 from pysmad.coordinates.states import HCW
 from pysmad.math.linalg import Matrix6D, Vector6D
 

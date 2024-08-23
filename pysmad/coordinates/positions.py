@@ -1,6 +1,6 @@
 from math import asin, atan2, cos, pi, sin, sqrt
 
-from pysmad.bodies.celestial import Earth
+from pysmad.bodies import Earth
 from pysmad.math.functions import sign
 from pysmad.math.linalg import Matrix3D, Vector3D
 from pysmad.time import Epoch

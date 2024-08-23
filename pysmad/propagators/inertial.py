@@ -1,8 +1,8 @@
 from math import ceil, e, log
 from typing import List
 
+from pysmad.constants import DAYS_TO_SECONDS, SEA_LEVEL_G
 from pysmad.coordinates.states import GCRF
-from pysmad.math.constants import SEA_LEVEL_G, SECONDS_IN_DAY
 from pysmad.math.linalg import Vector3D
 from pysmad.time import Epoch
 
@@ -48,7 +48,7 @@ class RK4:
         k1: List[Vector3D] = self.state.derivative()
 
         dsecs: float = h / 2
-        ddays: float = dsecs / SECONDS_IN_DAY
+        ddays: float = dsecs / DAYS_TO_SECONDS
         epoch_1 = epoch_0.plus_days(ddays)
         y1: GCRF = GCRF(epoch_1, y[0].plus(k1[0].scaled(dsecs)), y[1].plus(k1[1].scaled(dsecs)))
         y1.thrust = self.thrust_vector(dsecs)
@@ -93,7 +93,7 @@ class RK4:
         self.m0 = m0
         self.m_dot = m_dot
         self.isp = isp
-        self.step_to_epoch(self.state.epoch.plus_days(dv_duration / SECONDS_IN_DAY))
+        self.step_to_epoch(self.state.epoch.plus_days(dv_duration / DAYS_TO_SECONDS))
         self.m0 = 0
         self.m_dot = 0
 
@@ -105,7 +105,7 @@ class RK4:
         """
 
         # Calculate time delta in seconds
-        dt = (epoch.value - self.state.epoch.value) * SECONDS_IN_DAY
+        dt = (epoch.utc - self.state.epoch.utc) * DAYS_TO_SECONDS
 
         # Determine number of steps required to meet new epoch while staying below the maximum step
         num_steps = ceil(abs(dt / self.MAX_STEP))

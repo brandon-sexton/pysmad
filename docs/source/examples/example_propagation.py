@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 
-from pysmad.bodies.artificial import Spacecraft
+from pysmad.bodies._satellite import Satellite
 from pysmad.coordinates.states import GCRF, HCW, StateConvert
 from pysmad.math.linalg import Vector3D, Vector6D
 from pysmad.propagators.relative import Hill
 from pysmad.time import Epoch
 
 # Create initial scenario epoch
-start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
+start_epoch: Epoch = Epoch.from_datetime_components(2022, 12, 20, 0, 0, 0)
 
 # Create a desired relative state for the chase vehicle
 rel_chase_state = HCW.from_state_vector(Vector6D(-11, 0, 0, 0, 0.0016, 0))
@@ -22,8 +22,8 @@ chase_state: GCRF = StateConvert.hcw.to_gcrf(rel_chase_state, target_state)
 end_epoch = start_epoch.plus_days(5)
 
 # Load states for chase and target
-chase: Spacecraft = Spacecraft(chase_state)
-target: Spacecraft = Spacecraft(target_state)
+chase: Satellite = Satellite(chase_state)
+target: Satellite = Satellite(target_state)
 
 # Create a Hill propagator to compare RK4 results
 rel = Hill(rel_chase_state, target.sma())
@@ -34,7 +34,7 @@ rk_r = []
 rk_i = []
 
 # Propagate
-while chase.current_epoch().value < end_epoch.value:
+while chase.current_epoch().utc < end_epoch.utc:
 
     # Step vehicles and propagator
     chase.step()

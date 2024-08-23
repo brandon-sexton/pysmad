@@ -1,7 +1,7 @@
+from pysmad.constants import DAYS_TO_SECONDS
 from pysmad.coordinates.positions import SphericalPosition
 from pysmad.coordinates.states import GCRF, HCW, StateConvert
 from pysmad.estimation.obs import SpaceObservation
-from pysmad.math.constants import SECONDS_IN_DAY
 from pysmad.math.linalg import Matrix3by6, Matrix3D, Matrix6by3, Matrix6D, Vector3D, Vector6D
 from pysmad.propagators.relative import Hill
 from pysmad.time import Epoch
@@ -135,7 +135,7 @@ class RelativeKalman:
         :param ob: observation to be added into the system
         :type ob: SpaceObservation
         """
-        dt: float = (ob.observer_state.epoch.value - self.epoch.value) * SECONDS_IN_DAY
+        dt: float = (ob.observer_state.epoch.utc - self.epoch.utc) * DAYS_TO_SECONDS
         self.epoch = ob.observer_state.epoch.copy()
         gcrf_ob: GCRF = GCRF(
             self.epoch, ob.observer_state.position.plus(ob.observed_direction), ob.observer_state.velocity

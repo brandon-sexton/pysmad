@@ -14,11 +14,11 @@ class TestGauss(unittest.TestCase):
     SITE: GroundSite = GroundSite.from_itrf_position(Vector3D(1344.143, 6068.601, 1429.311))
 
     def test_coes_from_positions(self):
-        state_1: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 0, 31, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0))
+        state_1: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 0, 30, 0), self.SITE.itrf_position, Vector3D(0, 0, 0))
         ob_1: GroundObservation = GroundObservation.from_angles_and_range(
             state_1, radians(132.67), radians(32.44), 16945.45, 0, 0
         )
-        state_2: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 3, 1, 9.184), self.SITE.itrf_position, Vector3D(0, 0, 0))
+        state_2: ITRF = ITRF(Epoch.from_gregorian(1999, 4, 2, 3, 0, 0), self.SITE.itrf_position, Vector3D(0, 0, 0))
         ob_2: GroundObservation = GroundObservation.from_angles_and_range(
             state_2, radians(123.08), radians(50.06), 37350.34, 0, 0
         )

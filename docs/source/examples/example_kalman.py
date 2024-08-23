@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 
-from pysmad.bodies.artificial import Spacecraft
+from pysmad.bodies._satellite import Satellite
 from pysmad.coordinates.states import GCRF, HCW, StateConvert
 from pysmad.math.linalg import Vector3D, Vector6D
 from pysmad.time import Epoch
 
 # Define the initial time reference
-start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
+start_epoch: Epoch = Epoch.from_datetime_components(2022, 12, 20, 0, 0, 0)
 
 # Create a desired relative state for the chase vehicle
 rel_chase_state = HCW.from_state_vector(Vector6D(-11, 0, 0, 0, 0, 0))
@@ -15,7 +15,7 @@ rel_chase_state = HCW.from_state_vector(Vector6D(-11, 0, 0, 0, 0, 0))
 target_state: GCRF = GCRF(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
 
 # Create a spacecraft to act as an estimated state of the target spacecraft which will be used to initialize the filter
-seed: Spacecraft = Spacecraft(GCRF(start_epoch, Vector3D(42164.5, 0.5, 0.5), Vector3D(0, 3.075, 0)))
+seed: Satellite = Satellite(GCRF(start_epoch, Vector3D(42164.5, 0.5, 0.5), Vector3D(0, 3.075, 0)))
 
 # Create the chase vehicle's inertial state using the target state as the origin
 chase_state: GCRF = StateConvert.hcw.to_gcrf(rel_chase_state, target_state)
@@ -24,8 +24,8 @@ chase_state: GCRF = StateConvert.hcw.to_gcrf(rel_chase_state, target_state)
 end_epoch = start_epoch.plus_days(1)
 
 # Create the target and chase spacecraft
-chase: Spacecraft = Spacecraft(chase_state)
-target: Spacecraft = Spacecraft(target_state)
+chase: Satellite = Satellite(chase_state)
+target: Satellite = Satellite(target_state)
 
 # Create empty lists to store data
 times, err = [], []
@@ -34,7 +34,7 @@ times, err = [], []
 chase.acquire(seed)
 
 # Propagate
-while chase.current_epoch().value < end_epoch.value:
+while chase.current_epoch().utc < end_epoch.utc:
 
     # Increment the epochs of the spacecraft
     chase.step()
@@ -53,7 +53,7 @@ while chase.current_epoch().value < end_epoch.value:
     nav = chase.filter.propagator.state.position
 
     # Store data
-    times.append(chase.current_epoch().value)
+    times.append(chase.current_epoch().utc)
     err.append(abs(nav.magnitude() - ric.magnitude()))
 
 # Plot results

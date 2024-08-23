@@ -172,13 +172,13 @@ class GroundObservation(Observation):
 
 
 class LiveOpticalObservation:
-    def __init__(self, ob_dict):
+    def __init__(self, ob_dict) -> None:
         """interface used to access data stored in live observations
 
         :param ob_dict: single return from a Query JSON
         :type ob_dict: dict
         """
-        self.epoch: Epoch = Epoch.from_udl_string(ob_dict["obTime"])
+        self.epoch: Epoch = Epoch.from_iso_string(ob_dict["obTime"])
         self.sat_id: str = ob_dict.get("origObjectId", ob_dict.get("idOnOrbit", "UNKNOWN"))
         self.observer_id: str = ob_dict.get("origSensorId", ob_dict.get("sensorId", "NOT PROVIDED"))
         self.azimuth: float = radians(ob_dict.get("azimuth", 0))
@@ -229,7 +229,7 @@ class LiveOpticalObservation:
     def to_csv_format(self) -> str:
         return ",".join(
             [
-                self.epoch.to_udl_string(),
+                self.epoch.iso_string,
                 self.source,
                 self.sat_id,
                 str(self.azimuth),

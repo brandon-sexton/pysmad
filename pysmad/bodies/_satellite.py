@@ -1,12 +1,12 @@
 from math import cos, e, log10, pi, radians, sin
 from typing import List
 
-from pysmad.bodies.celestial import Earth
+from pysmad.bodies._earth import Earth
+from pysmad.constants import DAYS_TO_SECONDS, KILO_TO_BASE, SEA_LEVEL_G
 from pysmad.coordinates.states import GCRF, HCW, StateConvert
 from pysmad.estimation.filtering import RelativeKalman
 from pysmad.estimation.obs import LiveOpticalObservation, LiveOpticalSet, SpaceObservation
 from pysmad.hardware.payloads import Camera
-from pysmad.math.constants import BASE_IN_KILO, SEA_LEVEL_G, SECONDS_IN_DAY
 from pysmad.math.functions import EquationsOfMotion
 from pysmad.math.linalg import Vector3D
 from pysmad.propagators.inertial import RK4
@@ -14,7 +14,7 @@ from pysmad.propagators.relative import Hill
 from pysmad.time import Epoch
 
 
-class Spacecraft:
+class Satellite:
 
     #: The default body radius of the satellite (km)
     DEFAULT_RADIUS: float = 0.005
@@ -26,7 +26,7 @@ class Spacecraft:
     STEERING_MODES: List[str] = ["lvlh", "solar", "target"]
 
     #: Default scalar to use with calculating slew times (1/(radians per day))
-    DEFAULT_SLEW_SCALE: float = 1 / (radians(0.5) * SECONDS_IN_DAY)
+    DEFAULT_SLEW_SCALE: float = 1 / (radians(0.5) * DAYS_TO_SECONDS)
 
     #: Default tolerance to use for statistical attitude modeling (radians)
     DEFAULT_POINTING_ACCURACY: float = 1e-5
@@ -54,10 +54,10 @@ class Spacecraft:
         self.initial_state: GCRF = state.copy()
 
         #: Used for optical modeling of the satellite
-        self.albedo: float = Spacecraft.DEFAULT_ALBEDO
+        self.albedo: float = Satellite.DEFAULT_ALBEDO
 
         #: Used for various physical modeling methods of the satellite
-        self.body_radius: float = Spacecraft.DEFAULT_RADIUS
+        self.body_radius: float = Satellite.DEFAULT_RADIUS
 
         #: Payload used for metric observation and close-proximity tracking
         self.wfov: Camera = Camera.wfov()
@@ -69,10 +69,10 @@ class Spacecraft:
         self.filter: RelativeKalman
 
         #: Used to store the current steering mode of the satellite
-        self.steering: str = Spacecraft.STEERING_MODES[0]
+        self.steering: str = Satellite.STEERING_MODES[0]
 
         #: The target satellite when the calling spacecraft is in target-tracking mode
-        self.tracked_target: Spacecraft
+        self.tracked_target: Satellite
 
         #: Indicates whether the spacecraft is in a stable attitude mode or in a transitioning slew
         self.slewing: bool = False
@@ -81,22 +81,22 @@ class Spacecraft:
         self.slew_stop: Epoch
 
         #: Used to calculate slew times
-        self.slew_scalar: float = Spacecraft.DEFAULT_SLEW_SCALE
+        self.slew_scalar: float = Satellite.DEFAULT_SLEW_SCALE
 
         #: Used to apply noise to attitude vectors
-        self.pointing_accuracy = Spacecraft.DEFAULT_POINTING_ACCURACY
+        self.pointing_accuracy = Satellite.DEFAULT_POINTING_ACCURACY
 
         #: Mass flow rate used to perform finite maneuvers
-        self.m_dot = Spacecraft.DEFAULT_M_DOT
+        self.m_dot = Satellite.DEFAULT_M_DOT
 
         #: specific impulse used to perform finite maneuvers
-        self.isp = Spacecraft.DEFAULT_ISP
+        self.isp = Satellite.DEFAULT_ISP
 
         #: Mass of the spacecraft without propellant included
-        self.dry_mass = Spacecraft.DEFAULT_MASS
+        self.dry_mass = Satellite.DEFAULT_MASS
 
         #: Mass of the propellant on the spacecraft
-        self.propellant_mass = Spacecraft.DEFAULT_PROP_MASS
+        self.propellant_mass = Satellite.DEFAULT_PROP_MASS
 
         self.initial_state.srp_scalar = self.srp_scalar()
 
@@ -129,7 +129,7 @@ class Spacecraft:
         :return: srp coefficient * area / mass (m^2/kg)
         :rtype: float
         """
-        return (self.albedo + 1) * self.area() * BASE_IN_KILO * BASE_IN_KILO / self.total_mass()
+        return (self.albedo + 1) * self.area() * KILO_TO_BASE * KILO_TO_BASE / self.total_mass()
 
     def total_mass(self) -> float:
         """calculates the mass of the bus plus propellant
@@ -176,7 +176,7 @@ class Spacecraft:
         """
         return EquationsOfMotion.A.from_mu_r_v(Earth.MU, self.position().magnitude(), self.velocity().magnitude())
 
-    def acquire(self, seed: "Spacecraft") -> None:
+    def acquire(self, seed: "Satellite") -> None:
         """initialize the kalman filter and begin tracking the argument satellite
 
         :param seed: the estimated state of the satellite to be tracked
@@ -188,7 +188,7 @@ class Spacecraft:
         )
         self.track_state(seed)
 
-    def observe_wfov(self, target: "Spacecraft") -> SpaceObservation:
+    def observe_wfov(self, target: "Satellite") -> SpaceObservation:
         """produce a simulated observation from the wfov
 
         :param target: satellite to be observed
@@ -206,7 +206,7 @@ class Spacecraft:
             self.pointing_accuracy,
         )
 
-    def observe_nfov(self, target: "Spacecraft") -> SpaceObservation:
+    def observe_nfov(self, target: "Satellite") -> SpaceObservation:
         """produce a simulated observation from the nfov
 
         :param target: satellite to be observed
@@ -224,7 +224,7 @@ class Spacecraft:
             self.pointing_accuracy,
         )
 
-    def process_wfov(self, target: "Spacecraft") -> None:
+    def process_wfov(self, target: "Satellite") -> None:
         """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter
 
         :param target: satellite to be observed
@@ -233,7 +233,7 @@ class Spacecraft:
         ob = self.observe_wfov(target)
         self.filter.process(ob)
 
-    def process_nfov(self, target: "Spacecraft") -> None:
+    def process_nfov(self, target: "Satellite") -> None:
         """create a simulated observation of the argument spacecraft and feed the ob into the kalman filter
 
         :param target: satellite to be observed
@@ -244,7 +244,7 @@ class Spacecraft:
 
     def update_attitude(self) -> None:
         """calculate and store the appropriate body axis values depending on steering mode"""
-        if self.steering == Spacecraft.STEERING_MODES[0]:
+        if self.steering == Satellite.STEERING_MODES[0]:
 
             # Point payload deck at Earth
             self.body_z = self.earth_vector()
@@ -255,7 +255,7 @@ class Spacecraft:
             # Complete right-hand rule
             self.body_x = self.body_y.cross(self.body_z)
 
-        elif self.steering == Spacecraft.STEERING_MODES[1]:
+        elif self.steering == Satellite.STEERING_MODES[1]:
 
             # Point payload deck away from Sun
             self.body_z = self.sun_vector().scaled(-1)
@@ -266,10 +266,10 @@ class Spacecraft:
             # Complete right-hand rule
             self.body_y = self.body_z.cross(self.body_x)
 
-        elif self.steering == Spacecraft.STEERING_MODES[2]:
+        elif self.steering == Satellite.STEERING_MODES[2]:
 
             # Step the tracked spacecraft if epochs are not in sync
-            if self.tracked_target.current_epoch().value != self.current_epoch().value:
+            if self.tracked_target.current_epoch().utc != self.current_epoch().utc:
                 self.tracked_target.step_to_epoch(self.current_epoch())
 
             # Point payload deck at target
@@ -282,14 +282,14 @@ class Spacecraft:
             self.body_x = self.body_y.cross(self.body_z)
 
         if self.slewing:
-            if self.current_epoch().value > self.slew_stop.value:
+            if self.current_epoch().utc > self.slew_stop.utc:
                 self.slewing = False
 
     def track_lvlh(self) -> None:
         """store attitude with payload toward earth and panels along orbit normal"""
         # Include slew duration if not already in lvlh
-        if self.steering != Spacecraft.STEERING_MODES[0]:
-            self.steering = Spacecraft.STEERING_MODES[0]
+        if self.steering != Satellite.STEERING_MODES[0]:
+            self.steering = Satellite.STEERING_MODES[0]
             self.slewing = True
             t: float = self.body_z.angle(self.position().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
@@ -299,23 +299,23 @@ class Spacecraft:
     def track_sun(self) -> None:
         """store attitude with payload opposite to Sun"""
         # Include slew duration if not already sun-pointing
-        if self.steering != Spacecraft.STEERING_MODES[1]:
-            self.steering = Spacecraft.STEERING_MODES[1]
+        if self.steering != Satellite.STEERING_MODES[1]:
+            self.steering = Satellite.STEERING_MODES[1]
             self.slewing = True
             t: float = self.body_z.angle(self.sun_vector().scaled(-1)) * self.slew_scalar
             self.slew_stop = self.current_epoch().plus_days(t)
 
         self.update_attitude()
 
-    def track_state(self, target: "Spacecraft") -> None:
+    def track_state(self, target: "Satellite") -> None:
         """store attitude with payload toward target
 
         :param target: spacecraft to be tracked
         :type target: Spacecraft
         """
         # Include slew duration if not already target-pointing
-        if self.steering != Spacecraft.STEERING_MODES[2]:
-            self.steering = Spacecraft.STEERING_MODES[2]
+        if self.steering != Satellite.STEERING_MODES[2]:
+            self.steering = Satellite.STEERING_MODES[2]
             self.tracked_target = target
             self.slewing = True
             t: float = self.body_z.angle(self.target_vector(target)) * self.slew_scalar
@@ -331,7 +331,7 @@ class Spacecraft:
         """
         return self.propagator.state.velocity.copy()
 
-    def detect(self, target: "Spacecraft") -> bool:
+    def detect(self, target: "Satellite") -> bool:
         """determine if a satellite can be detected given payload constraints
 
         :param target: satellite to be detected
@@ -352,7 +352,7 @@ class Spacecraft:
             success = False
         return success
 
-    def visual_magnitude(self, target: "Spacecraft") -> float:
+    def visual_magnitude(self, target: "Satellite") -> float:
         """calculate the visual magnitude of a satellite
 
         :param target: satellite being observed
@@ -373,7 +373,7 @@ class Spacecraft:
         fdiff: float = (2 / 3) * self.albedo * r * r / (pi * dist * dist) * ((sin(phi) + (pi - phi) * cos(phi)))
         return -26.74 - 2.5 * log10(fdiff)
 
-    def sun_angle(self, target: "Spacecraft") -> float:
+    def sun_angle(self, target: "Satellite") -> float:
         """calculate the angle between the sun and target using the calling spacecraft as the vertex
 
         :param target: satellite being observed
@@ -383,7 +383,7 @@ class Spacecraft:
         """
         return self.sun_vector().angle(self.target_vector(target))
 
-    def moon_angle(self, target: "Spacecraft") -> float:
+    def moon_angle(self, target: "Satellite") -> float:
         """calculate the angle between the moon and target using the calling spacecraft as the vertex
 
         :param target: satellite being observed
@@ -393,7 +393,7 @@ class Spacecraft:
         """
         return self.moon_vector().angle(self.target_vector(target))
 
-    def earth_angle(self, target: "Spacecraft") -> float:
+    def earth_angle(self, target: "Satellite") -> float:
         """calculate the angle between the earth and target using the calling spacecraft as the vertex
 
         :param target: satellite being observed
@@ -403,7 +403,7 @@ class Spacecraft:
         """
         return self.earth_vector().angle(self.target_vector(target))
 
-    def range(self, target: "Spacecraft") -> float:
+    def range(self, target: "Satellite") -> float:
         """calculate the distance from the calling spacecraft to the argument spacecraft
 
         :param target: spacecraft representing the range vector's head
@@ -459,7 +459,7 @@ class Spacecraft:
         """
         return self.position().scaled(-1)
 
-    def target_vector(self, target: "Spacecraft") -> Vector3D:
+    def target_vector(self, target: "Satellite") -> Vector3D:
         """calculate the ECI vector from the vehicle to the argument spacecraft
 
         :param target: spacecraft acting as the vector head
@@ -469,7 +469,7 @@ class Spacecraft:
         """
         return target.position().minus(self.position())
 
-    def hill_position(self, target: "Spacecraft") -> Vector3D:
+    def hill_position(self, target: "Satellite") -> Vector3D:
         """calculate the hill position vector from self to the argument spacecraft
 
         :param target: vehicle acting as the relative position vector head

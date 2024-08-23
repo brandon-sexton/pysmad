@@ -1,6 +1,6 @@
 from math import sqrt
 
-from pysmad.bodies.celestial import Earth
+from pysmad.bodies import Earth
 
 
 class VisViva:

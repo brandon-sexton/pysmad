@@ -1,17 +1,14 @@
 repos:
-
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
   hooks:
-  - id: check-added-large-files
-    exclude: data
-  - id: check-case-conflict
-  - id: check-yaml
-  - id: debug-statements
-  - id: end-of-file-fixer
-    exclude: data
-  - id: trailing-whitespace
-    exclude: data
+    - id: check-added-large-files
+      exclude: resources/*
+    - id: check-case-conflict
+    - id: check-yaml
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
 
 - repo: https://github.com/pycqa/isort
   rev: 5.12.0
@@ -29,6 +26,6 @@ repos:
     - id: mypy
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 5.0.4
+  rev: 6.1.0
   hooks:
     - id: flake8

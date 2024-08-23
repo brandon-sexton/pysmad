@@ -2,9 +2,9 @@ import os
 from math import asin, atan2, cos, sin, sqrt, tan
 from typing import List
 
-from pysmad.bodies.celestial import Earth, Moon, Sun
+from pysmad.bodies import Earth, Moon, Sun
+from pysmad.constants import KILO_TO_BASE
 from pysmad.coordinates.positions import PositionConvert, SphericalPosition
-from pysmad.math.constants import BASE_IN_KILO
 from pysmad.math.functions import LegendrePolynomial
 from pysmad.math.linalg import Matrix3D, Vector3D, Vector6D
 from pysmad.time import Epoch
@@ -52,7 +52,7 @@ class State:
 
 class LiveVector(State):
     def __init__(self, vec_dict: dict) -> None:
-        self.epoch: Epoch = Epoch.from_udl_string(vec_dict["epoch"])
+        self.epoch: Epoch = Epoch.from_iso_string(vec_dict["epoch"])
         self.position: Vector3D = Vector3D(vec_dict["xpos"], vec_dict["ypos"], vec_dict["zpos"])
         self.velocity = Vector3D(vec_dict["xvel"], vec_dict["yvel"], vec_dict["zvel"])
         self.vector = Vector6D.from_position_and_velocity(self.position, self.velocity)
@@ -68,7 +68,7 @@ class LiveVector(State):
         return ",".join(
             [
                 self.sat_id,
-                self.epoch.to_udl_string(),
+                self.epoch.iso_string,
                 self.reference_frame,
                 str(self.position.x),
                 str(self.position.y),
@@ -106,7 +106,7 @@ class LiveVectorSet:
         self.total += 1
         if self.targets.get(state.sat_id) is None:
             self.targets[state.sat_id] = state
-        elif self.targets[state.sat_id].epoch.value < state.epoch.value:
+        elif self.targets[state.sat_id].epoch.value < state.epoch.utc:
             self.targets[state.sat_id] = state
 
     def get_latest(self, scc: str) -> LiveVector:
@@ -308,7 +308,7 @@ class GCRF(State):
         """
         sun_vec: Vector3D = self.sun_vector().normalized()
         s_mag: float = sun_vec.magnitude()
-        return sun_vec.scaled(-Sun.P * self.srp_scalar / (s_mag * s_mag * BASE_IN_KILO))
+        return sun_vec.scaled(-Sun.P * self.srp_scalar / (s_mag * s_mag * KILO_TO_BASE))
 
     def acceleration_from_thrust(self) -> Vector3D:
         """retrieve the stored acceleration to be applied from thrusters

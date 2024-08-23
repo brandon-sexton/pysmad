@@ -1,39 +1,90 @@
 from datetime import datetime, timedelta, timezone
 from math import floor, modf, radians, trunc
 
-from pysmad.math.constants import SECONDS_IN_DAY
+from pysmad.constants import DAYS_TO_JULIAN_CENTURY, J2000_JULIAN_DATE, MJD_ZERO_JULIAN_DATE, TAI_TO_TT
+from pysmad.eop import EOPData
 from pysmad.math.functions import Conversions
 
 
 class Epoch:
-
-    #: julian value to act as the MJD start
-    MJD_ZERO = 2400000.5
-
-    #: number of days in a julian century
-    JULIAN_CENTURY = 36525
-
-    #: julian value for the j2000 epoch
-    J2000_JULIAN_DATE = 2451545
-
-    #: offset in days of the universal coordinated time system and the terrestrial dynamic time system
-    UTC_TDT_OFFSET = 69.184 / SECONDS_IN_DAY
-
-    def __init__(self, value: float) -> None:
+    def __init__(self, utc_mjd: float) -> None:
         """class used to represent time
 
-        :param value: time in modified julian days
-        :type value: float
+        :param utc_mjd: time in modified julian days
+        :type utc_mjd: float
         """
-        self.value = value
+        self.utc = utc_mjd
+
+    @property
+    def tai(self) -> float:
+        return self.utc + EOPData.get_record(self.utc).time_delta.tai_utc
+
+    @property
+    def ut1(self) -> float:
+        return self.utc + EOPData.get_record(self.utc).time_delta.ut1_utc
+
+    @property
+    def tt(self) -> float:
+        return self.tai + TAI_TO_TT
+
+    @property
+    def iso_string(self) -> str:
+        jd = Epoch.mjd_to_jd(self.utc) + 0.5
+
+        jd_frac, jd_int = modf(jd)
+        jd_int = int(jd_int)
+
+        exp_a = trunc((jd_int - 1867216.25) / 36524.25)
+
+        if jd_int > 2299160:
+            exp_b = jd_int + 1 + exp_a - trunc(exp_a / 4.0)
+        else:
+            exp_b = jd_int
+
+        exp_c = exp_b + 1524
+
+        exp_d = trunc((exp_c - 122.1) / 365.25)
+
+        exp_e = trunc(365.25 * exp_d)
+
+        exp_g = trunc((exp_c - exp_e) / 30.6001)
+
+        day = exp_c - exp_e + jd_frac - trunc(30.6001 * exp_g)
+
+        if exp_g < 13.5:
+            month = exp_g - 1
+        else:
+            month = exp_g - 13
+
+        if month > 2.5:
+            year = exp_d - 4716
+        else:
+            year = exp_d - 4715
+
+        frac_days, day = modf(day)
+
+        day = int(day)
+
+        hours = frac_days * 24.0
+        hours, hour = modf(hours)
+
+        mins = hours * 60.0
+        mins, min = modf(mins)
+
+        secs = mins * 60.0
+
+        return f"{year:04d}-{month:02d}-{day:02d}T{hour:02d}:{min:02d}:{secs:02.6f}Z"
+
+    @staticmethod
+    def mjd_to_jd(mjd: float) -> float:
+        return mjd + MJD_ZERO_JULIAN_DATE
 
     def copy(self) -> "Epoch":
         """used to create a copy of the current epoch
 
         :return: a replica of the calling epoch
-        :rtype: Epoch
         """
-        return Epoch(self.value)
+        return Epoch(self.utc)
 
     @classmethod
     def from_current_utc(cls):
@@ -45,10 +96,10 @@ class Epoch:
 
     @classmethod
     def from_datetime(cls, dt: datetime):
-        return cls.from_udl_string("".join([str(dt).replace(" ", "T"), "Z"]))
+        return cls.from_iso_string("".join([str(dt).replace(" ", "T"), "Z"]))
 
     @classmethod
-    def from_gregorian(cls, year: int, month: int, day: int, hour: int, minute: int, sec: float) -> "Epoch":
+    def from_datetime_components(cls, year: int, month: int, day: int, hour: int, minute: int, sec: float) -> "Epoch":
         """instantiate an epoch from the standard calendar format
 
         :param year: 4-digit year
@@ -80,7 +131,7 @@ class Epoch:
         return cls(mjd + Conversions.hms_to_decimal_day(hour, minute, sec))
 
     @classmethod
-    def from_udl_string(cls, udl_date: str) -> "Epoch":
+    def from_iso_string(cls, udl_date: str) -> "Epoch":
         """create an Epoch from a string in the standard format for the UDL
 
         :param udl_date: string representing the UDL epoch
@@ -98,83 +149,25 @@ class Epoch:
         time_vals = time_str.split(":")
         hr = int(time_vals[0])
         min = int(time_vals[1])
-        sec = float(time_vals[2][0:7])
+        sec = float(time_vals[2].replace("Z", ""))
 
-        return cls.from_gregorian(yr, mon, day, hr, min, sec).plus_days(Epoch.UTC_TDT_OFFSET)
+        return cls.from_datetime_components(yr, mon, day, hr, min, sec)
 
     def to_datetime(self):
-        return datetime.strptime(self.to_udl_string(), "%Y-%m-%dT%H:%M:%S.%fZ")
+        return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    def julian_value(self) -> float:
-        """calculate the julian value of the calling epoch
-
-        :return: full julian date
-        :rtype: float
-        """
-        return self.value + self.MJD_ZERO
-
-    def to_udl_string(self) -> str:
-        jd = self.plus_days(-Epoch.UTC_TDT_OFFSET).julian_value() + 0.5
-
-        F, I = modf(jd)
-        I = int(I)
-
-        A = trunc((I - 1867216.25) / 36524.25)
-
-        if I > 2299160:
-            B = I + 1 + A - trunc(A / 4.0)
-        else:
-            B = I
-
-        C = B + 1524
-
-        D = trunc((C - 122.1) / 365.25)
-
-        E = trunc(365.25 * D)
-
-        G = trunc((C - E) / 30.6001)
-
-        day = C - E + F - trunc(30.6001 * G)
-
-        if G < 13.5:
-            month = G - 1
-        else:
-            month = G - 13
-
-        if month > 2.5:
-            year = D - 4716
-        else:
-            year = D - 4715
-
-        frac_days, day = modf(day)
-
-        day = int(day)
-
-        hours = frac_days * 24.0
-        hours, hour = modf(hours)
-
-        mins = hours * 60.0
-        mins, min = modf(mins)
-
-        secs = mins * 60.0
-        secs, sec = modf(secs)
-
-        micro = round(secs * 1.0e6)
-        mic = int(micro)
-        if mic > 999999:
-            mic = 999999
-        elif mic < 0:
-            mic = 0
-        epoch_dt = datetime(int(year), int(month), day, int(hour), int(min), int(sec), mic)
-        return "".join([str(epoch_dt).replace(" ", "T"), "Z"])
-
-    def julian_centuries_past_j2000(self) -> float:
+    @staticmethod
+    def julian_centuries_past_j2000(mjd: float) -> float:
         """calculate the number of julian centuries that have elapsed since the j2000 epoch
 
         :return: number of julian centuries past the j2000 epoch
         :rtype: float
         """
-        return (self.julian_value() - self.J2000_JULIAN_DATE) / self.JULIAN_CENTURY
+        return (Epoch.mjd_to_jd(mjd) - J2000_JULIAN_DATE) * DAYS_TO_JULIAN_CENTURY
+
+    @staticmethod
+    def days_past_j2000(mjd: float) -> float:
+        return Epoch.mjd_to_jd(mjd) - J2000_JULIAN_DATE
 
     def plus_days(self, t: float) -> "Epoch":
         """calculate an epoch that is separated from the calling epoch by t days
@@ -184,7 +177,7 @@ class Epoch:
         :return: an epoch that is t days away from the calling epoch
         :rtype: Epoch
         """
-        return Epoch(self.value + t)
+        return Epoch(self.utc + t)
 
     def greenwich_hour_angle(self) -> float:
         """calculate the greenwich hour angle used to determine sidereal time
@@ -193,10 +186,9 @@ class Epoch:
         :rtype: float
         """
         # solve for julian centuries since j2000 using equation 2.7
-        utc = Epoch(self.value - Epoch.UTC_TDT_OFFSET)
-        dec_day = utc.value % 1
-        j0 = utc.julian_value() - dec_day
-        j = (j0 - Epoch.J2000_JULIAN_DATE) / Epoch.JULIAN_CENTURY
+        dec_day = self.utc % 1
+        j0 = Epoch.mjd_to_jd(self.ut1) - dec_day
+        j = (j0 - J2000_JULIAN_DATE) * DAYS_TO_JULIAN_CENTURY
 
         # solve for theta0 using equation 2.6
         theta0 = 100.4606184 + 36000.77004 * j + 0.000387933 * j * j

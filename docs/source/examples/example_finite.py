@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 
-from pysmad.bodies.artificial import Spacecraft
+from pysmad.bodies._satellite import Satellite
 from pysmad.coordinates.states import GCRF
 from pysmad.math.linalg import Vector3D
 from pysmad.time import Epoch
 
 # Create initial scenario epoch
-start_epoch: Epoch = Epoch.from_gregorian(2022, 12, 20, 0, 0, 0)
+start_epoch: Epoch = Epoch.from_datetime_components(2022, 12, 20, 0, 0, 0)
 
 # Create an ECI state for the spacecraft
 passive_state: GCRF = GCRF(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075, 0))
@@ -15,8 +15,8 @@ passive_state: GCRF = GCRF(start_epoch, Vector3D(42164, 0, 0), Vector3D(0, 3.075
 end_epoch = start_epoch.plus_days(2)
 
 # Load states
-freeflight: Spacecraft = Spacecraft(passive_state)
-maneuver: Spacecraft = Spacecraft(passive_state)
+freeflight: Satellite = Satellite(passive_state)
+maneuver: Satellite = Satellite(passive_state)
 
 rk_r = []
 rk_i = []
@@ -24,7 +24,7 @@ maneuver_complete: bool = False
 maneuver_direction: Vector3D = Vector3D(0, 0.003, 0)
 
 # Propagate
-while freeflight.current_epoch().value < end_epoch.value:
+while freeflight.current_epoch().utc < end_epoch.utc:
 
     # Step vehicles and propagator
     freeflight.step()
@@ -34,7 +34,7 @@ while freeflight.current_epoch().value < end_epoch.value:
     ric = freeflight.hill_position(maneuver)
 
     # Perform a maneuver after one day
-    if freeflight.current_epoch().value > start_epoch.value + 1 and not maneuver_complete:
+    if freeflight.current_epoch().utc > start_epoch.utc + 1 and not maneuver_complete:
         maneuver.finite_maneuver(maneuver_direction)
         freeflight.step_to_epoch(maneuver.current_epoch())
         maneuver_complete = True

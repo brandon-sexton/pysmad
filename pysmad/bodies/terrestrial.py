@@ -1,4 +1,4 @@
-from pysmad.bodies.artificial import Spacecraft
+from pysmad.bodies._satellite import Satellite
 from pysmad.coordinates.positions import ENZ, LLA, PositionConvert
 from pysmad.coordinates.states import ITRF
 from pysmad.estimation.obs import GroundObservation
@@ -44,7 +44,7 @@ class GroundSite:
         """
         return self.enz_matrix.multiply_vector(obj_itrf.minus(self.itrf_position))
 
-    def angles_and_range(self, target: Spacecraft) -> GroundObservation:
+    def angles_and_range(self, target: Satellite) -> GroundObservation:
         """calculate the topo-centric angles and range to the argument spacecraft
 
         :param target: spacecraft being observed

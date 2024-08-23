@@ -1,7 +1,7 @@
 from math import atan2, cos, pi, radians, sin, sqrt
 from typing import List
 
-from pysmad.math.constants import HOURS_IN_DAY, MINUTES_IN_DAY, MINUTES_IN_HOUR, SECONDS_IN_DAY, SECONDS_IN_HOUR
+from pysmad.constants import DAYS_TO_SECONDS, HOURS_IN_DAY, MINUTES_IN_DAY, MINUTES_IN_HOUR, SECONDS_IN_HOUR
 from pysmad.math.linalg import Vector3D
 
 
@@ -25,7 +25,7 @@ class Conversions:
         :return: the time in days
         :rtype: float
         """
-        return hr / HOURS_IN_DAY + m / MINUTES_IN_DAY + s / SECONDS_IN_DAY
+        return hr / HOURS_IN_DAY + m / MINUTES_IN_DAY + s / DAYS_TO_SECONDS
 
     @staticmethod
     def dms_to_radians(d: float, m: float, s: float) -> float:

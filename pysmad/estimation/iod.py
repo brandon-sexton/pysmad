@@ -1,9 +1,9 @@
 from math import asin, atan2, cos, pi, sin, sqrt
 
-from pysmad.bodies.celestial import Earth
+from pysmad.bodies import Earth
+from pysmad.constants import DAYS_TO_SECONDS
 from pysmad.coordinates.elements import ClassicalElements
 from pysmad.estimation.obs import Observation
-from pysmad.math.constants import SECONDS_IN_DAY
 from pysmad.math.linalg import Vector3D
 
 
@@ -48,7 +48,7 @@ class Gauss:
             raan += 2 * pi
 
         # equation 2.99
-        tau: float = sqrt(Earth.MU) * (ob2.epoch().value - ob1.epoch().value) * SECONDS_IN_DAY
+        tau: float = sqrt(Earth.MU) * (ob2.epoch().utc - ob1.epoch().utc) * DAYS_TO_SECONDS
 
         # equation 2.101
         base: float = 2 * (ra_mag * rb_mag + ra.dot(rb))
