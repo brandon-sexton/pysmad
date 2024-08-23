@@ -5,6 +5,7 @@ modules
    :maxdepth: 2
 
    bodies/index
+   eop/index
 
 .. automodule:: pysmad
    :members:
