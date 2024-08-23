@@ -2,8 +2,8 @@ import unittest
 from math import radians
 
 from pysmad.bodies import Earth
+from pysmad.bodies._ground_site import GroundSite
 from pysmad.bodies._satellite import Satellite
-from pysmad.bodies.terrestrial import GroundSite
 from pysmad.constants import DAYS_TO_SECONDS
 from pysmad.coordinates.elements import ClassicalElements
 from pysmad.coordinates.positions import SphericalPosition

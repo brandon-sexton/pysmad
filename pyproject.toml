@@ -48,3 +48,4 @@ force-exclude = '''
 profile = "black"
 filter_files = true
 line_length = 120
+skip = ["__init__.py"]

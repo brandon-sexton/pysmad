@@ -1,7 +1,7 @@
 import unittest
 from math import radians
 
-from pysmad.bodies.terrestrial import GroundSite
+from pysmad.bodies._ground_site import GroundSite
 from pysmad.coordinates.states import ITRF
 from pysmad.estimation.obs import GroundObservation
 from pysmad.math.linalg import Vector3D
