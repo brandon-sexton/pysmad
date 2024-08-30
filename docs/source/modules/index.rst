@@ -6,6 +6,7 @@ modules
 
    bodies/index
    eop/index
+   math/index
 
 .. automodule:: pysmad
    :members:
