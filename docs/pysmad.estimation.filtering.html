@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pysmad.estimation.filtering &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=983e91d6"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pysmad.estimation.filtering</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pysmad.estimation.filtering.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.estimation.filtering">
+<span id="pysmad-estimation-filtering"></span><h1>pysmad.estimation.filtering<a class="headerlink" href="#module-pysmad.estimation.filtering" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RelativeKalman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.DEFAULT_COVARIANCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_COVARIANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pysmad.math.linalg.Matrix6D</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.DEFAULT_COVARIANCE" title="Link to this definition"></a></dt>
+<dd><p>Covariance matrix to be used when the filter is initialized (km and km/s)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.DEFAULT_NOISE">
+<span class="sig-name descname"><span class="pre">DEFAULT_NOISE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pysmad.math.linalg.Matrix6D</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.DEFAULT_NOISE" title="Link to this definition"></a></dt>
+<dd><p>Processing noise of the system</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.H">
+<span class="sig-name descname"><span class="pre">H</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix3by6" title="pysmad.math.linalg.Matrix3by6"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix3by6</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pysmad.math.linalg.Matrix3by6</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.H" title="Link to this definition"></a></dt>
+<dd><p>Observation matrix of a position-only system</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.HT">
+<span class="sig-name descname"><span class="pre">HT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6by3" title="pysmad.math.linalg.Matrix6by3"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6by3</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pysmad.math.linalg.Matrix6by3</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.HT" title="Link to this definition"></a></dt>
+<dd><p>Transposed H</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.I">
+<span class="sig-name descname"><span class="pre">I</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6D" title="pysmad.math.linalg.Matrix6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6D</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pysmad.math.linalg.Matrix6D</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.I" title="Link to this definition"></a></dt>
+<dd><p>Matrix with a diagonal of all 1 and off-diagonal of 0</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.__init__" title="Link to this definition"></a></dt>
+<dd><p>class used to act as the navigation filter for a position-only measurement source</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epoch</strong> (<a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch"><em>Epoch</em></a>) – time filter is to be initialized</p></li>
+<li><p><strong>propagator</strong> (<a class="reference internal" href="pysmad.propagators.relative.html#pysmad.propagators.relative.Hill" title="pysmad.propagators.relative.Hill"><em>Hill</em></a>) – estimated Hill state of the spacecraft being observed</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.angular_error">
+<span class="sig-name descname"><span class="pre">angular_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.angular_error" title="Link to this definition"></a></dt>
+<dd><p>error in radians of the current measurement</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.epoch">
+<span class="sig-name descname"><span class="pre">epoch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time._epoch.Epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Epoch</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.epoch" title="Link to this definition"></a></dt>
+<dd><p>current time of the filter state</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.f">
+<span class="sig-name descname"><span class="pre">f</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6D" title="pysmad.math.linalg.Matrix6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.f" title="Link to this definition"></a></dt>
+<dd><p>state transition matrix for the filter state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.gain">
+<span class="sig-name descname"><span class="pre">gain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.gain" title="Link to this definition"></a></dt>
+<dd><p>calculate the gain of the system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.k">
+<span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6by3" title="pysmad.math.linalg.Matrix6by3"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6by3</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.k" title="Link to this definition"></a></dt>
+<dd><p>gain of the filter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.p00">
+<span class="sig-name descname"><span class="pre">p00</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6D" title="pysmad.math.linalg.Matrix6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.p00" title="Link to this definition"></a></dt>
+<dd><p>current covariance of the state</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.p10">
+<span class="sig-name descname"><span class="pre">p10</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6D" title="pysmad.math.linalg.Matrix6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.p10" title="Link to this definition"></a></dt>
+<dd><p>predicted covariance of the state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.predict" title="Link to this definition"></a></dt>
+<dd><p>calculate predicted state and covariance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.predict_covariance">
+<span class="sig-name descname"><span class="pre">predict_covariance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.predict_covariance" title="Link to this definition"></a></dt>
+<dd><p>calculate the next covariance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.predict_state">
+<span class="sig-name descname"><span class="pre">predict_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.predict_state" title="Link to this definition"></a></dt>
+<dd><p>calculate the expected future state of the system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>float</em>) – number of seconds between current observation and previous observation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.process" title="Link to this definition"></a></dt>
+<dd><p>include a new observation into the current estimation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ob</strong> (<a class="reference internal" href="pysmad.estimation.obs.html#pysmad.estimation.obs.SpaceObservation" title="pysmad.estimation.obs.SpaceObservation"><em>SpaceObservation</em></a>) – observation to be added into the system</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.propagator">
+<span class="sig-name descname"><span class="pre">propagator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.propagators.relative.html#pysmad.propagators.relative.Hill" title="pysmad.propagators.relative.Hill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hill</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.propagator" title="Link to this definition"></a></dt>
+<dd><p>propagator used to estimate the relative state of the observed spacecraft</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.q">
+<span class="sig-name descname"><span class="pre">q</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix6D" title="pysmad.math.linalg.Matrix6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.q" title="Link to this definition"></a></dt>
+<dd><p>processing noise of the filter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.r">
+<span class="sig-name descname"><span class="pre">r</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Matrix3D" title="pysmad.math.linalg.Matrix3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matrix3D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.r" title="Link to this definition"></a></dt>
+<dd><p>measurement uncertainty matrix</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.range_error">
+<span class="sig-name descname"><span class="pre">range_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.range_error" title="Link to this definition"></a></dt>
+<dd><p>error in km of the current measurement</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.update" title="Link to this definition"></a></dt>
+<dd><p>correct predicted state and covariance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.update_covariance">
+<span class="sig-name descname"><span class="pre">update_covariance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.update_covariance" title="Link to this definition"></a></dt>
+<dd><p>correct predicted covariance and store as current covariance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.update_state">
+<span class="sig-name descname"><span class="pre">update_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.update_state" title="Link to this definition"></a></dt>
+<dd><p>correct predicted state and store as current state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.x00">
+<span class="sig-name descname"><span class="pre">x00</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector6D" title="pysmad.math.linalg.Vector6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.x00" title="Link to this definition"></a></dt>
+<dd><p>current state of the filter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.x10">
+<span class="sig-name descname"><span class="pre">x10</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector6D" title="pysmad.math.linalg.Vector6D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector6D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.x10" title="Link to this definition"></a></dt>
+<dd><p>predicted state of the filter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.filtering.RelativeKalman.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.filtering.RelativeKalman.z" title="Link to this definition"></a></dt>
+<dd><p>current measurement</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

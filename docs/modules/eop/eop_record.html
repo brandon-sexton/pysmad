@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EOPRecord &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=983e91d6"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LeapSecondData" href="leap_second_data.html" />
+    <link rel="prev" title="EOPData" href="eop_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../bodies/index.html">pysmad.bodies</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">pysmad.eop</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="eop_data.html">EOPData</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">EOPRecord</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysmad.eop._eop_record.EOPRecord"><code class="docutils literal notranslate"><span class="pre">EOPRecord</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="leap_second_data.html">LeapSecondData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nutation_delta_record.html">NutationDeltaRecord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="polar_motion_record.html">PolarMotionRecord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="time_delta_record.html">TimeDeltaRecord</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../math/index.html">pysmad.math</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pysmad.eop</a></li>
+      <li class="breadcrumb-item active">EOPRecord</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/modules/eop/eop_record.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.eop._eop_record">
+<span id="eoprecord"></span><h1>EOPRecord<a class="headerlink" href="#module-pysmad.eop._eop_record" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.eop._eop_record.EOPRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EOPRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">td</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.eop._eop_record.EOPRecord" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.eop._eop_record.EOPRecord.empty_record">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.eop._eop_record.EOPRecord.empty_record" title="Link to this definition"></a></dt>
+<dd><p>create a null record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mjd</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – modified julian day of the record</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#pysmad.eop._eop_record.EOPRecord" title="pysmad.eop._eop_record.EOPRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">EOPRecord</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.eop._eop_record.EOPRecord.from_finals_line">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_finals_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.eop._eop_record.EOPRecord.from_finals_line" title="Link to this definition"></a></dt>
+<dd><p>class used to interact with a line from the finals data files</p>
+<p>The format of the finals.data, finals.daily, and finals.all files is:</p>
+<p>Col.#    Format  Quantity
+——-  ——  ————————————————————-
+1-2      I2      year (to get true calendar year, add 1900 for MJD&lt;=51543 or add 2000 for MJD&gt;=51544)
+3-4      I2      month number
+5-6      I2      day of month
+7        X       [blank]
+8-15     F8.2    fractional Modified Julian Date (MJD UTC)
+16       X       [blank]
+17       A1      IERS (I) or Prediction (P) flag for Bull. A polar motion values
+18       X       [blank]
+19-27    F9.6    Bull. A PM-x (sec. of arc)
+28-36    F9.6    error in PM-x (sec. of arc)
+37       X       [blank]
+38-46    F9.6    Bull. A PM-y (sec. of arc)
+47-55    F9.6    error in PM-y (sec. of arc)
+56-57    2X      [blanks]
+58       A1      IERS (I) or Prediction (P) flag for Bull. A UT1-UTC values
+59-68    F10.7   Bull. A UT1-UTC (sec. of time)
+69-78    F10.7   error in UT1-UTC (sec. of time)
+79       X       [blank]
+80-86    F7.4    Bull. A LOD (msec. of time) – NOT ALWAYS FILLED
+87-93    F7.4    error in LOD (msec. of time) – NOT ALWAYS FILLED
+94-95    2X      [blanks]
+96       A1      IERS (I) or Prediction (P) flag for Bull. A nutation values
+97       X       [blank]
+98-106   F9.3    Bull. A dPSI (msec. of arc)
+107-115  F9.3    error in dPSI (msec. of arc)
+116      X       [blank]
+117-125  F9.3    Bull. A dEPSILON (msec. of arc)
+126-134  F9.3    error in dEPSILON (msec. of arc)
+135-144  F10.6   Bull. B PM-x (sec. of arc)
+145-154  F10.6   Bull. B PM-y (sec. of arc)
+155-165  F11.7   Bull. B UT1-UTC (sec. of time)
+166-175  F10.3   Bull. B dPSI (msec. of arc)
+176-185  F10.3   Bull. B dEPSILON (msec. of arc)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – line from the finals data files</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#pysmad.eop._eop_record.EOPRecord" title="pysmad.eop._eop_record.EOPRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">EOPRecord</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eop_data.html" class="btn btn-neutral float-left" title="EOPData" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="leap_second_data.html" class="btn btn-neutral float-right" title="LeapSecondData" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

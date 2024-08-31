@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pysmad.hardware.payloads &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=983e91d6"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pysmad.hardware.payloads</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pysmad.hardware.payloads.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.hardware.payloads">
+<span id="pysmad-hardware-payloads"></span><h1>pysmad.hardware.payloads<a class="headerlink" href="#module-pysmad.hardware.payloads" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.DEFAULT_NARROW_PIXELS">
+<span class="sig-name descname"><span class="pre">DEFAULT_NARROW_PIXELS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3072</span></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.DEFAULT_NARROW_PIXELS" title="Link to this definition"></a></dt>
+<dd><p>nominal full-length pixel count of a narrow field-of-view camera assuming a square sensor</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.DEFAULT_NFOV">
+<span class="sig-name descname"><span class="pre">DEFAULT_NFOV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.002181661564992912</span></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.DEFAULT_NFOV" title="Link to this definition"></a></dt>
+<dd><p>nominal half-angle field-of-view in radians for a characterization-type camera</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.DEFAULT_WFOV">
+<span class="sig-name descname"><span class="pre">DEFAULT_WFOV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.08726646259971647</span></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.DEFAULT_WFOV" title="Link to this definition"></a></dt>
+<dd><p>nominal half-angle field-of-view in radians for an observation-type camera</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.DEFAULT_WIDE_PIXELS">
+<span class="sig-name descname"><span class="pre">DEFAULT_WIDE_PIXELS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3072</span></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.DEFAULT_WIDE_PIXELS" title="Link to this definition"></a></dt>
+<dd><p>nominal full-length pixel count of a wide field-of-view camera assuming a square sensor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.__init__" title="Link to this definition"></a></dt>
+<dd><p>class used to store sensor characteristics for optical observation hardware</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pixels</strong> (<em>float</em>) – full-length pixel count assuming a square sensor</p></li>
+<li><p><strong>fov</strong> (<em>float</em>) – half-angle field-of-view in radians</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.fov">
+<span class="sig-name descname"><span class="pre">fov</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.fov" title="Link to this definition"></a></dt>
+<dd><p>half-angle field-of-view in radians</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.limits">
+<span class="sig-name descname"><span class="pre">limits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.hardware.constraints.html#pysmad.hardware.constraints.OpticalConstraints" title="pysmad.hardware.constraints.OpticalConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpticalConstraints</span></code></a></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.limits" title="Link to this definition"></a></dt>
+<dd><p>constraints applied to the current camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.nfov">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nfov</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.nfov" title="Link to this definition"></a></dt>
+<dd><p>method used to instantiate a nominal narrow field-of-view camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>camera containing nfov characteristics</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pysmad.hardware.payloads.Camera" title="pysmad.hardware.payloads.Camera">Camera</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.pixels">
+<span class="sig-name descname"><span class="pre">pixels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.payloads.Camera.pixels" title="Link to this definition"></a></dt>
+<dd><p>full-length pixel count assuming a square sensor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.range_error">
+<span class="sig-name descname"><span class="pre">range_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.range_error" title="Link to this definition"></a></dt>
+<dd><p>calculate the range estimation error at a given range when observing an object of the input diameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – range in km that is being estimated</p></li>
+<li><p><strong>d</strong> (<em>float</em>) – diameter in km of the object being observed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>error of the estimation in km</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.resolution">
+<span class="sig-name descname"><span class="pre">resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.resolution" title="Link to this definition"></a></dt>
+<dd><p>calculate the current resolution of the sensor for a given range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>float</em>) – range in km at which to calculate the resolution capability</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>resolution in km</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.resolution_factor">
+<span class="sig-name descname"><span class="pre">resolution_factor</span></span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.resolution_factor" title="Link to this definition"></a></dt>
+<dd><p>scalar used to calculate the resolution at various ranges</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.tracking_minimum">
+<span class="sig-name descname"><span class="pre">tracking_minimum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body_r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.tracking_minimum" title="Link to this definition"></a></dt>
+<dd><p>calculate the minimum distance before the object being observed is too large to fit in the frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>body_r</strong> (<em>float</em>) – radius of the object being observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>distance in km at which the fov will be filled</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.payloads.Camera.wfov">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wfov</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.payloads.Camera.wfov" title="Link to this definition"></a></dt>
+<dd><p>method used to instantiate a nominal wide field-of-view camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>camera containing wfov characteristics</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pysmad.hardware.payloads.Camera" title="pysmad.hardware.payloads.Camera">Camera</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

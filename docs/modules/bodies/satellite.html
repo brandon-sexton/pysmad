@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Satellite &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=983e91d6"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="GroundSite" href="groundsite.html" />
+    <link rel="prev" title="Moon" href="moon.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">pysmad.bodies</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="earth.html">Earth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sun.html">Sun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="moon.html">Moon</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Satellite</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysmad.bodies._satellite.Satellite"><code class="docutils literal notranslate"><span class="pre">Satellite</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="groundsite.html">GroundSite</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../eop/index.html">pysmad.eop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/index.html">pysmad.math</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pysmad.bodies</a></li>
+      <li class="breadcrumb-item active">Satellite</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/modules/bodies/satellite.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.bodies._satellite">
+<span id="satellite"></span><h1>Satellite<a class="headerlink" href="#module-pysmad.bodies._satellite" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Satellite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_ALBEDO">
+<span class="sig-name descname"><span class="pre">DEFAULT_ALBEDO</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_ALBEDO" title="Link to this definition"></a></dt>
+<dd><p>The default albedo of the satellite used for optical modeling (unitless)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_ISP">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">350</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_ISP" title="Link to this definition"></a></dt>
+<dd><p>Default specific impulse of the propellant used to calculate thrust</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_MASS">
+<span class="sig-name descname"><span class="pre">DEFAULT_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">600</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_MASS" title="Link to this definition"></a></dt>
+<dd><p>Default dry mass of the spacecraft at launch (kg)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_M_DOT">
+<span class="sig-name descname"><span class="pre">DEFAULT_M_DOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.003</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_M_DOT" title="Link to this definition"></a></dt>
+<dd><p>Default mass flow rate used to calculate thrust</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_POINTING_ACCURACY">
+<span class="sig-name descname"><span class="pre">DEFAULT_POINTING_ACCURACY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_POINTING_ACCURACY" title="Link to this definition"></a></dt>
+<dd><p>Default tolerance to use for statistical attitude modeling (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_PROP_MASS">
+<span class="sig-name descname"><span class="pre">DEFAULT_PROP_MASS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_PROP_MASS" title="Link to this definition"></a></dt>
+<dd><p>Default propellant mass of the spacecraft at launch (kg)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_RADIUS">
+<span class="sig-name descname"><span class="pre">DEFAULT_RADIUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.005</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_RADIUS" title="Link to this definition"></a></dt>
+<dd><p>The default body radius of the satellite (km)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.DEFAULT_SLEW_SCALE">
+<span class="sig-name descname"><span class="pre">DEFAULT_SLEW_SCALE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.001326291192432461</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.DEFAULT_SLEW_SCALE" title="Link to this definition"></a></dt>
+<dd><p>Default scalar to use with calculating slew times (1/(radians per day))</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.STEERING_MODES">
+<span class="sig-name descname"><span class="pre">STEERING_MODES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['lvlh',</span> <span class="pre">'solar',</span> <span class="pre">'target']</span></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.STEERING_MODES" title="Link to this definition"></a></dt>
+<dd><p>Available control methods of the vehicle’s attitude (lvlh == z to earth, solar == -z to sun, target == z to rso)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.__init__" title="Link to this definition"></a></dt>
+<dd><p>class used to model the behaviors of man-made satellites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="../../pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><em>GCRF</em></a>) – starting inertial state of the satellite</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.acquire" title="Link to this definition"></a></dt>
+<dd><p>initialize the kalman filter and begin tracking the argument satellite</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> (<em>Spacecraft</em>) – the estimated state of the satellite to be tracked</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.albedo">
+<span class="sig-name descname"><span class="pre">albedo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.albedo" title="Link to this definition"></a></dt>
+<dd><p>Used for optical modeling of the satellite</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.area">
+<span class="sig-name descname"><span class="pre">area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.area" title="Link to this definition"></a></dt>
+<dd><p>calculate the spherical area of the satellite using the body radius</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>area in km^2</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.body_radius">
+<span class="sig-name descname"><span class="pre">body_radius</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.body_radius" title="Link to this definition"></a></dt>
+<dd><p>Used for various physical modeling methods of the satellite</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.current_epoch">
+<span class="sig-name descname"><span class="pre">current_epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.current_epoch" title="Link to this definition"></a></dt>
+<dd><p>retrieve the vehicle’s current time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>epoch of the vehicle as determined by the propagator</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch">Epoch</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.current_state">
+<span class="sig-name descname"><span class="pre">current_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.current_state" title="Link to this definition"></a></dt>
+<dd><p>retrieve the vehicle’s current ECI state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>current ECI state as determined by the propagator</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF">GCRF</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.detect">
+<span class="sig-name descname"><span class="pre">detect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.detect" title="Link to this definition"></a></dt>
+<dd><p>determine if a satellite can be detected given payload constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite to be detected</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>status of detection</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.dry_mass">
+<span class="sig-name descname"><span class="pre">dry_mass</span></span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.dry_mass" title="Link to this definition"></a></dt>
+<dd><p>Mass of the spacecraft without propellant included</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.earth_angle">
+<span class="sig-name descname"><span class="pre">earth_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.earth_angle" title="Link to this definition"></a></dt>
+<dd><p>calculate the angle between the earth and target using the calling spacecraft as the vertex</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite being observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>angle between target and earth vector in radians</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.earth_vector">
+<span class="sig-name descname"><span class="pre">earth_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.earth_vector" title="Link to this definition"></a></dt>
+<dd><p>calculate the ECI vector from the vehicle to the earth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>vector originating at self and terminating at the earth</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.estimation.filtering.html#pysmad.estimation.filtering.RelativeKalman" title="pysmad.estimation.filtering.RelativeKalman"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeKalman</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.filter" title="Link to this definition"></a></dt>
+<dd><p>Used for state estimation when target-tracking</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.finite_maneuver">
+<span class="sig-name descname"><span class="pre">finite_maneuver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ric_dv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.finite_maneuver" title="Link to this definition"></a></dt>
+<dd><p>perform a maneuver using ric acceleration accross a specified time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ric_dv</strong> (<a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><em>Vector3D</em></a>) – maneuver in the radial, in-track, and cross-track components (km/s)</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – duration of the maneuver in days</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.get_clos">
+<span class="sig-name descname"><span class="pre">get_clos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.get_clos" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.hill_position">
+<span class="sig-name descname"><span class="pre">hill_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.hill_position" title="Link to this definition"></a></dt>
+<dd><p>calculate the hill position vector from self to the argument spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – vehicle acting as the relative position vector head</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>vector originating at self and terminating at the target’s position in the hill frame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.impulsive_maneuver">
+<span class="sig-name descname"><span class="pre">impulsive_maneuver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ric_burn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.impulsive_maneuver" title="Link to this definition"></a></dt>
+<dd><p>applies a velocity change to the current state to model an instant maneuver</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ric_burn</strong> (<a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><em>Vector3D</em></a>) – burn vector with components of radial, in-track, and cross-track (km/s)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.initial_state">
+<span class="sig-name descname"><span class="pre">initial_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">GCRF</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.initial_state" title="Link to this definition"></a></dt>
+<dd><p>Used to retain knowledge of the state when the satellite was first created</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.isp">
+<span class="sig-name descname"><span class="pre">isp</span></span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.isp" title="Link to this definition"></a></dt>
+<dd><p>specific impulse used to perform finite maneuvers</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.m_dot">
+<span class="sig-name descname"><span class="pre">m_dot</span></span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.m_dot" title="Link to this definition"></a></dt>
+<dd><p>Mass flow rate used to perform finite maneuvers</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.moon_angle">
+<span class="sig-name descname"><span class="pre">moon_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.moon_angle" title="Link to this definition"></a></dt>
+<dd><p>calculate the angle between the moon and target using the calling spacecraft as the vertex</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite being observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>angle between target and moon vector in radians</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.moon_vector">
+<span class="sig-name descname"><span class="pre">moon_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.moon_vector" title="Link to this definition"></a></dt>
+<dd><p>calculate the ECI vector from the vehicle to the moon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>vector originating at self and terminating at the moon</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.nfov">
+<span class="sig-name descname"><span class="pre">nfov</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.hardware.payloads.html#pysmad.hardware.payloads.Camera" title="pysmad.hardware.payloads.Camera"><code class="xref py py-class docutils literal notranslate"><span class="pre">Camera</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.nfov" title="Link to this definition"></a></dt>
+<dd><p>Payload used for distant tracking and characterization</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.observe_nfov">
+<span class="sig-name descname"><span class="pre">observe_nfov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.observe_nfov" title="Link to this definition"></a></dt>
+<dd><p>produce a simulated observation from the nfov</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite to be observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>simulated observation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../pysmad.estimation.obs.html#pysmad.estimation.obs.SpaceObservation" title="pysmad.estimation.obs.SpaceObservation">SpaceObservation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.observe_wfov">
+<span class="sig-name descname"><span class="pre">observe_wfov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.observe_wfov" title="Link to this definition"></a></dt>
+<dd><p>produce a simulated observation from the wfov</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite to be observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>simulated observation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../pysmad.estimation.obs.html#pysmad.estimation.obs.SpaceObservation" title="pysmad.estimation.obs.SpaceObservation">SpaceObservation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.optical_observations">
+<span class="sig-name descname"><span class="pre">optical_observations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.estimation.obs.html#pysmad.estimation.obs.LiveOpticalSet" title="pysmad.estimation.obs.LiveOpticalSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">LiveOpticalSet</span></code></a> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.optical_observations" title="Link to this definition"></a></dt>
+<dd><p>collection of optical observations of the calling satellite</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.pointing_accuracy">
+<span class="sig-name descname"><span class="pre">pointing_accuracy</span></span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.pointing_accuracy" title="Link to this definition"></a></dt>
+<dd><p>Used to apply noise to attitude vectors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.position">
+<span class="sig-name descname"><span class="pre">position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.position" title="Link to this definition"></a></dt>
+<dd><p>retrieve the spacecraft’s current ECI position vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>spacecraft’s current position vector as determined by the propagator</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.process_nfov">
+<span class="sig-name descname"><span class="pre">process_nfov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.process_nfov" title="Link to this definition"></a></dt>
+<dd><p>create a simulated observation of the argument spacecraft and feed the ob into the kalman filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite to be observed</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.process_wfov">
+<span class="sig-name descname"><span class="pre">process_wfov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.process_wfov" title="Link to this definition"></a></dt>
+<dd><p>create a simulated observation of the argument spacecraft and feed the ob into the kalman filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite to be observed</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.propagator">
+<span class="sig-name descname"><span class="pre">propagator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.propagators.inertial.html#pysmad.propagators.inertial.RK4" title="pysmad.propagators.inertial.RK4"><code class="xref py py-class docutils literal notranslate"><span class="pre">RK4</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.propagator" title="Link to this definition"></a></dt>
+<dd><p>Used to solve the state of the spacecraft at various times in the orbit</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.propellant_mass">
+<span class="sig-name descname"><span class="pre">propellant_mass</span></span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.propellant_mass" title="Link to this definition"></a></dt>
+<dd><p>Mass of the propellant on the spacecraft</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.range">
+<span class="sig-name descname"><span class="pre">range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.range" title="Link to this definition"></a></dt>
+<dd><p>calculate the distance from the calling spacecraft to the argument spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – spacecraft representing the range vector’s head</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>distance to the argument spacecraft in km</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.sat_id">
+<span class="sig-name descname"><span class="pre">sat_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.sat_id" title="Link to this definition"></a></dt>
+<dd><p>Alphanumeric string that acts as a unique identifier for satellites</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.slew_scalar">
+<span class="sig-name descname"><span class="pre">slew_scalar</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.slew_scalar" title="Link to this definition"></a></dt>
+<dd><p>Used to calculate slew times</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.slew_stop">
+<span class="sig-name descname"><span class="pre">slew_stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.time.html#pysmad.time.Epoch" title="pysmad.time._epoch.Epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Epoch</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.slew_stop" title="Link to this definition"></a></dt>
+<dd><p>Epoch used to indicate when self.slewing can be switched to ‘False’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.slewing">
+<span class="sig-name descname"><span class="pre">slewing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.slewing" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the spacecraft is in a stable attitude mode or in a transitioning slew</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.sma">
+<span class="sig-name descname"><span class="pre">sma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.sma" title="Link to this definition"></a></dt>
+<dd><p>calculate the semi-major axis of the calling spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the spacecraft’s semi-major axis in km</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.srp_scalar">
+<span class="sig-name descname"><span class="pre">srp_scalar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.srp_scalar" title="Link to this definition"></a></dt>
+<dd><p>calculate the scalar used for srp accelerations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>srp coefficient * area / mass (m^2/kg)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.steering">
+<span class="sig-name descname"><span class="pre">steering</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.steering" title="Link to this definition"></a></dt>
+<dd><p>Used to store the current steering mode of the satellite</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.step" title="Link to this definition"></a></dt>
+<dd><p>solve the vehicle’s position and velocity at the next time step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.step_to_epoch">
+<span class="sig-name descname"><span class="pre">step_to_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.step_to_epoch" title="Link to this definition"></a></dt>
+<dd><p>solve the vehicle’s position and velocity at the argument epoch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>epoch</strong> (<a class="reference internal" href="../../pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch"><em>Epoch</em></a>) – desired time at which the vehicle’s state should be solved</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.sun_angle">
+<span class="sig-name descname"><span class="pre">sun_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.sun_angle" title="Link to this definition"></a></dt>
+<dd><p>calculate the angle between the sun and target using the calling spacecraft as the vertex</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite being observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>angle between target and sun vector in radians</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.sun_vector">
+<span class="sig-name descname"><span class="pre">sun_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.sun_vector" title="Link to this definition"></a></dt>
+<dd><p>calculate the ECI vector from the vehicle to the sun</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>vector originating at self and terminating at the sun</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.target_vector">
+<span class="sig-name descname"><span class="pre">target_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.target_vector" title="Link to this definition"></a></dt>
+<dd><p>calculate the ECI vector from the vehicle to the argument spacecraft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – spacecraft acting as the vector head</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>vector originating at self and terminating at the target’s position</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.total_mass">
+<span class="sig-name descname"><span class="pre">total_mass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.total_mass" title="Link to this definition"></a></dt>
+<dd><p>calculates the mass of the bus plus propellant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>wet mass of the spacecraft (kg)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.track_lvlh">
+<span class="sig-name descname"><span class="pre">track_lvlh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.track_lvlh" title="Link to this definition"></a></dt>
+<dd><p>store attitude with payload toward earth and panels along orbit normal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.track_state">
+<span class="sig-name descname"><span class="pre">track_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.track_state" title="Link to this definition"></a></dt>
+<dd><p>store attitude with payload toward target</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – spacecraft to be tracked</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.track_sun">
+<span class="sig-name descname"><span class="pre">track_sun</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.track_sun" title="Link to this definition"></a></dt>
+<dd><p>store attitude with payload opposite to Sun</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.tracked_target">
+<span class="sig-name descname"><span class="pre">tracked_target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pysmad.bodies._satellite.Satellite" title="pysmad.bodies._satellite.Satellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Satellite</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.tracked_target" title="Link to this definition"></a></dt>
+<dd><p>The target satellite when the calling spacecraft is in target-tracking mode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.update_attitude">
+<span class="sig-name descname"><span class="pre">update_attitude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.update_attitude" title="Link to this definition"></a></dt>
+<dd><p>calculate and store the appropriate body axis values depending on steering mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.velocity" title="Link to this definition"></a></dt>
+<dd><p>retrieve current ECI velocity vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>velocity vector as determined by the satellite’s propagator</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.visual_magnitude">
+<span class="sig-name descname"><span class="pre">visual_magnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.visual_magnitude" title="Link to this definition"></a></dt>
+<dd><p>calculate the visual magnitude of a satellite</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target</strong> (<em>Spacecraft</em>) – satellite being observed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>visual magnitude of the observed spacecraft</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.bodies._satellite.Satellite.wfov">
+<span class="sig-name descname"><span class="pre">wfov</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../pysmad.hardware.payloads.html#pysmad.hardware.payloads.Camera" title="pysmad.hardware.payloads.Camera"><code class="xref py py-class docutils literal notranslate"><span class="pre">Camera</span></code></a></em><a class="headerlink" href="#pysmad.bodies._satellite.Satellite.wfov" title="Link to this definition"></a></dt>
+<dd><p>Payload used for metric observation and close-proximity tracking</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="moon.html" class="btn btn-neutral float-left" title="Moon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="groundsite.html" class="btn btn-neutral float-right" title="GroundSite" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

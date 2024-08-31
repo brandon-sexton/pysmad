@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pysmad.propagators.inertial &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=983e91d6"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pysmad.propagators.inertial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pysmad.propagators.inertial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.propagators.inertial">
+<span id="pysmad-propagators-inertial"></span><h1>pysmad.propagators.inertial<a class="headerlink" href="#module-pysmad.propagators.inertial" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RK4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.MAX_STEP">
+<span class="sig-name descname"><span class="pre">MAX_STEP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">300</span></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.MAX_STEP" title="Link to this definition"></a></dt>
+<dd><p>Largest step to be taken by the integrator</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4.__init__" title="Link to this definition"></a></dt>
+<dd><p>class used to propagate a satellite state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><em>GCRF</em></a>) – ECI state of the satellite to be propagated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.isp">
+<span class="sig-name descname"><span class="pre">isp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.isp" title="Link to this definition"></a></dt>
+<dd><p>specific impulse used to apply thrusts</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.m0">
+<span class="sig-name descname"><span class="pre">m0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.m0" title="Link to this definition"></a></dt>
+<dd><p>initial mass when using the propagator to apply thrust</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.m_dot">
+<span class="sig-name descname"><span class="pre">m_dot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.m_dot" title="Link to this definition"></a></dt>
+<dd><p>mass flow rate used to apply thrusts to propagator</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.maneuver">
+<span class="sig-name descname"><span class="pre">maneuver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gcrf_thrust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_dot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4.maneuver" title="Link to this definition"></a></dt>
+<dd><p>propagate the state using continuous thrust principles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gcrf_thrust</strong> (<a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><em>Vector3D</em></a>) – components of the maneuver in the gcrf frame</p></li>
+<li><p><strong>m_dot</strong> (<em>float</em>) – mass flow rate</p></li>
+<li><p><strong>m0</strong> (<em>float</em>) – initial mass</p></li>
+<li><p><strong>isp</strong> (<em>float</em>) – specific impulse</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">GCRF</span></code></a></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.state" title="Link to this definition"></a></dt>
+<dd><p>the current state of the propagator</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4.step" title="Link to this definition"></a></dt>
+<dd><p>advance the propagator state by the stored time step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.step_size">
+<span class="sig-name descname"><span class="pre">step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.step_size" title="Link to this definition"></a></dt>
+<dd><p>integration step to be taken when the propagator is advanced</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.step_to_epoch">
+<span class="sig-name descname"><span class="pre">step_to_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4.step_to_epoch" title="Link to this definition"></a></dt>
+<dd><p>advance the propagator state to the argument epoch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>epoch</strong> (<a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch"><em>Epoch</em></a>) – time of state to be calculated</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.thrust_direction">
+<span class="sig-name descname"><span class="pre">thrust_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></em><a class="headerlink" href="#pysmad.propagators.inertial.RK4.thrust_direction" title="Link to this definition"></a></dt>
+<dd><p>gcrf direction of any applied thrusts</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.propagators.inertial.RK4.thrust_vector">
+<span class="sig-name descname"><span class="pre">thrust_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.propagators.inertial.RK4.thrust_vector" title="Link to this definition"></a></dt>
+<dd><p>calculate the acceleration vector due to thrust</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>float</em>) – time step at which to calculate the thrust</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>thrust vector with gcrf components</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

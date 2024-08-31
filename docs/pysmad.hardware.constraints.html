@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pysmad.hardware.constraints &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=983e91d6"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pysmad.hardware.constraints</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pysmad.hardware.constraints.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.hardware.constraints">
+<span id="pysmad-hardware-constraints"></span><h1>pysmad.hardware.constraints<a class="headerlink" href="#module-pysmad.hardware.constraints" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OpticalConstraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_EARTH_LIMIT">
+<span class="sig-name descname"><span class="pre">DEFAULT_EARTH_LIMIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3490658503988659</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_EARTH_LIMIT" title="Link to this definition"></a></dt>
+<dd><p>nominal earth angle at which an object can be observed (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_FRAME_DAMP">
+<span class="sig-name descname"><span class="pre">DEFAULT_FRAME_DAMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_FRAME_DAMP" title="Link to this definition"></a></dt>
+<dd><p>nominal ratio of FOV an object can be off center for detection to occur (must be &gt; 0 and &lt;= 1)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_LIMITING_MAG">
+<span class="sig-name descname"><span class="pre">DEFAULT_LIMITING_MAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_LIMITING_MAG" title="Link to this definition"></a></dt>
+<dd><p>visual magnitude require before an object is considered detected</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_MOON_LIMIT">
+<span class="sig-name descname"><span class="pre">DEFAULT_MOON_LIMIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.17453292519943295</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_MOON_LIMIT" title="Link to this definition"></a></dt>
+<dd><p>nominal moon angle at which an object can be observed (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_RESOLUTION_LIMIT">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESOLUTION_LIMIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_RESOLUTION_LIMIT" title="Link to this definition"></a></dt>
+<dd><p>nominal resolution required for a successful characterization (km)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_SUN_HARD">
+<span class="sig-name descname"><span class="pre">DEFAULT_SUN_HARD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0471975511965976</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_SUN_HARD" title="Link to this definition"></a></dt>
+<dd><p>nominal angle at which sensor damage will occur (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.DEFAULT_SUN_SOFT">
+<span class="sig-name descname"><span class="pre">DEFAULT_SUN_SOFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5707963267948966</span></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.DEFAULT_SUN_SOFT" title="Link to this definition"></a></dt>
+<dd><p>nominal sun angle at which an object can be observed (radians)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.__init__" title="Link to this definition"></a></dt>
+<dd><p>class to be used for storing limits of an optical observation system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pixels</strong> (<em>float</em>) – 1-D full width pixel count assuming a square sensor</p></li>
+<li><p><strong>fov</strong> (<em>float</em>) – half-angle field-of-view in radians</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.bore">
+<span class="sig-name descname"><span class="pre">bore</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.bore" title="Link to this definition"></a></dt>
+<dd><p>maximum angle an object can be from the center of the sensor (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.characterization">
+<span class="sig-name descname"><span class="pre">characterization</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.characterization" title="Link to this definition"></a></dt>
+<dd><p>maximum range an object can be away for successful characterization (km)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.earth">
+<span class="sig-name descname"><span class="pre">earth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.earth" title="Link to this definition"></a></dt>
+<dd><p>minimum earth angle from bore to enable detection (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.moon">
+<span class="sig-name descname"><span class="pre">moon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.moon" title="Link to this definition"></a></dt>
+<dd><p>minimum moon angle from bore to enable detection (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.sun_hard">
+<span class="sig-name descname"><span class="pre">sun_hard</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.sun_hard" title="Link to this definition"></a></dt>
+<dd><p>minimum sun angle from sensor bore to prevent damage (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.sun_soft">
+<span class="sig-name descname"><span class="pre">sun_soft</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.sun_soft" title="Link to this definition"></a></dt>
+<dd><p>minimum sun angle from bore to enable detection (radians)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.hardware.constraints.OpticalConstraints.vismag">
+<span class="sig-name descname"><span class="pre">vismag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.hardware.constraints.OpticalConstraints.vismag" title="Link to this definition"></a></dt>
+<dd><p>limiting visual magnitude of the sensor (higher means the sensor will detect dimmer objects)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

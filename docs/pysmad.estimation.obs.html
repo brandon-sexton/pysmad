@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pysmad.estimation.obs &mdash; pysmad 2.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=983e91d6"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pysmad
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">references</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pysmad</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pysmad.estimation.obs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pysmad.estimation.obs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pysmad.estimation.obs">
+<span id="pysmad-estimation-obs"></span><h1>pysmad.estimation.obs<a class="headerlink" href="#module-pysmad.estimation.obs" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GroundObservation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pysmad.estimation.obs.Observation" title="pysmad.estimation.obs.Observation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Observation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.__init__" title="Link to this definition"></a></dt>
+<dd><p>used to perform operations related to ground site measurements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observer_state</strong> (<a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.ITRF" title="pysmad.coordinates.states.ITRF"><em>ITRF</em></a>) – geocentric coordinates of the observer</p></li>
+<li><p><strong>observed_direction</strong> (<a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><em>Vector3D</em></a>) – ENZ direction of object from observer</p></li>
+<li><p><strong>r_error</strong> (<em>float</em>) – one-sigma error of the observed range in km</p></li>
+<li><p><strong>ang_error</strong> (<em>float</em>) – one-sigma error of the angles in radians</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.angular_error">
+<span class="sig-name descname"><span class="pre">angular_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.angular_error" title="Link to this definition"></a></dt>
+<dd><p>one-sigma angular error of the observation in radians</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.azimuth">
+<span class="sig-name descname"><span class="pre">azimuth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.azimuth" title="Link to this definition"></a></dt>
+<dd><p>azimuth of the observation in radians</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.elevation">
+<span class="sig-name descname"><span class="pre">elevation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.elevation" title="Link to this definition"></a></dt>
+<dd><p>elevation of the observation in radians</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.epoch">
+<span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.epoch" title="Link to this definition"></a></dt>
+<dd><p>get the time the observation was taken</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>valid epoch of the observation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch">Epoch</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.from_angles_and_range">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_angles_and_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.from_angles_and_range" title="Link to this definition"></a></dt>
+<dd><p>create an observation from azimuth, elevation, and range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observer_state</strong> (<a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.ITRF" title="pysmad.coordinates.states.ITRF"><em>ITRF</em></a>) – geocentric coordinates of the observer</p></li>
+<li><p><strong>az</strong> (<em>float</em>) – azimuth of the observation in radians</p></li>
+<li><p><strong>el</strong> (<em>float</em>) – elevation of the observation in radians</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – magnitude of the observation in km</p></li>
+<li><p><strong>r_error</strong> (<em>float</em>) – one-sigma range error of the observation in km</p></li>
+<li><p><strong>ang_error</strong> (<em>float</em>) – one-sigma angular error of the observation in radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>observation from a terrestrial site</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pysmad.estimation.obs.GroundObservation" title="pysmad.estimation.obs.GroundObservation">GroundObservation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.gcrf_position">
+<span class="sig-name descname"><span class="pre">gcrf_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.gcrf_position" title="Link to this definition"></a></dt>
+<dd><p>calculate the inertial position of the observation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>inertial position of the observation in the GCRF frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.ijk_position">
+<span class="sig-name descname"><span class="pre">ijk_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.ijk_position" title="Link to this definition"></a></dt>
+<dd><p>calculate the inertial position of the observation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>inertial position of the observation in the IJK frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.observed_direction">
+<span class="sig-name descname"><span class="pre">observed_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.observed_direction" title="Link to this definition"></a></dt>
+<dd><p>vector from observer to target in the ENZ frame</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.observer_state">
+<span class="sig-name descname"><span class="pre">observer_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.ITRF" title="pysmad.coordinates.states.ITRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITRF</span></code></a></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.observer_state" title="Link to this definition"></a></dt>
+<dd><p>geocentric state of the observer at the time of the observation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.range">
+<span class="sig-name descname"><span class="pre">range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.range" title="Link to this definition"></a></dt>
+<dd><p>magnitude of the observation in km</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.GroundObservation.range_error">
+<span class="sig-name descname"><span class="pre">range_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.GroundObservation.range_error" title="Link to this definition"></a></dt>
+<dd><p>one-sigma range error of the observation in km</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LiveOpticalObservation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation.__init__" title="Link to this definition"></a></dt>
+<dd><p>interface used to access data stored in live observations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ob_dict</strong> (<em>dict</em>) – single return from a Query JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation.csv_headers">
+<span class="sig-name descname"><span class="pre">csv_headers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation.csv_headers" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation.get_clos">
+<span class="sig-name descname"><span class="pre">get_clos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tgt_gcrf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation.get_clos" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation.get_observer_itrf">
+<span class="sig-name descname"><span class="pre">get_observer_itrf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation.get_observer_itrf" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.ITRF" title="pysmad.coordinates.states.ITRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITRF</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalObservation.to_csv_format">
+<span class="sig-name descname"><span class="pre">to_csv_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalObservation.to_csv_format" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LiveOpticalSet</span></span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet.get_observers">
+<span class="sig-name descname"><span class="pre">get_observers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet.get_observers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet.get_sources">
+<span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet.get_sources" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet.get_targets">
+<span class="sig-name descname"><span class="pre">get_targets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet.get_targets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet.process_observation">
+<span class="sig-name descname"><span class="pre">process_observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet.process_observation" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.LiveOpticalSet.publish_set">
+<span class="sig-name descname"><span class="pre">publish_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.LiveOpticalSet.publish_set" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.Observation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observation</span></span><a class="headerlink" href="#pysmad.estimation.obs.Observation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>super class used for space-based and ground-based observations</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.Observation.epoch">
+<span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.Observation.epoch" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time._epoch.Epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Epoch</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.Observation.ijk_position">
+<span class="sig-name descname"><span class="pre">ijk_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.Observation.ijk_position" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.Observation.observer_ijk">
+<span class="sig-name descname"><span class="pre">observer_ijk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.Observation.observer_ijk" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpaceObservation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pysmad.estimation.obs.Observation" title="pysmad.estimation.obs.Observation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Observation</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ang_error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.__init__" title="Link to this definition"></a></dt>
+<dd><p>object used for state estimation when the observer is a space asset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observer_state</strong> (<a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><em>GCRF</em></a>) – inertial state of the observer at the time of the observation</p></li>
+<li><p><strong>observed_direction</strong> (<a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><em>Vector3D</em></a>) – GCRF direction of the object from the observer</p></li>
+<li><p><strong>r_error</strong> (<em>float</em>) – one-sigma error of the observed range in km</p></li>
+<li><p><strong>ang_error</strong> (<em>float</em>) – one-sigma error of the angles in radians</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.angular_error">
+<span class="sig-name descname"><span class="pre">angular_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.angular_error" title="Link to this definition"></a></dt>
+<dd><p>one-sigma angular error of the observation in radians</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.declination">
+<span class="sig-name descname"><span class="pre">declination</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.declination" title="Link to this definition"></a></dt>
+<dd><p>declination of the observation in radians</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.epoch">
+<span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.epoch" title="Link to this definition"></a></dt>
+<dd><p>get the time the observation was taken</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>valid epoch of the observation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="pysmad.time.html#pysmad.time.Epoch" title="pysmad.time.Epoch">Epoch</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.ijk_position">
+<span class="sig-name descname"><span class="pre">ijk_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.ijk_position" title="Link to this definition"></a></dt>
+<dd><p>calculate the inertial position of the observation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>inertial position of the observation in the IJK frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D">Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.observed_direction">
+<span class="sig-name descname"><span class="pre">observed_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.math.linalg.html#pysmad.math.linalg.Vector3D" title="pysmad.math.linalg.Vector3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector3D</span></code></a></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.observed_direction" title="Link to this definition"></a></dt>
+<dd><p>vector from observer to target in the GCRF frame</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.observer_state">
+<span class="sig-name descname"><span class="pre">observer_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pysmad.coordinates.states.html#pysmad.coordinates.states.GCRF" title="pysmad.coordinates.states.GCRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">GCRF</span></code></a></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.observer_state" title="Link to this definition"></a></dt>
+<dd><p>inertial state of the observer at the time of the observation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.range">
+<span class="sig-name descname"><span class="pre">range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.range" title="Link to this definition"></a></dt>
+<dd><p>magnitude of the observation in km</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.range_error">
+<span class="sig-name descname"><span class="pre">range_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.range_error" title="Link to this definition"></a></dt>
+<dd><p>one-sigma range error of the observation in km</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysmad.estimation.obs.SpaceObservation.right_ascension">
+<span class="sig-name descname"><span class="pre">right_ascension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#pysmad.estimation.obs.SpaceObservation.right_ascension" title="Link to this definition"></a></dt>
+<dd><p>right ascension of the observation in radians</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Sexton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
