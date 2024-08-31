@@ -3,7 +3,7 @@ from pysmad.eop import EOPData
 
 
 def test_get_record():
-    EOPData.load_files("resources/finals.all", "resources/tai-utc.dat")
+    EOPData.load_files("pysmad/eop/finals.all", "pysmad/eop/tai-utc.dat")
     record = EOPData.get_record(57630)
     assert record.mjd == 57630
     assert record.time_delta.ut1_utc == -0.2449597 * SECONDS_TO_DAYS

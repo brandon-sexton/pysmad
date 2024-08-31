@@ -3,7 +3,7 @@ from pysmad.eop import LeapSecondData
 
 
 def test_get_record():
-    leap_seconds = LeapSecondData("resources/tai-utc.dat")
+    leap_seconds = LeapSecondData("pysmad/eop/tai-utc.dat")
     int_mjd_zero = int(MJD_ZERO_JULIAN_DATE)
 
     # exact MJDs to test

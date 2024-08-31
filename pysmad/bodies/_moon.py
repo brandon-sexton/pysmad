@@ -1,28 +1,19 @@
 from math import cos, radians, sin
 
-from pysmad.bodies._earth import Earth
-from pysmad.math.functions import Conversions
-from pysmad.math.linalg import Vector3D
+from pysmad.constants import ARC_SECONDS_TO_RADIANS, OBLIQUITY_OF_ECLIPTIC
+from pysmad.coordinates import CartesianVector
+from pysmad.math.linalg import Matrix3D
 from pysmad.time import Epoch
 
 
 class Moon:
     """class used to store properties of the moon to be used in force modeling"""
 
-    #: G*M in km^3/s^2
-    MU = 4902.800305555
-
-    #: distance from center of moon to surface in km
-    RADIUS = 1737.4000
-
     @staticmethod
-    def get_position(epoch: Epoch) -> Vector3D:
-        """calculate ECI position of moon
+    def get_position(epoch: Epoch) -> CartesianVector:
+        """calculate J2000 ECI position in :math:`km` of the Moon at a given epoch
 
         :param epoch: time of calculated position vector
-        :type epoch: Epoch
-        :return: ECI position in km
-        :rtype: Vector3D
         """
         # Equation 3.47
         t = Epoch.julian_centuries_past_j2000(epoch.tt)
@@ -33,20 +24,20 @@ class Moon:
         d = radians(297.85027 + 445267.11135 * t)
 
         # Auxiliary variables to store the angles defined in seconds in equation 3.48
-        a0 = Conversions.dms_to_radians(0, 0, 22640.0)
-        a1 = Conversions.dms_to_radians(0, 0, 769.0)
-        a2 = Conversions.dms_to_radians(0, 0, 4586.0)
-        a3 = Conversions.dms_to_radians(0, 0, 2370.0)
-        a4 = Conversions.dms_to_radians(0, 0, 668.0)
-        a5 = Conversions.dms_to_radians(0, 0, 412.0)
-        a6 = Conversions.dms_to_radians(0, 0, 212.0)
-        a7 = Conversions.dms_to_radians(0, 0, 206.0)
-        a8 = Conversions.dms_to_radians(0, 0, 192.0)
-        a9 = Conversions.dms_to_radians(0, 0, 165.0)
-        a10 = Conversions.dms_to_radians(0, 0, 148.0)
-        a11 = Conversions.dms_to_radians(0, 0, 125.0)
-        a12 = Conversions.dms_to_radians(0, 0, 110.0)
-        a13 = Conversions.dms_to_radians(0, 0, 55.0)
+        a0: float = 22640.0 * ARC_SECONDS_TO_RADIANS
+        a1: float = 769.0 * ARC_SECONDS_TO_RADIANS
+        a2: float = 4586.0 * ARC_SECONDS_TO_RADIANS
+        a3: float = 2370.0 * ARC_SECONDS_TO_RADIANS
+        a4: float = 668.0 * ARC_SECONDS_TO_RADIANS
+        a5: float = 412.0 * ARC_SECONDS_TO_RADIANS
+        a6: float = 212.0 * ARC_SECONDS_TO_RADIANS
+        a7: float = 206.0 * ARC_SECONDS_TO_RADIANS
+        a8: float = 192.0 * ARC_SECONDS_TO_RADIANS
+        a9: float = 165.0 * ARC_SECONDS_TO_RADIANS
+        a10: float = 148.0 * ARC_SECONDS_TO_RADIANS
+        a11: float = 125.0 * ARC_SECONDS_TO_RADIANS
+        a12: float = 110.0 * ARC_SECONDS_TO_RADIANS
+        a13: float = 55.0 * ARC_SECONDS_TO_RADIANS
 
         # Equation 3.48
         lam = (
@@ -68,16 +59,16 @@ class Moon:
         )
 
         # Redefined variables for angles in equation 3.49
-        a0 = Conversions.dms_to_radians(0, 0, 18520.0)
-        a1 = Conversions.dms_to_radians(0, 0, 412.0)
-        a2 = Conversions.dms_to_radians(0, 0, 541.0)
-        a3 = Conversions.dms_to_radians(0, 0, 526.0)
-        a4 = Conversions.dms_to_radians(0, 0, 44.0)
-        a5 = Conversions.dms_to_radians(0, 0, 31.0)
-        a6 = Conversions.dms_to_radians(0, 0, 25.0)
-        a7 = Conversions.dms_to_radians(0, 0, 23.0)
-        a8 = Conversions.dms_to_radians(0, 0, 21.0)
-        a9 = Conversions.dms_to_radians(0, 0, 11.0)
+        a0 = 18520.0 * ARC_SECONDS_TO_RADIANS
+        a1 = 412.0 * ARC_SECONDS_TO_RADIANS
+        a2 = 541.0 * ARC_SECONDS_TO_RADIANS
+        a3 = 526.0 * ARC_SECONDS_TO_RADIANS
+        a4 = 44.0 * ARC_SECONDS_TO_RADIANS
+        a5 = 31.0 * ARC_SECONDS_TO_RADIANS
+        a6 = 25.0 * ARC_SECONDS_TO_RADIANS
+        a7 = 23.0 * ARC_SECONDS_TO_RADIANS
+        a8 = 21.0 * ARC_SECONDS_TO_RADIANS
+        a9 = 11.0 * ARC_SECONDS_TO_RADIANS
 
         # Equation 3.49
         beta = (
@@ -109,6 +100,6 @@ class Moon:
         y = r * sin(lam) * cos(beta)
         z = r * sin(beta)
 
-        eps = Earth.OBLIQUITY_OF_ECLIPTIC
+        eps = OBLIQUITY_OF_ECLIPTIC
 
-        return Vector3D(x, y, z).rotation_about_axis(Vector3D(1, 0, 0), eps)
+        return Matrix3D.rotation_matrix(CartesianVector.x_axis(), eps).multiply_vector(CartesianVector(x, y, z))

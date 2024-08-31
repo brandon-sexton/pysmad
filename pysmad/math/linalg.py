@@ -1,54 +1,21 @@
-from math import acos, cos, pi, sin, sqrt
-from random import gauss, uniform
+from math import cos, sin
+
+from pysmad.coordinates import CartesianVector
 
 
-class Vector6D:
-    def __init__(self, x: float, y: float, z: float, vx: float, vy: float, vz: float) -> None:
+class Vector6D(list[float]):
+    def __init__(self, el1: float, el2: float, el3: float, el4: float, el5: float, el6: float) -> None:
         """class used to perform operations on a vector that has 6 components
 
-        :param x: first component of vector
-        :type x: float
-        :param y: second component of vector
-        :type y: float
-        :param z: third component of vector
-        :type z: float
-        :param vx: fourth component of vector
-        :type vx: float
-        :param vy: fifth component of vector
-        :type vy: float
-        :param vz: sixth component of vector
-        :type vz: float
+        :param el1: first component of the vector
+        :param el2: second component of the vector
+        :param el3: third component of the vector
+        :param el4: fourth component of the vector
+        :param el5: fifth component of the vector
+        :param el6: sixth component of the vector
         """
-        #: first component of the vector
-        self.x: float = x
 
-        #: second component of the vector
-        self.y: float = y
-
-        #: third component of the vector
-        self.z: float = z
-
-        #: fourth component of the vector
-        self.vx: float = vx
-
-        #: fifth component of the vector
-        self.vy: float = vy
-
-        #: sixth component of the vector
-        self.vz: float = vz
-
-    @classmethod
-    def from_position_and_velocity(cls, r: "Vector3D", v: "Vector3D") -> "Vector6D":
-        """create a 6-dimension vecto from 3-D position and velocity
-
-        :param r: 3-D position vector
-        :type r: Vector3D
-        :param v: 3-D velocity vector
-        :type v: Vector3D
-        :return: 6-D state vector
-        :rtype: Vector6D
-        """
-        return cls(r.x, r.y, r.z, v.x, v.y, v.z)
+        super().__init__([el1, el2, el3, el4, el5, el6])
 
     def dot(self, vec_to_dot: "Vector6D") -> float:
         """calculates the dot product of the two vectors
@@ -59,12 +26,12 @@ class Vector6D:
         :rtype: float
         """
         return (
-            self.x * vec_to_dot.x
-            + self.y * vec_to_dot.y
-            + self.z * vec_to_dot.z
-            + self.vx * vec_to_dot.vx
-            + self.vy * vec_to_dot.vy
-            + self.vz * vec_to_dot.vz
+            self[0] * vec_to_dot[0]
+            + self[1] * vec_to_dot[1]
+            + self[2] * vec_to_dot[2]
+            + self[3] * vec_to_dot[3]
+            + self[4] * vec_to_dot[4]
+            + self[5] * vec_to_dot[5]
         )
 
     def copy(self) -> "Vector6D":
@@ -73,7 +40,7 @@ class Vector6D:
         :return: 6-D vector with components that match the calling vector
         :rtype: Vector6D
         """
-        return Vector6D(self.x, self.y, self.z, self.vx, self.vy, self.vz)
+        return Vector6D(*self[:])
 
     def plus(self, vec: "Vector6D") -> "Vector6D":
         """calculates the sum of the elements of the two vectors
@@ -84,12 +51,12 @@ class Vector6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.x + vec.x,
-            self.y + vec.y,
-            self.z + vec.z,
-            self.vx + vec.vx,
-            self.vy + vec.vy,
-            self.vz + vec.vz,
+            self[0] + vec[0],
+            self[1] + vec[1],
+            self[2] + vec[2],
+            self[3] + vec[3],
+            self[4] + vec[4],
+            self[5] + vec[5],
         )
 
     def minus(self, vec: "Vector6D") -> "Vector6D":
@@ -101,178 +68,47 @@ class Vector6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.x - vec.x,
-            self.y - vec.y,
-            self.z - vec.z,
-            self.vx - vec.vx,
-            self.vy - vec.vy,
-            self.vz - vec.vz,
+            self[0] - vec[0],
+            self[1] - vec[1],
+            self[2] - vec[2],
+            self[3] - vec[3],
+            self[4] - vec[4],
+            self[5] - vec[5],
         )
 
 
-class Vector3D:
-    def __init__(self, x: float, y: float, z: float) -> None:
-        """class used to perform operations on a 3-dimension vector
+class Matrix3D:
+    def __init__(self, row1: CartesianVector, row2: CartesianVector, row3: CartesianVector) -> None:
+        """used to perform operations on a 3x3 matrix
 
-        :param x: first component of the vector
-        :type x: float
-        :param y: second component of the vector
-        :type y: float
-        :param z: third component of the vector
-        :type z: float
+        :param row1: first row of matrix
+        :type row1: CartesianVector
+        :param row2: second row of matrix
+        :type row2: CartesianVector
+        :param row3: third row of matrix
+        :type row3: CartesianVector
         """
-        #: first component of the vector
-        self.x: float = x
+        #: first row of matrix
+        self.row1: CartesianVector = row1.copy()
 
-        #: second component of the vector
-        self.y: float = y
+        #: second row of matrix
+        self.row2: CartesianVector = row2.copy()
 
-        #: third component of the vector
-        self.z: float = z
+        #: third row of matrix
+        self.row3: CartesianVector = row3.copy()
 
-    def with_noise(self, range_err: float, ang_err: float) -> "Vector3D":
-        """calculate a new vector with noise applied to magnitude and direction
-
-        :param range_err: one-sigma range error in units consistent with the calling vector
-        :type range_err: float
-        :param ang_err: one-sigma anglular error in radians
-        :type ang_err: float
-        :return: new vector with gaussian noise applied
-        :rtype: Vector3D
-        """
-        return self.with_magnitude_noise(range_err).with_angular_noise(ang_err)
-
-    def with_magnitude_noise(self, range_err: float) -> "Vector3D":
-        """calculate a new vector with noise applied to the magnitude
-
-        :param range_err: one-sigma range error in units consistent with the calling vector
-        :type range_err: float
-        :return: new vector with the magnitude adjusted by gaussian distribution
-        :rtype: Vector3D
-        """
-        return self.normalized().scaled(gauss(self.magnitude(), range_err))
-
-    def with_angular_noise(self, ang_err: float) -> "Vector3D":
-        """calculate a new vector with angular noise applied
-
-        :param ang_err: one-sigma anglular error in radians
-        :type ang_err: float
-        :return: new vector offset using gaussian distribution for the angle
-        :rtype: Vector3D
-        """
-        return self.rotation_about_axis(self.cross(Vector3D(0, 0, 1)), gauss(0, ang_err)).rotation_about_axis(
-            self, uniform(0, 2 * pi)
-        )
-
-    def copy(self) -> "Vector3D":
-        """creates a replica of the vector
-
-        :return: 3-D vector with elements equal to the calling vector
-        :rtype: Vector3D
-        """
-        return Vector3D(self.x, self.y, self.z)
-
-    def plus(self, vec_to_add: "Vector3D") -> "Vector3D":
-        """creates a vector whose elements equal the sum of the calling and argument vector
-
-        :param vec_to_add: vector to be included in the sum
-        :type vec_to_add: Vector3D
-        :return: vector with elements equal to the sum of the calling and argument vector
-        :rtype: Vector3D
-        """
-        return Vector3D(self.x + vec_to_add.x, self.y + vec_to_add.y, self.z + vec_to_add.z)
-
-    def minus(self, vec_to_subtract: "Vector3D") -> "Vector3D":
-        """creates a vector whose elements equal the difference of the calling and argument vector
-
-        :param vec_to_subtract: vector to be included in the difference
-        :type vec_to_subtract: Vector3D
-        :return: vector with elements equal to the difference of the calling and argument vector
-        :rtype: Vector3D
-        """
-        return Vector3D(
-            self.x - vec_to_subtract.x,
-            self.y - vec_to_subtract.y,
-            self.z - vec_to_subtract.z,
-        )
-
-    def dot(self, vec_to_dot: "Vector3D") -> float:
-        """calculates the dot product of the two vectors
-
-        :param vec_to_dot: the second vector to be used in the dot product
-        :type vec_to_dot: Vector3D
-        :return: sum of the element products
-        :rtype: float
-        """
-        return self.x * vec_to_dot.x + self.y * vec_to_dot.y + self.z * vec_to_dot.z
-
-    def cross(self, vec_to_cross: "Vector3D") -> "Vector3D":
-        """creates a vector orthogonal to the calling and argument vector
-
-        :param vec_to_cross: vector which will be used to complete the right-hand rule
-        :type vec_to_cross: Vector3D
-        :return: vector produced using the right-hand rule that is orthogonal to the original vectors
-        :rtype: Vector3D
-        """
-        return Vector3D(
-            self.y * vec_to_cross.z - self.z * vec_to_cross.y,
-            self.z * vec_to_cross.x - self.x * vec_to_cross.z,
-            self.x * vec_to_cross.y - self.y * vec_to_cross.x,
-        )
-
-    def magnitude(self) -> float:
-        """calculates the length of the vector
-
-        :return: square root of the sum of squares
-        :rtype: float
-        """
-        return sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
-
-    def scaled(self, scalar: float) -> "Vector3D":
-        """creates a scaled copy of the calling vector
-
-        :param scalar: value that will be multiplied against all elements
-        :type scalar: float
-        :return: vector equal to the calling vector scaled by the argument
-        :rtype: Vector3D
-        """
-        return Vector3D(self.x * scalar, self.y * scalar, self.z * scalar)
-
-    def normalized(self) -> "Vector3D":
-        """creates a vector parallel to the calling vector that is of length 1
-
-        :return: unit vector of the calling vector
-        :rtype: Vector3D
-        """
-        return self.scaled(1 / self.magnitude())
-
-    def angle(self, adj_vec: "Vector3D") -> float:
-        """calculates the angle between two vectors
-
-        :param adj_vec: second leg of the angle
-        :type adj_vec: Vector3D
-        :return: angle in radians between the two vectors
-        :rtype: float
-        """
-        arg = self.dot(adj_vec) / (self.magnitude() * adj_vec.magnitude())
-        if arg > 1:
-            arg = 1
-        elif arg < -1:
-            arg = -1
-        return acos(arg)
-
-    @staticmethod
-    def rotation_matrix(axis: "Vector3D", theta: float) -> "Matrix3D":
+    @classmethod
+    def rotation_matrix(cls, axis: "CartesianVector", theta: float) -> "Matrix3D":
         """calculates the rotation matrix required for a rotation
 
         :param axis: axis that will be used to rotate a vector around
-        :type axis: Vector3D
+        :type axis: CartesianVector
         :param theta: angle in radians the vector will be rotated
         :type theta: float
         :return: transition matrix that will rotate a vector
         :rtype: Matrix3D
         """
-        unit_ax: Vector3D = axis.normalized()
+        unit_ax: CartesianVector = axis.normalized()
         ux: float = unit_ax.x
         uy: float = unit_ax.y
         uz: float = unit_ax.z
@@ -290,86 +126,53 @@ class Vector3D:
         y3: float = uz * uy * cdiff + ux * s
         z3: float = c + uz * uz * cdiff
 
-        r1: Vector3D = Vector3D(x1, y1, z1)
-        r2: Vector3D = Vector3D(x2, y2, z2)
-        r3: Vector3D = Vector3D(x3, y3, z3)
+        r1: CartesianVector = CartesianVector(x1, y1, z1)
+        r2: CartesianVector = CartesianVector(x2, y2, z2)
+        r3: CartesianVector = CartesianVector(x3, y3, z3)
 
-        return Matrix3D(r1, r2, r3)
+        return cls(r1, r2, r3)
 
-    def rotation_about_axis(self, axis: "Vector3D", theta: float) -> "Vector3D":
-        """create a vector that has been rotated
-
-        :param axis: axis of rotation
-        :type axis: Vector3D
-        :param theta: angle in radians of rotation
-        :type theta: float
-        :return: vector that has been rotated
-        :rtype: Vector3D
-        """
-        return Vector3D.rotation_matrix(axis, theta).multiply_vector(self.copy())
-
-
-class Matrix3D:
-    def __init__(self, row1: Vector3D, row2: Vector3D, row3: Vector3D) -> None:
-        """used to perform operations on a 3x3 matrix
-
-        :param row1: first row of matrix
-        :type row1: Vector3D
-        :param row2: second row of matrix
-        :type row2: Vector3D
-        :param row3: third row of matrix
-        :type row3: Vector3D
-        """
-        #: first row of matrix
-        self.row1: Vector3D = row1.copy()
-
-        #: second row of matrix
-        self.row2: Vector3D = row2.copy()
-
-        #: third row of matrix
-        self.row3: Vector3D = row3.copy()
-
-    def diagonal(self) -> Vector3D:
+    def diagonal(self) -> CartesianVector:
         """creates a vector with components equal to the diagonal of the matrix
 
         :return: vector equal to (xx, yy, zz)
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.x, self.row2.y, self.row3.z)
+        return CartesianVector(self.row1.x, self.row2.y, self.row3.z)
 
-    def column_1(self) -> Vector3D:
+    def column_1(self) -> CartesianVector:
         """creates a vector with elements equal to the first column of the matrix
 
         :return: vector with elements equal to the first column of the matrix
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.x, self.row2.x, self.row3.x)
+        return CartesianVector(self.row1.x, self.row2.x, self.row3.x)
 
-    def column_2(self) -> Vector3D:
+    def column_2(self) -> CartesianVector:
         """creates a vector with elements equal to the second column of the matrix
 
         :return: vector with elements equal to the second column of the matrix
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.y, self.row2.y, self.row3.y)
+        return CartesianVector(self.row1.y, self.row2.y, self.row3.y)
 
-    def column_3(self) -> Vector3D:
+    def column_3(self) -> CartesianVector:
         """creates a vector with elements equal to the third column of the matrix
 
         :return: vector with elements equal to the third column of the matrix
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.z, self.row2.z, self.row3.z)
+        return CartesianVector(self.row1.z, self.row2.z, self.row3.z)
 
-    def multiply_vector(self, vec: Vector3D) -> Vector3D:
+    def multiply_vector(self, vec: CartesianVector) -> CartesianVector:
         """performs matrix multiplication of the calling matrix and the argument vector
 
         :param vec: vector to be used in the multiplication
-        :type vec: Vector3D
+        :type vec: CartesianVector
         :return: product of the matrix multiplication
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
+        return CartesianVector(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
 
     def scaled(self, scalar: float) -> "Matrix3D":
         """creates a matrix whose elements have been scaled by the argument
@@ -388,9 +191,9 @@ class Matrix3D:
         :rtype: Matrix3D
         """
         return Matrix3D(
-            Vector3D(self.row1.x, self.row2.x, self.row3.x),
-            Vector3D(self.row1.y, self.row2.y, self.row3.y),
-            Vector3D(self.row1.z, self.row2.z, self.row3.z),
+            CartesianVector(self.row1.x, self.row2.x, self.row3.x),
+            CartesianVector(self.row1.y, self.row2.y, self.row3.y),
+            CartesianVector(self.row1.z, self.row2.z, self.row3.z),
         )
 
     def plus(self, mat: "Matrix3D") -> "Matrix3D":
@@ -425,17 +228,17 @@ class Matrix3D:
         :rtype: Matrix3D
         """
         return Matrix3D(
-            Vector3D(
+            CartesianVector(
                 self.row2.y * self.row3.z - self.row2.z * self.row3.y,
                 -(self.row2.x * self.row3.z - self.row3.x * self.row2.z),
                 self.row2.x * self.row3.y - self.row3.x * self.row2.y,
             ),
-            Vector3D(
+            CartesianVector(
                 -(self.row1.y * self.row3.z - self.row3.y * self.row1.z),
                 self.row1.x * self.row3.z - self.row1.z * self.row3.x,
                 -(self.row1.x * self.row3.y - self.row1.y * self.row3.x),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row1.y * self.row2.z - self.row1.z * self.row2.y,
                 -(self.row1.x * self.row2.z - self.row2.x * self.row1.z),
                 self.row1.x * self.row2.y - self.row1.y * self.row2.x,
@@ -509,63 +312,63 @@ class Matrix3by6:
         self.row2: Vector6D = row2.copy()
         self.row3: Vector6D = row3.copy()
 
-    def column_1(self) -> Vector3D:
+    def column_1(self) -> CartesianVector:
         """create a vector whose elements are equal to the first column of the calling matrix
 
         :return: first column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.x, self.row2.x, self.row3.x)
+        return CartesianVector(self.row1[0], self.row2[0], self.row3[0])
 
-    def column_2(self) -> Vector3D:
+    def column_2(self) -> CartesianVector:
         """create a vector whose elements are equal to the second column of the calling matrix
 
         :return: second column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.y, self.row2.y, self.row3.y)
+        return CartesianVector(self.row1[1], self.row2[1], self.row3[1])
 
-    def column_3(self) -> Vector3D:
+    def column_3(self) -> CartesianVector:
         """create a vector whose elements are equal to the third column of the calling matrix
 
         :return: third column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.z, self.row2.z, self.row3.z)
+        return CartesianVector(self.row1[2], self.row2[2], self.row3[2])
 
-    def column_4(self) -> Vector3D:
+    def column_4(self) -> CartesianVector:
         """create a vector whose elements are equal to the fourth column of the calling matrix
 
         :return: fourth column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.vx, self.row2.vx, self.row3.vx)
+        return CartesianVector(self.row1[3], self.row2[3], self.row3[3])
 
-    def column_5(self) -> Vector3D:
+    def column_5(self) -> CartesianVector:
         """create a vector whose elements are equal to the fifth column of the calling matrix
 
         :return: fifth column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.vy, self.row2.vy, self.row3.vy)
+        return CartesianVector(self.row1[4], self.row2[4], self.row3[4])
 
-    def column_6(self) -> Vector3D:
+    def column_6(self) -> CartesianVector:
         """create a vector whose elements are equal to the sixth column of the calling matrix
 
         :return: sixth column
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.vz, self.row2.vz, self.row3.vz)
+        return CartesianVector(self.row1[5], self.row2[5], self.row3[5])
 
-    def multiply_vector(self, vec: Vector6D) -> Vector3D:
+    def multiply_vector(self, vec: Vector6D) -> CartesianVector:
         """create a vector that is the product of the calling matrix and the argument vector
 
         :param vec: vector to be used in the product
         :type vec: Vector6D
         :return: product vector
-        :rtype: Vector3D
+        :rtype: CartesianVector
         """
-        return Vector3D(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
+        return CartesianVector(self.row1.dot(vec), self.row2.dot(vec), self.row3.dot(vec))
 
     def transpose(self) -> "Matrix6by3":
         """create a matrix whose rows are equal to the columns of the calling matrix
@@ -591,17 +394,17 @@ class Matrix3by6:
         :rtype: Matrix3D
         """
         return Matrix3D(
-            Vector3D(
+            CartesianVector(
                 self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
@@ -612,45 +415,45 @@ class Matrix3by6:
 class Matrix6by3:
     def __init__(
         self,
-        r1: Vector3D,
-        r2: Vector3D,
-        r3: Vector3D,
-        r4: Vector3D,
-        r5: Vector3D,
-        r6: Vector3D,
+        r1: CartesianVector,
+        r2: CartesianVector,
+        r3: CartesianVector,
+        r4: CartesianVector,
+        r5: CartesianVector,
+        r6: CartesianVector,
     ) -> None:
         """used to perform operations for a 6x3 matrix
 
         :param r1: first row of the matrix
-        :type r1: Vector3D
+        :type r1: CartesianVector
         :param r2: second row of the matrix
-        :type r2: Vector3D
+        :type r2: CartesianVector
         :param r3: third row of the matrix
-        :type r3: Vector3D
+        :type r3: CartesianVector
         :param r4: fourth row of the matrix
-        :type r4: Vector3D
+        :type r4: CartesianVector
         :param r5: fifth row of the matrix
-        :type r5: Vector3D
+        :type r5: CartesianVector
         :param r6: sixth row of the matrix
-        :type r6: Vector3D
+        :type r6: CartesianVector
         """
         #: first row of the matrix
-        self.row1: Vector3D = r1.copy()
+        self.row1: CartesianVector = r1.copy()
 
         #: second row of the matrix
-        self.row2: Vector3D = r2.copy()
+        self.row2: CartesianVector = r2.copy()
 
         #: third row of the matrix
-        self.row3: Vector3D = r3.copy()
+        self.row3: CartesianVector = r3.copy()
 
         #: fourth row of the matrix
-        self.row4: Vector3D = r4.copy()
+        self.row4: CartesianVector = r4.copy()
 
         #: fifth row of the matrix
-        self.row5: Vector3D = r5.copy()
+        self.row5: CartesianVector = r5.copy()
 
         #: sixth row of the matrix
-        self.row6: Vector3D = r6.copy()
+        self.row6: CartesianVector = r6.copy()
 
     def column_1(self) -> Vector6D:
         """create a vector whose elements equal the first column of the matrix
@@ -693,43 +496,43 @@ class Matrix6by3:
         :rtype: Matrix6by3
         """
         return Matrix6by3(
-            Vector3D(
+            CartesianVector(
                 self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row4.dot(mat.column_1()),
                 self.row4.dot(mat.column_2()),
                 self.row4.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row5.dot(mat.column_1()),
                 self.row5.dot(mat.column_2()),
                 self.row5.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row6.dot(mat.column_1()),
                 self.row6.dot(mat.column_2()),
                 self.row6.dot(mat.column_3()),
             ),
         )
 
-    def multiply_vector(self, vec: "Vector3D") -> Vector6D:
+    def multiply_vector(self, vec: "CartesianVector") -> Vector6D:
         """create a vector equal to the product of the calling matrix and the argument vector
 
         :param vec: vector to be used in the product
-        :type vec: Vector3D
+        :type vec: CartesianVector
         :return: product vector
         :rtype: Vector6D
         """
@@ -868,12 +671,12 @@ class Matrix6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.row1.x,
-            self.row2.y,
-            self.row3.z,
-            self.row4.vx,
-            self.row5.vy,
-            self.row6.vz,
+            self.row1[0],
+            self.row2[1],
+            self.row3[2],
+            self.row4[3],
+            self.row5[4],
+            self.row6[5],
         )
 
     def multiply_vector(self, vec: Vector6D) -> Vector6D:
@@ -899,7 +702,7 @@ class Matrix6D:
         :return: first column of the matrix
         :rtype: Vector6D
         """
-        return Vector6D(self.row1.x, self.row2.x, self.row3.x, self.row4.x, self.row5.x, self.row6.x)
+        return Vector6D(self.row1[0], self.row2[0], self.row3[0], self.row4[0], self.row5[0], self.row6[0])
 
     def column_2(self) -> Vector6D:
         """create a vector whose elements equal the second column of the matrix
@@ -907,7 +710,7 @@ class Matrix6D:
         :return: second column of the matrix
         :rtype: Vector6D
         """
-        return Vector6D(self.row1.y, self.row2.y, self.row3.y, self.row4.y, self.row5.y, self.row6.y)
+        return Vector6D(self.row1[1], self.row2[1], self.row3[1], self.row4[1], self.row5[1], self.row6[1])
 
     def column_3(self) -> Vector6D:
         """create a vector whose elements equal the third column of the matrix
@@ -915,7 +718,7 @@ class Matrix6D:
         :return: third column of the matrix
         :rtype: Vector6D
         """
-        return Vector6D(self.row1.z, self.row2.z, self.row3.z, self.row4.z, self.row5.z, self.row6.z)
+        return Vector6D(self.row1[2], self.row2[2], self.row3[2], self.row4[2], self.row5[2], self.row6[2])
 
     def column_4(self) -> Vector6D:
         """create a vector whose elements equal the fourth column of the matrix
@@ -924,12 +727,12 @@ class Matrix6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.row1.vx,
-            self.row2.vx,
-            self.row3.vx,
-            self.row4.vx,
-            self.row5.vx,
-            self.row6.vx,
+            self.row1[3],
+            self.row2[3],
+            self.row3[3],
+            self.row4[3],
+            self.row5[3],
+            self.row6[3],
         )
 
     def column_5(self) -> Vector6D:
@@ -939,12 +742,12 @@ class Matrix6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.row1.vy,
-            self.row2.vy,
-            self.row3.vy,
-            self.row4.vy,
-            self.row5.vy,
-            self.row6.vy,
+            self.row1[4],
+            self.row2[4],
+            self.row3[4],
+            self.row4[4],
+            self.row5[4],
+            self.row6[4],
         )
 
     def column_6(self) -> Vector6D:
@@ -954,12 +757,12 @@ class Matrix6D:
         :rtype: Vector6D
         """
         return Vector6D(
-            self.row1.vz,
-            self.row2.vz,
-            self.row3.vz,
-            self.row4.vz,
-            self.row5.vz,
-            self.row6.vz,
+            self.row1[5],
+            self.row2[5],
+            self.row3[5],
+            self.row4[5],
+            self.row5[5],
+            self.row6[5],
         )
 
     def transpose(self) -> "Matrix6D":
@@ -986,32 +789,32 @@ class Matrix6D:
         :rtype: Matrix6by3
         """
         return Matrix6by3(
-            Vector3D(
+            CartesianVector(
                 self.row1.dot(mat.column_1()),
                 self.row1.dot(mat.column_2()),
                 self.row1.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row2.dot(mat.column_1()),
                 self.row2.dot(mat.column_2()),
                 self.row2.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row3.dot(mat.column_1()),
                 self.row3.dot(mat.column_2()),
                 self.row3.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row4.dot(mat.column_1()),
                 self.row4.dot(mat.column_2()),
                 self.row4.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row5.dot(mat.column_1()),
                 self.row5.dot(mat.column_2()),
                 self.row5.dot(mat.column_3()),
             ),
-            Vector3D(
+            CartesianVector(
                 self.row6.dot(mat.column_1()),
                 self.row6.dot(mat.column_2()),
                 self.row6.dot(mat.column_3()),

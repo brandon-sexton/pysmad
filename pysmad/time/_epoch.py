@@ -3,7 +3,7 @@ from math import floor, modf, radians, trunc
 
 from pysmad.constants import DAYS_TO_JULIAN_CENTURY, J2000_JULIAN_DATE, MJD_ZERO_JULIAN_DATE, TAI_TO_TT
 from pysmad.eop import EOPData
-from pysmad.math.functions import Conversions
+from pysmad.time._get_decimal_day import GetDecimalDay
 
 
 class Epoch:
@@ -128,7 +128,7 @@ class Epoch:
         b = floor(y / 400) - floor(y / 100) + floor(y / 4)
         mjd = 365 * y - 679004 + b + floor(30.6001 * (m + 1)) + d
 
-        return cls(mjd + Conversions.hms_to_decimal_day(hour, minute, sec))
+        return cls(mjd + GetDecimalDay.from__hms(hour, minute, sec))
 
     @classmethod
     def from_iso_string(cls, udl_date: str) -> "Epoch":

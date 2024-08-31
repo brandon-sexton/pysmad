@@ -3,7 +3,7 @@ from pysmad.eop import EOPRecord, LeapSecondData
 
 
 def test_from_finals_line():
-    leap_seconds = LeapSecondData("resources/tai-utc.dat")
+    leap_seconds = LeapSecondData("pysmad/eop/tai-utc.dat")
     line = (
         "16 830 57630.00 I  0.235397 0.000019  0.393347 0.000025  I-0.2449597 0.0000092  0.6712 0.0045  I  "
         + "-105.883    0.300   -13.437    0.030  0.235414  0.393302 -0.2449645  -105.920   -13.498"

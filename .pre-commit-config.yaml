@@ -3,7 +3,12 @@ repos:
   rev: v4.4.0
   hooks:
     - id: check-added-large-files
-      exclude: resources/*
+      exclude: |
+          (?x)^(
+              pysmad/eop/finals.all
+            | pysmad/eop/tai-utc.dat
+            | pysmad/bodies/EGM96.potential
+          )$
     - id: check-case-conflict
     - id: check-yaml
     - id: debug-statements

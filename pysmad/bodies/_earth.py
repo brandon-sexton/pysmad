@@ -1,108 +1,56 @@
-from math import cos, radians, sin, sqrt
+from math import cos, radians, sin
+from pathlib import Path
 
-from pysmad.constants import SECONDS_IN_SIDEREAL_DAY
-from pysmad.math.functions import Conversions, EquationsOfMotion
-from pysmad.math.linalg import Matrix3D, Vector3D
+from pysmad.bodies._geodetic_model import GeodeticModel
+from pysmad.constants import ARC_SECONDS_TO_RADIANS, EARTH_MU, OBLIQUITY_OF_ECLIPTIC, SECONDS_IN_SIDEREAL_DAY
+from pysmad.coordinates import CartesianVector
+from pysmad.math import EquationsOfMotion
+from pysmad.math.linalg import Matrix3D
 from pysmad.time import Epoch
 
 
 class Earth:
     """Class used to store Earth properties"""
 
-    #: normalized c coefficients used for geopotential calculation
-    C: list[list[float]] = [
-        [1],
-        [0, 0],
-        [-0.484165143790815e-3 / sqrt(0.2), -0.206615509074176e-9 / sqrt(0.6), 0.243938357328313e-5 / sqrt(2.4)],
-        [
-            0.957161207093473e-6 / sqrt(1 / 7),
-            0.203046201047864e-5 / sqrt(6 / 7),
-            0.904787894809528e-6 / sqrt(60 / 7),
-            0.721321757121568e-6 / sqrt(360 / 7),
-        ],
-        [
-            0.539965866638991e-6 / sqrt(24 / 216),
-            -0.536157389388867e-6 / sqrt(10 / 9),
-            0.350501623962649e-6 / sqrt(20),
-            0.990856766672321e-6 / sqrt(280),
-            -0.188519633023033e-6 / sqrt(2240),
-        ],
-    ]
-
-    #: normalized s coefficients used for geopotential calculation
-    S: list[list[float]] = [
-        [0],
-        [0, 0],
-        [0, 0.138441389137979e-8 / sqrt(0.6), -0.140027370385934e-5 / sqrt(2.4)],
-        [
-            0,
-            0.248200415856872e-6 / sqrt(6 / 7),
-            -0.619005475177618e-6 / sqrt(60 / 7),
-            0.141434926192941e-5 / sqrt(360 / 7),
-        ],
-        [
-            0,
-            -0.473567346518086e-6 / sqrt(10 / 9),
-            0.662480026275829e-6 / sqrt(20),
-            -0.200956723567452e-6 / sqrt(280),
-            0.308803882149194e-6 / sqrt(2240),
-        ],
-    ]
-
-    #: the number of zonal and tesseral terms to be used in the gravity calculation
-    DEGREE_AND_ORDER: int = len(S)
-
-    #: G*M given in km^3/s^2
-    MU: float = 398600.4418
-
-    #: distance from earth center to surface at the equator in km
-    RADIUS: float = 6378.137
-
-    #: value defining the ellipsoid of an oblate earth
-    FLATTENING: float = 1 / 298.2572235
-
-    #: inclination of ecliptic relative to earth equator in radians
-    OBLIQUITY_OF_ECLIPTIC: float = radians(23.43929111)
+    detic_model = GeodeticModel(Path(__file__).parent / "EGM96.potential")
 
     #: boolean identifying if gravity will be modeled as a point-source or with non-spherical methods
     USE_GEODETIC_MODEL = True
 
     @staticmethod
+    def mu() -> float:
+        return Earth.detic_model.mu
+
+    @staticmethod
+    def radius() -> float:
+        return Earth.detic_model.radius
+
+    @staticmethod
     def obliquity_of_ecliptic_at_epoch(epoch: Epoch) -> float:
-        """calculate the obliquity of ecliptic (epsilon) at a given epoch
+        """calculate the true-of-date obliquity of ecliptic (epsilon) at a given epoch
 
         :param epoch: time of interest
-        :type epoch: Epoch
-        :return: true-of-date epsilon
-        :rtype: float
         """
         # Equation 5.39
         t = Epoch.julian_centuries_past_j2000(epoch.ut1)
 
-        a = Conversions.dms_to_radians(0, 0, 46.815)
-        b = Conversions.dms_to_radians(0, 0, 0.00059)
-        c = Conversions.dms_to_radians(0, 0, 0.001813)
+        a = 46.815 * ARC_SECONDS_TO_RADIANS
+        b = 0.00059 * ARC_SECONDS_TO_RADIANS
+        c = 0.001813 * ARC_SECONDS_TO_RADIANS
 
         # Equation 5.42
-        return Earth.OBLIQUITY_OF_ECLIPTIC - a * t - b * t * t + c * t * t * t
+        return OBLIQUITY_OF_ECLIPTIC - a * t - b * t * t + c * t * t * t
 
     @staticmethod
     def geo_radius() -> float:
-        """calculate the radius of an orbit with a period equal to that of Earth's rotation
-
-        :return: geosynchronous radius in km
-        :rtype: float
-        """
-        return EquationsOfMotion.A.from_mu_tau(Earth.MU, SECONDS_IN_SIDEREAL_DAY)
+        """calculate the radius of an orbit with a period equal to that of Earth's rotation"""
+        return EquationsOfMotion.semi_major_axis.from_mu_tau(EARTH_MU, SECONDS_IN_SIDEREAL_DAY)
 
     @staticmethod
     def rotation(epoch: Epoch) -> Matrix3D:
-        """creates a matrix that can be used to transform an itrf position to tod and vice versa
+        """creates a matrix that can be used to transform an EFG position to TOD and vice versa
 
         :param epoch: valid time of the state
-        :type epoch: Epoch
-        :return: transformation matrix
-        :rtype: Matrix3D
         """
         d: float = Epoch.days_past_j2000(epoch.tt)
         arg1: float = radians(125.0 - 0.05295 * d)
@@ -113,30 +61,27 @@ class Earth:
         eps: float = Earth.obliquity_of_ecliptic_at_epoch(epoch)
         gmst: float = epoch.greenwich_hour_angle()
         gast: float = dpsi * cos(eps) + gmst
-        return Vector3D.rotation_matrix(Vector3D(0, 0, 1), -gast)
+        return Matrix3D.rotation_matrix(CartesianVector.z_axis(), -gast)
 
     @staticmethod
     def precession(epoch: Epoch) -> Matrix3D:
-        """creates a matrix that can be used to transform a tod position to mod and vice versa
+        """creates a matrix that can be used to transform a TOD position to MOD and vice versa
 
         :param epoch: valid time of the state
-        :type epoch: Epoch
-        :return: transformation matrix
-        :rtype: Matrix3D
         """
         t: float = Epoch.julian_centuries_past_j2000(epoch.ut1)
-        a: float = Conversions.dms_to_radians(0, 0, 2306.2181)
-        b: float = Conversions.dms_to_radians(0, 0, 0.30188)
-        c: float = Conversions.dms_to_radians(0, 0, 0.017998)
+        a: float = 2306.2181 * ARC_SECONDS_TO_RADIANS
+        b: float = 0.30188 * ARC_SECONDS_TO_RADIANS
+        c: float = 0.017998 * ARC_SECONDS_TO_RADIANS
         x: float = a * t + b * t * t + c * t * t * t
 
-        a = Conversions.dms_to_radians(0, 0, 2004.3109)
-        b = Conversions.dms_to_radians(0, 0, 0.42665)
-        c = Conversions.dms_to_radians(0, 0, 0.041833)
+        a = 2004.3109 * ARC_SECONDS_TO_RADIANS
+        b = 0.42665 * ARC_SECONDS_TO_RADIANS
+        c = 0.041833 * ARC_SECONDS_TO_RADIANS
         y: float = a * t - b * t * t - c * t * t * t
 
-        a = Conversions.dms_to_radians(0, 0, 0.7928)
-        b = Conversions.dms_to_radians(0, 0, 0.000205)
+        a = 0.79280 * ARC_SECONDS_TO_RADIANS
+        b = 0.000205 * ARC_SECONDS_TO_RADIANS
         z: float = x + a * t * t + b * t * t * t
 
         sz = sin(z)
@@ -147,19 +92,16 @@ class Earth:
         cx = cos(x)
 
         return Matrix3D(
-            Vector3D(-sz * sx + cz * cy * cx, -sz * cx - cz * cy * sx, -cz * sy),
-            Vector3D(cz * sx + sz * cy * cx, cz * cx - sz * cy * sx, -sz * sy),
-            Vector3D(sy * cx, -sy * sx, cy),
+            CartesianVector(-sz * sx + cz * cy * cx, -sz * cx - cz * cy * sx, -cz * sy),
+            CartesianVector(cz * sx + sz * cy * cx, cz * cx - sz * cy * sx, -sz * sy),
+            CartesianVector(sy * cx, -sy * sx, cy),
         )
 
     @staticmethod
     def nutation(epoch: Epoch) -> Matrix3D:
-        """creates a matrix that can be used to transform a mod position to gcrf and vice versa
+        """creates a matrix that can be used to transform a MOD position to J2000 and vice versa
 
         :param epoch: valid time of the state
-        :type epoch: Epoch
-        :return: transformation matrix
-        :rtype: Matrix3D
         """
         d = Epoch.days_past_j2000(epoch.tt)
         arg1 = radians(125.0 - 0.05295 * d)
@@ -176,7 +118,7 @@ class Earth:
         se = sin(eps)
 
         return Matrix3D(
-            Vector3D(1.0, -dpsi * ce, -dpsi * se),
-            Vector3D(dpsi * ce, 1.0, -deps),
-            Vector3D(dpsi * se, deps, 1.0),
+            CartesianVector(1.0, -dpsi * ce, -dpsi * se),
+            CartesianVector(dpsi * ce, 1.0, -deps),
+            CartesianVector(dpsi * se, deps, 1.0),
         )

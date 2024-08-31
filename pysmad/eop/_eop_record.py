@@ -29,6 +29,8 @@ class EOPRecord:
 
         The format of the finals.data, finals.daily, and finals.all files is:
 
+        .. code-block:: none
+
         Col.#    Format  Quantity
         -------  ------  -------------------------------------------------------------
         1-2      I2      year (to get true calendar year, add 1900 for MJD<=51543 or add 2000 for MJD>=51544)
