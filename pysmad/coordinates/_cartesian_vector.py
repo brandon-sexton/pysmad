@@ -104,6 +104,7 @@ class CartesianVector:
             self.x * vec_to_cross.y - self.y * vec_to_cross.x,
         )
 
+    @property
     def magnitude(self) -> float:
         """calculates the length of the vector
 
@@ -128,7 +129,7 @@ class CartesianVector:
         :return: unit vector of the calling vector
         :rtype: CartesianVector
         """
-        return self.scaled(1 / self.magnitude())
+        return self.scaled(1 / self.magnitude)
 
     def angle(self, adj_vec: "CartesianVector") -> float:
         """calculates the angle between two vectors
@@ -138,7 +139,7 @@ class CartesianVector:
         :return: angle in radians between the two vectors
         :rtype: float
         """
-        arg = self.dot(adj_vec) / (self.magnitude() * adj_vec.magnitude())
+        arg = self.dot(adj_vec) / (self.magnitude * adj_vec.magnitude)
         if arg > 1:
             arg = 1
         elif arg < -1:

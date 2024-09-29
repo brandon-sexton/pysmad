@@ -3,7 +3,7 @@ from math import cos, sqrt
 from pysmad.coordinates import CartesianVector
 
 
-class ArealVelocity:
+class GetArealVelocity:
     r"""class used to calculate areal velocities of an orbit
 
     .. note::

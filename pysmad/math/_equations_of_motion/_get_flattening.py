@@ -1,7 +1,7 @@
 from math import sqrt
 
 
-class Flattening:
+class GetFlattening:
     """class used to solve flattening of an ellipse
 
     .. note::

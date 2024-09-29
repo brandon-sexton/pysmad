@@ -1,4 +1,4 @@
-class SemiParameter:
+class GetSemiParameter:
     """class used to solve the semi-parameter of an ellipse
 
     .. note::

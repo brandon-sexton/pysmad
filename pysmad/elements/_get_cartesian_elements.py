@@ -2,7 +2,7 @@ from pysmad.elements._cartesian_elements import CartesianElements
 from pysmad.elements._classical_elements import ClassicalElements
 
 
-class GetCartesian:
+class GetCartesianElements:
     @staticmethod
     def from_classical(els: ClassicalElements) -> CartesianElements:
         """calculates the cartesian representation of the element set

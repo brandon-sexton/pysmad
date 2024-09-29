@@ -1,7 +1,7 @@
 from math import sqrt
 
 
-class Eccentricity:
+class GetEccentricity:
     """Class used to solve eccentricity of an ellipse
 
     .. note::

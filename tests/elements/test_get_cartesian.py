@@ -2,7 +2,7 @@ from math import radians
 
 import pytest
 
-from pysmad.elements import ClassicalElements, GetCartesian
+from pysmad.elements import ClassicalElements, GetCartesianElements
 
 
 def test_from_classical():
@@ -15,7 +15,7 @@ def test_from_classical():
     arg_per = radians(91.553)
     ma = radians(144.225)
 
-    cartesian = GetCartesian.from_classical(ClassicalElements(a, e, i, raan, arg_per, ma))
+    cartesian = GetCartesianElements.from_classical(ClassicalElements(a, e, i, raan, arg_per, ma))
     assert cartesian.x == pytest.approx(10000, abs=0.5)
     assert cartesian.y == pytest.approx(40000, abs=0.5)
     assert cartesian.z == pytest.approx(-5000, abs=0.5)
@@ -31,7 +31,7 @@ def test_from_classical():
     arg_per = radians(53.38)
     ma = 0.1327312448297558
 
-    eci = GetCartesian.from_classical(ClassicalElements(a, e, i, raan, arg_per, ma))
+    eci = GetCartesianElements.from_classical(ClassicalElements(a, e, i, raan, arg_per, ma))
     assert eci.x == pytest.approx(6525.344, abs=0.5)
     assert eci.y == pytest.approx(6861.535, abs=0.5)
     assert eci.z == pytest.approx(6449.125, abs=0.5)

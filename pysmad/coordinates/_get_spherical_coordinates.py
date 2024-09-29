@@ -15,7 +15,7 @@ class GetSphericalCoordinates:
         :rtype: SphericalVector
         """
 
-        r = vec.magnitude()
+        r = vec.magnitude
         dec = atan(vec.z / sqrt(vec.x**2 + vec.y**2))
         ra = atan2(vec.y, vec.x)
 

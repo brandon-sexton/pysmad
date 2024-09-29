@@ -1,7 +1,7 @@
 from math import atan2, cos, pi, sin, sqrt
 
 
-class EccentricAnomaly:
+class GetEccentricAnomaly:
     r"""class used to solve eccentric anomaly
 
     .. note::
@@ -43,7 +43,7 @@ class EccentricAnomaly:
 
         while not converged:
             ean = ea0 + (ma - ea0 + e * sin(ea0)) / (1 - e * cos(ea0))
-            if abs(ean - ea0) < EccentricAnomaly.TOLERANCE:
+            if abs(ean - ea0) < GetEccentricAnomaly.TOLERANCE:
                 converged = True
             else:
                 ea0 = ean

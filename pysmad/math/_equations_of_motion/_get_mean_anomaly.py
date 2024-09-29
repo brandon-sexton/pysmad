@@ -1,7 +1,7 @@
 from math import pi, sin
 
 
-class MeanAnomaly:
+class GetMeanAnomaly:
     """static class used to solve mean anomaly
 
     .. note::

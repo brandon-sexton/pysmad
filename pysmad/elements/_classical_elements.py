@@ -75,29 +75,8 @@ class ClassicalElements:
         a = self.semimajor_axis
         e = self.eccentricity
         ea = self.eccentric_anomaly
-        a_edot = sqrt(Earth.mu() * a) / self.pqw_position.magnitude()
+        a_edot = sqrt(Earth.mu() * a) / self.pqw_position.magnitude
         return CartesianVector(-sin(ea) * a_edot, sqrt(1 - e * e) * cos(ea) * a_edot, 0)
-
-    # @classmethod
-    # def from_ijk(cls, state: IJK) -> "ClassicalElements":
-    #     r: float = state.position.magnitude()
-    #     v: float = state.velocity.magnitude()
-    #     rdv: float = state.position.dot(state.velocity)
-
-    #     h: CartesianVector = EquationsOfMotion.H.from_r_v(state.position, state.velocity)
-    #     w: CartesianVector = h.normalized()
-    #     i: float = EquationsOfMotion.I.from_w(w)
-    #     raan: float = EquationsOfMotion.RAAN.from_w(w)
-    #     a: float = EquationsOfMotion.A.from_mu_r_v(EARTH_MU, r, v)
-    #     p: float = EquationsOfMotion.P.from_mu_h(EARTH_MU, h.magnitude())
-    #     e: float = EquationsOfMotion.E.from_a_p(a, p)
-    #     n: float = EquationsOfMotion.N.from_a_mu(a, EARTH_MU)
-    #     ea: float = EquationsOfMotion.EA.from_rdv_r_a_n(rdv, r, a, n)
-    #     ma: float = EquationsOfMotion.MA.from_ea_e(ea, e)
-    #     u: float = EquationsOfMotion.U.from_r_w(state.position, w)
-    #     nu: float = EquationsOfMotion.NU.from_e_ea(e, ea)
-    #     aop: float = EquationsOfMotion.W.from_u_nu(u, nu)
-    #     return cls(state.epoch, a, e, i, raan, aop, ma)
 
     @property
     def p_vector(self) -> CartesianVector:

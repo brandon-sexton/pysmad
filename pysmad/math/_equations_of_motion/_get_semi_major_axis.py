@@ -1,7 +1,7 @@
 from math import pi
 
 
-class SemiMajorAxis:
+class GetSemiMajorAxis:
     """class used to solve semi-major axis of an ellipse
 
     .. note::

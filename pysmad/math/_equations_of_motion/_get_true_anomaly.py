@@ -1,7 +1,7 @@
 from math import atan2, cos, pi, sin, sqrt
 
 
-class TrueAnomaly:
+class GetTrueAnomaly:
     r"""static class used to solve true anomaly
 
     .. note::

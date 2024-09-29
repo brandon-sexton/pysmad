@@ -3,7 +3,7 @@ from math import atan2, pi
 from pysmad.coordinates import CartesianVector
 
 
-class RAAN:
+class GetRAAN:
     r"""static class used to solve right ascension of ascending node (RAAN)
 
     .. note::

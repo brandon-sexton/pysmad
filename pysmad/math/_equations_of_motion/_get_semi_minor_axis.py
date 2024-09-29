@@ -1,7 +1,7 @@
 from math import sqrt
 
 
-class SemiMinorAxis:
+class GetSemiMinorAxis:
     """class used to solve semi-minor axis of an ellipse
 
     .. note::
